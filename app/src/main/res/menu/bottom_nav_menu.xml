@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/nav_search"
+    <item android:id="@+id/searchFragment"
         android:icon="@drawable/search_icon"
         android:title="Search" />
-    <item android:id="@+id/nav_chat"
+    <item android:id="@+id/chatFragment"
         android:icon="@drawable/chat_icon"
         android:title="Chat" />
-<!--    <item android:id="@+id/nav_add"-->
-<!--        android:icon="@drawable/add_icon"-->
-<!--        android:title="Add" />-->
     <item android:id="@+id/placeholder"
         android:title="" />
-    <item android:id="@+id/nav_settings"
+    <item android:id="@+id/settingsFragment"
         android:icon="@drawable/settings_icon"
         android:title="Settings" />
-    <item android:id="@+id/nav_profile"
+    <item android:id="@+id/profileFragment"
         android:icon="@drawable/profile_icon"
         android:title="Profile" />
 </menu>

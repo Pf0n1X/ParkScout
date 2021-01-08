@@ -34,6 +34,7 @@
                 android:textColor="@color/black" />
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/chat.cvProfPic"
                 app:cardElevation="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,7 +44,7 @@
                 app:cardCornerRadius="50dp">
 
                 <ImageButton
-                    android:id="@+id/chat.ivUserImage"
+                    android:id="@+id/chat.ibUserImage"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_centerVertical="true"

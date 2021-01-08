@@ -1,11 +1,18 @@
 package com.example.parkscout.Fragment
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
 import com.example.parkscout.R
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_chat.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,18 +31,32 @@ class ChatFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+//        arguments?.let {
+//            param1 = it.getString(ARG_PARAM1)
+//            param2 = it.getString(ARG_PARAM2)
+//        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val fragmentView = inflater.inflate(R.layout.fragment_chat, container, false)
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false)
+        fragmentView.findViewById<ImageButton>(R.id.chat_ibUserImage)
+                .setOnClickListener{ view ->
+            val navController = Navigation
+                    .findNavController(activity as Activity, R.id.main_navhost_frag)
+
+            NavigationUI.setupWithNavController((activity as Activity)
+                    .findViewById<BottomNavigationView>(R.id.bottomNavigationView), navController)
+
+            navController.navigate(R.id.action_global_profileFragment)
+        }
+
+        return fragmentView
     }
 
     companion object {

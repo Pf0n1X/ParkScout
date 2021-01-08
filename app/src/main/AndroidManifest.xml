@@ -17,13 +17,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ParkScout">
         <activity android:name=".MainActivity">
-// HERE
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings">
+
         </activity>
         <activity
             android:name=".ui.login.logInActivity"
@@ -41,11 +45,7 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
         </activity>
         <meta-data

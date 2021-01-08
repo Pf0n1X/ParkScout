@@ -2,8 +2,10 @@ package com.example.parkscout
 
 import android.os.Build
 import android.os.Bundle
-import android.view.WindowManager
+import android.util.Log
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -79,4 +81,6 @@ class MainActivity : AppCompatActivity() ,OnMapReadyCallback{
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
+
+
 }

@@ -30,4 +30,12 @@
         android:name="com.example.parkscout.Fragment.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" /><action android:id="@+id/action_global_addParkFragment" app:destination="@id/addParkFragment"/><action android:id="@+id/action_global_searchFragment" app:destination="@id/searchFragment"/><action android:id="@+id/action_global_profileFragment" app:destination="@id/profileFragment"/><action android:id="@+id/action_global_chatFragment" app:destination="@id/chatFragment"/><action android:id="@+id/action_global_settingsFragment" app:destination="@id/settingsFragment"/>
+    <fragment
+        android:id="@+id/parkDetails"
+        android:name="com.example.parkscout.Fragment.ParkDetails"
+        android:label="fragment_park_details"
+        tools:layout="@layout/fragment_park_details" />
+    <action
+        android:id="@+id/action_global_parkDetails"
+        app:destination="@id/parkDetails" />
 </navigation>

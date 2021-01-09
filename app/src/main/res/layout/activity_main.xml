@@ -34,7 +34,9 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph" />
 
+
     </FrameLayout>
+
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"

@@ -4,20 +4,28 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.add
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
+import com.example.parkscout.Fragment.ParkDetails
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() ,OnMapReadyCallback{
+
+class MainActivity : AppCompatActivity() ,OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
+    private var park_fragment: Fragment? = null
+
+    var marker: Marker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,11 +35,13 @@ class MainActivity : AppCompatActivity() ,OnMapReadyCallback{
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+
         // Setup the app and the bottom app bar UI.
         setupBaseDesign()
 
         // Navigation
         setupNavigation()
+
 
     }
 
@@ -42,7 +52,7 @@ class MainActivity : AppCompatActivity() ,OnMapReadyCallback{
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
 
         // Handle FAB navigation
-        fab.setOnClickListener{view ->
+        fab.setOnClickListener{ view ->
             navController.navigate(R.id.action_global_addParkFragment)
         }
     }
@@ -78,5 +88,27 @@ class MainActivity : AppCompatActivity() ,OnMapReadyCallback{
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        mMap.setOnMarkerClickListener { marker ->
+            if (marker.isInfoWindowShown) {
+                marker.hideInfoWindow()
+            } else {
+                marker.showInfoWindow()
+            }
+
+
+            true
+        }
+
+    }
+
+    fun onMarkerClick(marker: Marker?): Boolean {
+//        park_fragment = ParkDetails.getInstance();
+//        park_fragment?.let {
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//              .add(R.id.frame_layout,it)
+//                    .commit()
+//        };
+        return true
     }
 }

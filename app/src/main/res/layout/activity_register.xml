@@ -6,87 +6,87 @@
     android:layout_height="match_parent"
     tools:context=".RegisterActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="120dp"
-        android:layout_marginLeft="120dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="120dp"
-        android:layout_marginRight="120dp"
-        android:layout_marginBottom="650dp"
-        android:text="Register"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <TextView-->
+<!--        android:id="@+id/textView"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_marginStart="120dp"-->
+<!--        android:layout_marginLeft="120dp"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:layout_marginEnd="120dp"-->
+<!--        android:layout_marginRight="120dp"-->
+<!--        android:layout_marginBottom="650dp"-->
+<!--        android:text="Register"-->
+<!--        android:textSize="36sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+<!--    <com.google.android.material.textfield.TextInputLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
 
-    </com.google.android.material.textfield.TextInputLayout>
+<!--    </com.google.android.material.textfield.TextInputLayout>-->
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/name_input"
-        android:layout_width="297dp"
-        android:layout_height="62dp"
-        android:hint="hint"
-        android:text="name"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.114" />
+<!--    <com.google.android.material.textfield.TextInputEditText-->
+<!--        android:id="@+id/name_input"-->
+<!--        android:layout_width="297dp"-->
+<!--        android:layout_height="62dp"-->
+<!--        android:hint="hint"-->
+<!--        android:text="name"-->
+<!--        android:textSize="36sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/textView"-->
+<!--        app:layout_constraintVertical_bias="0.114" />-->
 
-    <EditText
-        android:id="@+id/editTextTextEmailAddress"
-        android:layout_width="297dp"
-        android:layout_height="62dp"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        android:text="email"
-        android:textSize="36sp"
-        tools:layout_editor_absoluteX="61dp"
-        tools:layout_editor_absoluteY="237dp" />
+<!--    <EditText-->
+<!--        android:id="@+id/editTextTextEmailAddress"-->
+<!--        android:layout_width="297dp"-->
+<!--        android:layout_height="62dp"-->
+<!--        android:ems="10"-->
+<!--        android:inputType="textEmailAddress"-->
+<!--        android:text="email"-->
+<!--        android:textSize="36sp"-->
+<!--        tools:layout_editor_absoluteX="61dp"-->
+<!--        tools:layout_editor_absoluteY="237dp" />-->
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/username"
-        android:layout_width="297dp"
-        android:layout_height="62dp"
-        android:hint="hint"
-        android:text="username"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.535"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.4" />
+<!--    <com.google.android.material.textfield.TextInputEditText-->
+<!--        android:id="@+id/email"-->
+<!--        android:layout_width="297dp"-->
+<!--        android:layout_height="62dp"-->
+<!--        android:hint="hint"-->
+<!--        android:text="username"-->
+<!--        android:textSize="36sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.535"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/textView"-->
+<!--        app:layout_constraintVertical_bias="0.4" />-->
 
-    <EditText
-        android:id="@+id/editTextTextPassword"
-        android:layout_width="297dp"
-        android:layout_height="62dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:inputType="textPassword"
-        android:text="password"
-        android:textSize="36sp"
-        app:layout_constraintTop_toBottomOf="@+id/username"
-        tools:layout_editor_absoluteX="61dp" />
+<!--    <EditText-->
+<!--        android:id="@+id/editTextTextPassword"-->
+<!--        android:layout_width="297dp"-->
+<!--        android:layout_height="62dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:ems="10"-->
+<!--        android:inputType="textPassword"-->
+<!--        android:text="password"-->
+<!--        android:textSize="36sp"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/email"-->
+<!--        tools:layout_editor_absoluteX="61dp" />-->
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Done"
-        android:textSize="36sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="511dp" />
+<!--    <Button-->
+<!--        android:id="@+id/button"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Done"-->
+<!--        android:textSize="36sp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        tools:layout_editor_absoluteY="511dp" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

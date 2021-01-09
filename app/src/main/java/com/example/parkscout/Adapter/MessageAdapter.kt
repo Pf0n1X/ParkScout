@@ -1,7 +1,6 @@
 package com.example.parkscout.Adapter
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.parkscout.Model.ChatMessage
 import com.example.parkscout.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class MessageAdapter(val context: Context, val chatMessages: List<ChatMessage>, val imageURL: String): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
@@ -18,7 +19,7 @@ class MessageAdapter(val context: Context, val chatMessages: List<ChatMessage>, 
     private var mContext: Context
     private var mChatMessages: List<ChatMessage>
     private var mImageURL: String
-//    private val mFBUser: FirebaseUser
+    private lateinit var mFBUser: FirebaseUser
 
     companion object {
         private const val MSG_TYPE_LEFT = 0
@@ -60,13 +61,14 @@ class MessageAdapter(val context: Context, val chatMessages: List<ChatMessage>, 
 
     override fun getItemViewType(position: Int): Int {
         // TODO: Uncomment when firebase is ready
-//        mFBUser = FirebaseAuth.instance.currentUser
-//
+//        mFBUser = FirebaseAuth.getInstance().currentUser!!
+
 //        if (mChatMessages[position].sender.equals(mFBUser.uid)) {
 //            return MSG_TYPE_RIGHT
 //        } else {
 //            return MSG_TYPE_LEFT
 //        }
+
         if (mChatMessages[position].sender == "Tom") {
             return MSG_TYPE_RIGHT
         } else {

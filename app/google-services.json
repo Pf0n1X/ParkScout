@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "534676996730",
+    "project_id": "parkscout-459c8",
+    "storage_bucket": "parkscout-459c8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534676996730:android:bc51323444c12c6bdfb1c3",
+        "android_client_info": {
+          "package_name": "com.example.parkscout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534676996730-udfjhf2ohvv58cg15p41jm9qu2bm30oi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.parkscout",
+            "certificate_hash": "7b413af459d94aedbd7afdc9817f122a2a558b1d"
+          }
+        },
+        {
+          "client_id": "534676996730-ar3qfc33d0gbjinrpqtju2m8j2i2gu20.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDEeWdBsspMCq487Rzz_wL053IYnnOUoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534676996730-ar3qfc33d0gbjinrpqtju2m8j2i2gu20.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

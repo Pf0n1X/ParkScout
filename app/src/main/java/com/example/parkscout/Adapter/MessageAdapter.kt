@@ -1,35 +1,86 @@
 package com.example.parkscout.Adapter
 
 import android.content.Context
+import android.graphics.Color
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.parkscout.Model.Message
+import com.bumptech.glide.Glide
+import com.example.parkscout.Model.ChatMessage
+import com.example.parkscout.R
 
-class MessageAdapter(val context: Context, val messages: List<Message>): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+class MessageAdapter(val context: Context, val chatMessages: List<ChatMessage>, val imageURL: String): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     // Data Members
-    private val mContext: Context
-    private val mMessages: List<Message>
+    private var mContext: Context
+    private var mChatMessages: List<ChatMessage>
+    private var mImageURL: String
+//    private val mFBUser: FirebaseUser
+
+    companion object {
+        private const val MSG_TYPE_LEFT = 0
+        private const val MSG_TYPE_RIGHT = 1
+    }
 
     init {
         mContext = context
-        mMessages = messages
+        mChatMessages = chatMessages
+        mImageURL = imageURL
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        TODO("Not yet implemented")
+        var view: View;
+
+        if (viewType == MSG_TYPE_RIGHT) {
+            view = LayoutInflater.from(mContext).inflate(R.layout.chat_msg_right, parent, false)
+            return MessageAdapter.ViewHolder(view)
+        } else {
+            view = LayoutInflater.from(mContext).inflate(R.layout.chat_msg_left, parent, false)
+            return MessageAdapter.ViewHolder(view)
+        }
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return mChatMessages.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+    override fun onBindViewHolder(holder: MessageAdapter.ViewHolder, position: Int) {
+        var msg = mChatMessages[position]
+        holder.show_message.text = msg.message
+
+        if (imageURL.equals("default")) {
+            holder.profile_image.setImageResource(R.drawable.profile_icon)
+        } else {
+            Glide.with(mContext).load(mImageURL).into(holder.profile_image)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        // TODO: Uncomment when firebase is ready
+//        mFBUser = FirebaseAuth.instance.currentUser
+//
+//        if (mChatMessages[position].sender.equals(mFBUser.uid)) {
+//            return MSG_TYPE_RIGHT
+//        } else {
+//            return MSG_TYPE_LEFT
+//        }
+        if (mChatMessages[position].sender == "Tom") {
+            return MSG_TYPE_RIGHT
+        } else {
+            return MSG_TYPE_LEFT
+        }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        public var show_message: TextView
+        public var profile_image: ImageView
 
+        init {
+            show_message = itemView.findViewById(R.id.msg_show_message)
+            profile_image = itemView.findViewById(R.id.msg_profile_image)
+        }
     }
 }

@@ -52,8 +52,10 @@ class MainActivity : AppCompatActivity() ,OnMapReadyCallback{
     fun setupBaseDesign() {
         val attr = window.attributes
 
+        // Handle the cutout.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             attr.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         }
         // Remove the weird shadow on the menu items.
         bottomNavigationView.background = null

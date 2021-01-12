@@ -1,15 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/red"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/rounded"
     tools:context=".Fragment.ChatFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:text="@string/hello_blank_fragment" />-->
+    <RelativeLayout
+        android:id="@+id/chat.header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <TextView
+                android:id="@+id/chat.tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:text="This is a long user name"
+                android:textColor="@color/black" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/chat.cvProfPic"
+                app:cardElevation="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/chat.tvName"
+                app:cardPreventCornerOverlap="false"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="50dp">
+
+                <ImageButton
+                    android:id="@+id/chat.ibUserImage"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/round_button"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/profile_pic_temp" />
+
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/chat.rvMessages"
+        android:layout_below="@id/chat.header"
+        android:layout_above="@id/chat.layout_input" />
 
-</FrameLayout>
+    <RelativeLayout
+        android:id="@+id/chat.layout_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/rounded_message_bg"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="30dp">
+
+        <EditText
+            android:id="@+id/chat.messageInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/chat.btnSendMessage"
+            android:background="@android:color/transparent"
+            android:hint="Type a message..."
+            android:inputType="textShortMessage"
+            android:padding="20dp"
+            android:textColorHint="@android:color/darker_gray" />
+
+        <ImageButton
+            android:id="@+id/chat.btnSendMessage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:padding="20dp"
+            android:src="@drawable/ic_baseline_send_24"
+            android:tint="@color/black" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -2,10 +2,12 @@ package com.example.parkscout
 
 import android.os.Build
 import android.os.Bundle
-import android.view.WindowManager
+import android.util.Log
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.add
+import androidx.core.view.ViewCompat
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.example.parkscout.Fragment.ParkDetails
@@ -60,8 +62,10 @@ class MainActivity : AppCompatActivity() ,OnMapReadyCallback {
     fun setupBaseDesign() {
         val attr = window.attributes
 
+        // Handle the cutout.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             attr.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         }
         // Remove the weird shadow on the menu items.
         bottomNavigationView.background = null
@@ -112,3 +116,5 @@ class MainActivity : AppCompatActivity() ,OnMapReadyCallback {
         return true
     }
 }
+
+

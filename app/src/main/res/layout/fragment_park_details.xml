@@ -1,15 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/rounded"
     tools:context=".Fragment.ParkDetails">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="park details"
-        android:textSize="36sp" />
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <Button
+            android:id="@+id/park_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15sp"
+            android:layout_marginLeft="15sp"
+            android:layout_marginTop="20sp"
+            android:layout_weight="1"
+            android:background="#811411"
+            android:shadowColor="@color/black"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="3"
+            android:text="Park name"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25sp"
+            android:layout_marginEnd="30sp"
+            android:layout_marginRight="30sp"
+            android:backgroundTint="#fe9110"
+            android:progressTint="#fe9110"
+            android:max="5"
+            android:rating="5"
+            android:scaleX="1"
+            android:scaleY="1"
+            android:transformPivotX="0dp"
+            android:transformPivotY="0dp" />
+    </LinearLayout>
 </FrameLayout>

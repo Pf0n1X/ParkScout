@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".park_full_details">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/buttonshape">
+
+        <FrameLayout
+            android:id="@+id/frameLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="30sp"
+            android:layout_marginLeft="30sp"
+            android:layout_marginTop="30sp"
+            android:layout_marginEnd="30sp"
+            android:layout_marginRight="30sp"
+            android:layout_marginBottom="400sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/park_name_v"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="200sp"
+                android:layout_marginRight="200sp"
+                android:layout_marginBottom="260sp"
+                android:text="TextView"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <RatingBar
+                android:id="@+id/rating"
+                style="?android:attr/ratingBarStyleIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="170sp"
+                android:layout_marginLeft="170sp"
+                android:layout_marginBottom="260sp"
+                android:backgroundTint="#fe9110"
+                android:max="5"
+                android:numStars="0"
+                android:progressTint="#fe9110"
+                android:rating="5"
+                android:scaleX="0.7"
+                android:scaleY="0.7"
+                android:transformPivotX="0dp"
+                android:transformPivotY="0dp" />
+
+            <TextView
+                android:id="@+id/address_v"
+                android:layout_width="147dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:layout_marginLeft="10sp"
+                android:layout_marginTop="50sp"
+                android:text="full address"
+                android:textColor="#7A7979"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/equipped_with_v"
+                android:layout_width="116dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:layout_marginLeft="10sp"
+                android:layout_marginTop="90sp"
+                android:text="equipped with:"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/equipped_with_details_v"
+                android:layout_width="195dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="134sp"
+                android:layout_marginLeft="134sp"
+                android:layout_marginTop="90sp"
+                android:text="pool ups bar"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/fits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:layout_marginLeft="10sp"
+                android:layout_marginTop="120sp"
+                android:text="Fits :"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/fits_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60sp"
+                android:layout_marginLeft="60sp"
+                android:layout_marginTop="120sp"
+                android:text="Jogging"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/image1"
+                android:layout_width="137dp"
+                android:layout_height="137dp"
+                android:layout_marginStart="10sp"
+                android:layout_marginLeft="10sp"
+                android:layout_marginTop="150sp"
+                app:srcCompat="@drawable/noimage" />
+
+            <ImageView
+                android:id="@+id/image2"
+                android:layout_width="137dp"
+                android:layout_height="137dp"
+                android:layout_marginStart="170sp"
+                android:layout_marginLeft="170sp"
+                android:layout_marginTop="150sp"
+                app:srcCompat="@drawable/noimage" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="340dp"
+            android:layout_height="346dp"
+            android:layout_marginStart="30sp"
+            android:layout_marginLeft="30sp"
+            android:layout_marginEnd="30sp"
+            android:layout_marginRight="30sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout2">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycle_v"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rounded" />
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

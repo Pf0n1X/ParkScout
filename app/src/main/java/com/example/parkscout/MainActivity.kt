@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
-import com.example.parkscout.Fragment.ParkDetails
 import com.example.parkscout.Fragment.ParkDetailsArgs
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -113,16 +112,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     }
 
     fun onMarkerClick(marker: Marker?): Boolean {
-//        park_fragment = ParkDetails.getInstance();
-//        park_fragment?.let {
-//            getSupportFragmentManager()
-//                    .beginTransaction()
-//              .add(R.id.frame_layout,it)
-//                    .commit()
-//        };
+
         return true
     }
 
 }
-
-

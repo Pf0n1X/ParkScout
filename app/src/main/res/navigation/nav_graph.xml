@@ -19,7 +19,7 @@
         android:id="@+id/chatFragment"
         android:name="com.example.parkscout.Fragment.ChatFragment"
         android:label="fragment_chat"
-        tools:layout="@layout/fragment_chat" >
+        tools:layout="@layout/fragment_chat">
         <action
             android:id="@+id/action_chatFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
@@ -33,13 +33,76 @@
         android:id="@+id/settingsFragment"
         android:name="com.example.parkscout.Fragment.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" /><action android:id="@+id/action_global_addParkFragment" app:destination="@id/addParkFragment"/><action android:id="@+id/action_global_searchFragment" app:destination="@id/searchFragment"/><action android:id="@+id/action_global_profileFragment" app:destination="@id/profileFragment"/><action android:id="@+id/action_global_chatFragment" app:destination="@id/chatFragment"/><action android:id="@+id/action_global_settingsFragment" app:destination="@id/settingsFragment"/>
+        tools:layout="@layout/fragment_settings" />
+    <action
+        android:id="@+id/action_global_addParkFragment"
+        app:destination="@id/addParkFragment" />
+    <action
+        android:id="@+id/action_global_searchFragment"
+        app:destination="@id/searchFragment" />
+    <action
+        android:id="@+id/action_global_profileFragment"
+        app:destination="@id/profileFragment" />
+    <action
+        android:id="@+id/action_global_chatFragment"
+        app:destination="@id/chatFragment" />
+    <action
+        android:id="@+id/action_global_settingsFragment"
+        app:destination="@id/settingsFragment" />
     <fragment
-        android:id="@+id/parkDetails"
+        android:id="@+id/parkDetails2"
         android:name="com.example.parkscout.Fragment.ParkDetails"
         android:label="fragment_park_details"
-        tools:layout="@layout/fragment_park_details" />
+        tools:layout="@layout/fragment_park_details">
+        <argument
+            android:name="park_name"
+            app:argType="string" />
+        <argument
+            android:name="star_rate"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
     <action
-        android:id="@+id/action_global_parkDetails"
-        app:destination="@id/parkDetails" />
+        android:id="@+id/action_global_parkDetails2"
+        app:destination="@id/parkDetails2" />
+    <fragment
+        android:id="@+id/FirstFragment"
+        android:name="com.example.parkscout.FirstFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_first">
+
+        <action
+            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            app:destination="@id/SecondFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/SecondFragment"
+        android:name="com.example.parkscout.SecondFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_second">
+
+        <action
+            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/First2Fragment"
+        android:name="com.example.parkscout.First2Fragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_first2">
+
+        <action
+            android:id="@+id/action_First2Fragment_to_Second2Fragment"
+            app:destination="@id/Second2Fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/Second2Fragment"
+        android:name="com.example.parkscout.Second2Fragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_second2">
+
+        <action
+            android:id="@+id/action_Second2Fragment_to_First2Fragment"
+            app:destination="@id/First2Fragment" />
+    </fragment>
 </navigation>

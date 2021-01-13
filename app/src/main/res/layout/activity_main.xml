@@ -41,6 +41,21 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph" />
 
+        <FrameLayout
+            android:id="@+id/park_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="450dp">
+
+            <fragment
+                android:id="@+id/park_details"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/nav_graph" />
+        </FrameLayout>
+
 
     </FrameLayout>
 

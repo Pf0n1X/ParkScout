@@ -15,4 +15,13 @@
         <!-- Customize your theme here. -->
         <item name="android:windowIsTranslucent">true</item>
     </style>
+
+    <style name="Theme.ParkScout.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.ParkScout.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.ParkScout.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

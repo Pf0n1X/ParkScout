@@ -47,14 +47,16 @@
             android:layout_height="match_parent"
             android:layout_marginTop="450dp">
 
-            <fragment
-                android:id="@+id/park_details"
-                android:name="androidx.navigation.fragment.NavHostFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:defaultNavHost="true"
-                app:navGraph="@navigation/nav_graph" />
         </FrameLayout>
+
+        <fragment
+            android:id="@+id/park_details"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="352dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="410sp"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/nav_graph" />
 
 
     </FrameLayout>
@@ -95,4 +97,5 @@
         app:tint="@color/white"
         app:layout_anchor="@id/bottomAppBar"
         android:src="@drawable/add_icon"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

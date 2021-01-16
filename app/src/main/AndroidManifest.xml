@@ -22,10 +22,6 @@
             android:name=".park_full_details"
             android:label="@string/title_activity_park_full_details"
             android:theme="@style/Theme.ParkScout.NoActionBar"></activity>
-        <activity
-            android:name=".Park_full_details"
-            android:label="@string/title_activity_park_full_details"
-            android:theme="@style/Theme.ParkScout.NoActionBar" />
         <activity android:name=".LoginRegisterActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -35,9 +31,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" />
         <activity
             android:name=".ui.login.logInActivity"
             android:label="@string/title_activity_log_in" />

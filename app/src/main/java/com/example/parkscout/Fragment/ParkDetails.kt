@@ -48,10 +48,13 @@ class ParkDetails : Fragment()   {
            park_name_b.setText(strtext)
         //star_rate.numStars = stars
         park_name_b.setOnClickListener {
+     //       final FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+      //          fragTransaction.setCustomAnimations(R.anim.fragment_slide_from_right, R.anim.animation_leave);
 
             val intent = Intent(activity, park_full_details::class.java)
             intent.putExtra("park_name",requireArguments().getString("park_name") )
             startActivity(intent)
+
         }
 
 

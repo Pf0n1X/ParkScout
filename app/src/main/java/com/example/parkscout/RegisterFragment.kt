@@ -1,16 +1,23 @@
 package com.example.parkscout
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.fragment_register.*
+import java.util.*
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,6 +34,7 @@ class RegisterFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private var mAuth: FirebaseAuth? = null
+    var selectedPhotoUri: Uri? = null;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mAuth = FirebaseAuth.getInstance();
@@ -38,25 +46,91 @@ class RegisterFragment : Fragment() {
     }
 
     private fun Register() {
-//        Log.d("Main", "REGISTER")
-//        val email = regemail.text.toString();
-//        val password = regpass.text.toString();
-//
-//        if (email.isEmpty() || password.isEmpty()) {
-//            Log.d("Main", "Email or password are empty")
-//            return
-//        }
-//
-//        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-//            .addOnCompleteListener({
-//                if (!it.isSuccessful) return@addOnCompleteListener
-//                // else
-//                Log.d("Main", "Successfully created user with uid: ${it.result?.user?.uid}")
-//            })
-//            .addOnFailureListener {
-//                Log.d("Main", "Register failed: ${it.message}")
+        val email = regemail.text.toString();
+        val password = regpass.text.toString();
+        val con_password = regconpass.text.toString();
+        val name = regname.text.toString();
+
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(getActivity(), "Name or email or password are empty", Toast.LENGTH_SHORT).show()
+            return
+        } else if (!password.equals(con_password)) {
+            Toast.makeText(getActivity(), "Incompatible passwords", Toast.LENGTH_SHORT).show()
+            return
+        } else if (profilepic.getDrawable() == null) {
+            Toast.makeText(getActivity(), "Please add profile picture", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener({
+                if (!it.isSuccessful) return@addOnCompleteListener
+                UplaodImage()
+                Log.d("Main", "Successfully created user with uid: ${it.result?.user?.uid}")
+            })
+            .addOnFailureListener {
+                Toast.makeText(getActivity(), "Register failed: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun UplaodImage() {
+
+        if (selectedPhotoUri == null) return
+        val filename = UUID.randomUUID().toString()
+        val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
+        ref.putFile(selectedPhotoUri!!)
+            .addOnSuccessListener {
+                Log.d("Main", "Successfully uploaded image: ${it.metadata?.path}")
+                ref.downloadUrl.addOnSuccessListener {
+                    Log.d("Main", "File location: $it")
+                    SaveUserInformationToFirebase(it.toString())
+                }
+            }
+    }
+
+    private fun selectPhoto() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, 0)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+            selectedPhotoUri = data.data
+            profilepic.setImageURI(selectedPhotoUri)
+//            val bitmap = MediaStore.Images.Media.getBitmap(con, uri)
+//            var bitmapDrawable = BitmapDrawable(bitmap)
+//            reg_select_photo.setBackgroundDrawable(bitmapDrawable)
+        }
+    }
+
+    private fun SaveUserInformationToFirebase(profileImageUri: String) {
+        val uid = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+
+        val db = FirebaseFirestore.getInstance()
+        val newUser: MutableMap<String, Any> = HashMap()
+        newUser["uid"] = uid.toString()
+        newUser["name"] = regname.text.toString()
+        newUser["profilePic"] = profileImageUri
+
+        FirebaseFirestore.getInstance().collection("users").add(newUser)
+            .addOnSuccessListener {
+                Toast.makeText(getActivity(), "User created successfully", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Log.d("Main", "Info failed: ${it.message}")
+            }
+
+//        val user = User(uid.toString(), regname.text.toString(), profileImageUri)
+//        ref.setValue(user)
+//            .addOnSuccessListener {
+//                Log.d("Main", "Info saved")
 //            }
-//
+//            .addOnFailureListener {
+//                Log.d("Main", "Info failed: ${it.message}")
+//            }
     }
 
     override fun onCreateView(
@@ -64,7 +138,20 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false)
+        val view =
+            inflater.inflate(com.example.parkscout.R.layout.fragment_register, container, false)
+        var signupbtn = view.findViewById(com.example.parkscout.R.id.signupbtn) as Button
+        var selectPhotoBtn =
+            view.findViewById(com.example.parkscout.R.id.reg_select_photo) as Button
+// set on-click listener
+        signupbtn.setOnClickListener {
+            Register()
+        }
+
+        selectPhotoBtn.setOnClickListener {
+            selectPhoto()
+        }
+        return view
     }
 
     companion object {
@@ -87,3 +174,5 @@ class RegisterFragment : Fragment() {
             }
     }
 }
+
+class User(val uid: String, val username: String, val profilePic: String)

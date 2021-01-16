@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="30sp"
             android:layout_marginLeft="30sp"
-            android:layout_marginTop="30sp"
+            android:layout_marginTop="50sp"
             android:layout_marginEnd="30sp"
             android:layout_marginRight="30sp"
             android:layout_marginBottom="400sp"
@@ -29,7 +29,7 @@
             <TextView
                 android:id="@+id/park_name_v"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="41dp"
                 android:layout_marginEnd="200sp"
                 android:layout_marginRight="200sp"
                 android:layout_marginBottom="260sp"
@@ -41,7 +41,7 @@
                 android:id="@+id/rating"
                 style="?android:attr/ratingBarStyleIndicator"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:layout_marginStart="170sp"
                 android:layout_marginLeft="170sp"
                 android:layout_marginBottom="260sp"
@@ -112,8 +112,8 @@
 
             <ImageView
                 android:id="@+id/image1"
-                android:layout_width="137dp"
-                android:layout_height="137dp"
+                android:layout_width="127dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10sp"
                 android:layout_marginLeft="10sp"
                 android:layout_marginTop="150sp"
@@ -121,8 +121,8 @@
 
             <ImageView
                 android:id="@+id/image2"
-                android:layout_width="137dp"
-                android:layout_height="137dp"
+                android:layout_width="131dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="170sp"
                 android:layout_marginLeft="170sp"
                 android:layout_marginTop="150sp"

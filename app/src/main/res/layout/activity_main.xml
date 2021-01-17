@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_fullscreen"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,22 +8,28 @@
     android:background="#4CAF50"
     android:theme="@style/Theme.ParkScout"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:padding="0dp"
+    android:clipToPadding="false"
+    android:layout_margin="0dp">
+
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
+        android:clipToPadding="false"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MapsActivity" />
+        tools:context=".MapsActivity"
+        android:fitsSystemWindows="true"/>
     <FrameLayout
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="150dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="50dp"
         android:layout_marginRight="30dp"
         android:layout_marginLeft="30dp">
 
@@ -34,7 +41,26 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph" />
 
+        <FrameLayout
+            android:id="@+id/park_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="450dp">
+
+        </FrameLayout>
+
+        <fragment
+            android:id="@+id/park_details"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="352dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="410sp"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/nav_graph" />
+
+
     </FrameLayout>
+
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
@@ -71,4 +97,5 @@
         app:tint="@color/white"
         app:layout_anchor="@id/bottomAppBar"
         android:src="@drawable/add_icon"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

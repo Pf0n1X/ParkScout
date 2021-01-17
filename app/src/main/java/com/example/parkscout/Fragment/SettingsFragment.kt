@@ -1,11 +1,16 @@
 package com.example.parkscout.Fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.navigation.Navigation
+import com.example.parkscout.PersonalInfo
 import com.example.parkscout.R
+import com.example.parkscout.park_full_details
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,8 +39,17 @@ class SettingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val rootView = inflater.inflate(R.layout.fragment_settings, container, false)
+
+        val personalInfo_btn: Button = rootView.findViewById(R.id.PersonalAccountBtn) as Button
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false)
+        personalInfo_btn.setOnClickListener {
+            val transaction = activity?.supportFragmentManager?.beginTransaction()
+            transaction?.replace(R.id.settingsFragment, PersonalInfo())
+            transaction?.disallowAddToBackStack()
+            transaction?.commit()
+        }
+    return rootView
     }
 
     companion object {

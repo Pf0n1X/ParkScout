@@ -189,7 +189,7 @@
         tools:src="@tools:sample/avatars" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/facebookSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/buttonshape"
@@ -202,7 +202,7 @@
         app:layout_constraintVertical_bias="0.891" />
 
     <ImageButton
-        android:id="@+id/imageButton4"
+        android:id="@+id/googleSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/buttonshape"

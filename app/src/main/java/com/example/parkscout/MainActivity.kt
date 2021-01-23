@@ -2,12 +2,18 @@ package com.example.parkscout
 
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
+import android.widget.FrameLayout
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.example.parkscout.Fragment.ParkDetails
 import com.example.parkscout.Fragment.ParkDetailsArgs
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -27,7 +33,9 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
     private var park_fragment: Fragment? = null
     var marker: Marker? = null
-    private var parkFragOn : Boolean = false
+    var bundle=Bundle()
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -36,13 +44,17 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+      var fl :FrameLayout = findViewById(R.id.park_layout)
+        fl.setTransitionVisibility(View.INVISIBLE)
         // Setup the app and the bottom app bar UI.
         setupBaseDesign()
 
         // Navigation
         setupNavigation()
+
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun setupNavigation() {
 
         // Bottom App Bar Navigation
@@ -52,10 +64,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         val nav : BottomNavigationView = findViewById(R.id.bottomNavigationView)
 
         nav.setOnNavigationItemSelectedListener {
-            if(parkFragOn) {
-                onBackPressed()
-            }
-            parkFragOn = false
+
             when (it.itemId) {
                 R.id.searchFragment-> {
                     navController
@@ -75,16 +84,15 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                 }
             }
 
+            var fl :FrameLayout = findViewById(R.id.park_layout)
+            fl.setTransitionVisibility(View.INVISIBLE)
         true
-
+//
     }
 
         // Handle FAB navigation
         fab.setOnClickListener{ view ->
-            if(parkFragOn) {
-                onBackPressed()
-            }
-            parkFragOn = false
+
             navController.navigate(R.id.action_global_addParkFragment)
         }
     }
@@ -118,6 +126,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
 
     }
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -139,10 +148,20 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
             } else {
                 marker.showInfoWindow()
             }
-            val args = ParkDetailsArgs.Builder(marker.title).build().toBundle()
-            val navController = Navigation.findNavController(this, R.id.park_details)
-            navController.navigate(R.id.action_global_parkDetails2, args)
-            parkFragOn = true
+            var fl :FrameLayout = findViewById(R.id.park_layout)
+            val fragment = ParkDetails()
+
+            fl.setTransitionVisibility(View.VISIBLE)
+            getSupportFragmentManager().findFragmentById(R.id.park_layout);
+            bundle.putString("park_name",marker.title)
+            bundle.putInt("star_num",5)
+            fragment.arguments = bundle
+
+            setFragment(fragment)
+
+//            val args = ParkDetailsArgs.Builder(marker.title).build().toBundle()
+//            val navController = Navigation.findNavController(this, R.id.park_details)
+//            navController.navigate(R.id.action_global_parkDetails2, args)
             true
         }
 
@@ -152,5 +171,14 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
         return true
     }
+    protected fun setFragment(fragment: Fragment?) {
+        val fragmentManager: FragmentManager = supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        if (fragment != null) {
+            fragmentTransaction.add(R.id.fragment2, fragment)
+            fragmentTransaction.commit()
+        }
+    }
+
 
 }

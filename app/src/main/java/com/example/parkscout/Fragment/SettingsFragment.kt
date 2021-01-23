@@ -42,6 +42,9 @@ class SettingsFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_settings, container, false)
 
         val personalInfo_btn: Button = rootView.findViewById(R.id.PersonalAccountBtn) as Button
+        var selectPhotoBtn =
+            rootView.findViewById(R.id.select_photo_btn) as Button
+
         // Inflate the layout for this fragment
         personalInfo_btn.setOnClickListener {
             val transaction = activity?.supportFragmentManager?.beginTransaction()
@@ -49,9 +52,16 @@ class SettingsFragment : Fragment() {
             transaction?.disallowAddToBackStack()
             transaction?.commit()
         }
+        selectPhotoBtn.setOnClickListener {
+            selectPhoto()
+        }
     return rootView
     }
-
+    private fun selectPhoto() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, 0)
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of

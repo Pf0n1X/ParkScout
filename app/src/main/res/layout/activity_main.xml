@@ -52,9 +52,9 @@
         <fragment
             android:id="@+id/park_details"
             android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="352dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="410sp"
+            android:layout_width="match_parent"
+            android:layout_height="87dp"
+            android:layout_marginTop="440sp"
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph" />
 
@@ -76,6 +76,7 @@
         app:fabCradleRoundedCornerRadius="15dp"
         android:backgroundTint="?colorPrimary"
         app:labelVisibilityMode="unlabeled">
+
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"

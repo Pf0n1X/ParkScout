@@ -6,6 +6,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.parkscout.Fragment.ParkDetailsArgs
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,9 +26,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     private lateinit var mMap: GoogleMap
 
     private var park_fragment: Fragment? = null
-
     var marker: Marker? = null
-
+    private var parkFragOn : Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -40,8 +41,6 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
         // Navigation
         setupNavigation()
-
-
     }
 
     fun setupNavigation() {
@@ -50,8 +49,42 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         val navController = Navigation.findNavController(this, R.id.main_navhost_frag)
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
 
+        val nav : BottomNavigationView = findViewById(R.id.bottomNavigationView)
+
+        nav.setOnNavigationItemSelectedListener {
+            if(parkFragOn) {
+                onBackPressed()
+            }
+            parkFragOn = false
+            when (it.itemId) {
+                R.id.searchFragment-> {
+                    navController
+                        .navigate(R.id.action_global_searchFragment)
+                }
+                R.id.settingsFragment -> {
+                    navController
+                        .navigate(R.id.action_global_settingsFragment)
+                }
+                R.id.chatFragment -> {
+                    navController
+                        .navigate(R.id.action_global_chatFragment)
+                }
+                R.id.profileFragment -> {
+                    navController
+                        .navigate(R.id.action_global_profileFragment)
+                }
+            }
+
+        true
+
+    }
+
         // Handle FAB navigation
         fab.setOnClickListener{ view ->
+            if(parkFragOn) {
+                onBackPressed()
+            }
+            parkFragOn = false
             navController.navigate(R.id.action_global_addParkFragment)
         }
     }
@@ -81,6 +114,9 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
             .setBottomRightCorner(CornerFamily.ROUNDED, radius)
             .setBottomLeftCorner(CornerFamily.ROUNDED, radius)
             .build()
+
+
+
     }
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -105,7 +141,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
             }
             val args = ParkDetailsArgs.Builder(marker.title).build().toBundle()
             val navController = Navigation.findNavController(this, R.id.park_details)
-            navController.navigate(R.id.action_global_parkDetails2,args)
+            navController.navigate(R.id.action_global_parkDetails2, args)
+            parkFragOn = true
             true
         }
 

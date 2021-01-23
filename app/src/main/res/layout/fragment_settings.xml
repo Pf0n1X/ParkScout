@@ -15,8 +15,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profileImage"
-            android:layout_width="135dp"
-            android:layout_height="132dp"
+            android:layout_width="128dp"
+            android:layout_height="92dp"
             android:layout_centerInParent="true"
             android:src="@drawable/defaultimage"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,6 +44,19 @@
             tools:ignore="MissingClass" />
 -->
 
+        <Button
+            android:id="@+id/select_photo_btn"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="16dp"
+
+            android:background="@drawable/buttonshape"
+            android:text="SELECT PHOTO"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="277dp"
@@ -52,8 +65,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profileImage"
-            app:layout_constraintVertical_bias="0.04000002">
+            app:layout_constraintTop_toBottomOf="@+id/select_photo_btn"
+            app:layout_constraintVertical_bias="0.01999998">
 
             <Button
                 android:id="@+id/PersonalAccountBtn"

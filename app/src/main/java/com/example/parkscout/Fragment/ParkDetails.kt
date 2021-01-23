@@ -44,9 +44,9 @@ class ParkDetails : Fragment()   {
         val park_name_b: Button = rootView.findViewById(R.id.park_name) as Button
         val star_rate: RatingBar = rootView.findViewById(R.id.ratingBar) as RatingBar
 
-        val strtext = requireArguments().getString("park_name")
-           park_name_b.setText(strtext)
-        //star_rate.numStars = stars
+        val strtext = arguments?.getString("park_name")
+        park_name_b.setText(strtext)
+//        star_rate.numStars = arguments?.getInt("star_num")!!
         park_name_b.setOnClickListener {
      //       final FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
       //          fragTransaction.setCustomAnimations(R.anim.fragment_slide_from_right, R.anim.animation_leave);

@@ -77,5 +77,5 @@
         android:backgroundTint="@color/orange"
         app:tint="@color/white"
         app:layout_anchor="@id/bottomAppBar"
-        android:src="@drawable/add_icon"/>
+        android:src="@drawable/chat_icon"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

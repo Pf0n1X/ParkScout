@@ -1,5 +1,6 @@
 package com.example.parkscout
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
+import com.example.parkscout.ui.login.ChatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -34,7 +36,6 @@ class MainActivity : AppCompatActivity() ,OnMapReadyCallback{
 
         // Navigation
         setupNavigation()
-
     }
 
     fun setupNavigation() {
@@ -45,7 +46,9 @@ class MainActivity : AppCompatActivity() ,OnMapReadyCallback{
 
         // Handle FAB navigation
         fab.setOnClickListener{view ->
-            navController.navigate(R.id.action_global_addParkFragment)
+            val chatIntent: Intent = Intent(this, ChatActivity::class.java);
+            startActivity(chatIntent);
+            overridePendingTransition(R.anim.slide_out_bottom, R.anim.nothing);
         }
     }
 
@@ -83,6 +86,4 @@ class MainActivity : AppCompatActivity() ,OnMapReadyCallback{
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
-
-
 }

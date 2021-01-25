@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     tools:context=".Fragment.ChatFragment">
-    
+
     <RelativeLayout
         android:id="@+id/chat.header"
         android:layout_width="match_parent"

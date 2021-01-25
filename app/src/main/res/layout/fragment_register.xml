@@ -79,7 +79,7 @@
         android:alpha="0.23"
         android:background="@drawable/textviewshape"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="textPassword"
         app:backgroundTint="@color/orange"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -123,7 +123,7 @@
         android:alpha="0.23"
         android:background="@drawable/textviewshape"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="textPassword"
         app:backgroundTint="@color/orange"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/regconpass"
@@ -177,19 +177,19 @@
         app:layout_constraintVertical_bias="0.901" />
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/profilepic"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.891"
+        app:layout_constraintHorizontal_bias="0.784"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.258"
+        app:layout_constraintVertical_bias="0.18"
         tools:src="@tools:sample/avatars" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/facebookSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/buttonshape"
@@ -202,7 +202,7 @@
         app:layout_constraintVertical_bias="0.891" />
 
     <ImageButton
-        android:id="@+id/imageButton4"
+        android:id="@+id/googleSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/buttonshape"
@@ -213,5 +213,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.891" />
+
+    <Button
+        android:id="@+id/reg_select_photo"
+        android:layout_width="150dp"
+        android:layout_height="35dp"
+        android:background="@drawable/buttonshape"
+        android:text="SELECT PHOTO"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.875"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.389" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,7 +3,7 @@
     <item android:id="@+id/searchFragment"
         android:icon="@drawable/search_icon"
         android:title="Search" />
-    <item android:id="@+id/chatFragment"
+    <item android:id="@+id/action_global_chatFragment"
         android:icon="@drawable/chat_icon"
         android:title="Chat" />
     <item android:id="@+id/placeholder"

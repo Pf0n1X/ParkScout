@@ -33,5 +33,12 @@
         android:id="@+id/settingsFragment"
         android:name="com.example.parkscout.Fragment.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" /><action android:id="@+id/action_global_addParkFragment" app:destination="@id/addParkFragment"/><action android:id="@+id/action_global_searchFragment" app:destination="@id/searchFragment"/><action android:id="@+id/action_global_profileFragment" app:destination="@id/profileFragment"/><action android:id="@+id/action_global_chatFragment" app:destination="@id/chatFragment"/><action android:id="@+id/action_global_settingsFragment" app:destination="@id/settingsFragment"/>
+        tools:layout="@layout/fragment_settings" /><action android:id="@+id/action_global_addParkFragment" app:destination="@id/addParkFragment"/><action android:id="@+id/action_global_searchFragment" app:destination="@id/searchFragment"/><action android:id="@+id/action_global_profileFragment" app:destination="@id/profileFragment"/>
+    <action
+        android:id="@+id/action_global_chatFragment"
+        app:destination="@id/chatFragment"
+        app:enterAnim="@android:anim/slide_out_right"
+        app:exitAnim="@android:anim/slide_out_right"
+        app:popEnterAnim="@android:anim/cycle_interpolator"
+        app:popExitAnim="@android:anim/slide_out_right" /><action android:id="@+id/action_global_settingsFragment" app:destination="@id/settingsFragment"/>
 </navigation>

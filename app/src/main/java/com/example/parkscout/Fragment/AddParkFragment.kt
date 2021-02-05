@@ -1,11 +1,15 @@
 package com.example.parkscout.Fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.annotation.ColorInt
 import com.example.parkscout.R
+import kotlinx.android.synthetic.main.fragment_add_park.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,6 +32,7 @@ class AddParkFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
     }
 
     override fun onCreateView(
@@ -36,8 +41,34 @@ class AddParkFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_park, container, false)
-    }
+        val rootView = inflater.inflate(R.layout.fragment_add_park, container, false)
+        var selectPhotoBtn =
+            rootView.findViewById(R.id.uploadPhotobBtn) as Button
 
+        selectPhotoBtn.setOnClickListener {
+            selectPhoto()
+        }
+
+//        val checkedChipId = chipGroup.checkedChipId // Returns View.NO_ID if singleSelection = false
+//        val checkedChipIds = chipGroup.checkedChipIds // Returns a list of the selected chips' IDs, if any
+//
+//        soccerChip.setOnCheckedChangeListener { buttonView, isChecked ->
+//            soccerChip.setChipBackgroundColorResource(R.color.blue)
+//
+//        }
+//        chipGroup.setOnCheckedChangeListener { group, checkedId ->
+//            if(soccerChip.isChecked){
+//                soccerChip.setChipBackgroundColorResource(R.color.blue)
+//            }
+////             Responds to child chip checked/unchecked
+//        }
+
+    }
+    private fun selectPhoto() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, 0)
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of

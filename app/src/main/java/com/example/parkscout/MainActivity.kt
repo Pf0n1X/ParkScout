@@ -81,6 +81,10 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                     navController
                         .navigate(R.id.action_global_profileFragment)
                 }
+                R.id.addParkFragment -> {
+                    navController
+                        .navigate(R.id.action_global_addParkFragment)
+                }
             }
 
             var fl :FrameLayout = findViewById(R.id.park_layout)

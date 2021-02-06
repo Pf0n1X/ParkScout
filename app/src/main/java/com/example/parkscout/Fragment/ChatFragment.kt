@@ -74,9 +74,9 @@ class ChatFragment : Fragment() {
 
     fun readMessages(myId: String, userId: String, imageURL: String) {
         mChatMessages = ArrayList<ChatMessage>()
-        mChatMessages += ChatMessage("Tom", "Eden", "Hello")
-        mChatMessages += ChatMessage("Eden", "Tom", "How are you?")
-        mChatMessages += ChatMessage("Tom", "Eden", "I'm fine thank you")
+        mChatMessages += ChatMessage("1","Tom", "Eden", "Hello", 0)
+        mChatMessages += ChatMessage("2","Eden", "Tom", "How are you?", 0)
+        mChatMessages += ChatMessage("3","Tom", "Eden", "I'm fine thank you", 0)
 
 //        reference = FirebaseDatabase.instance.getReference("Messages")
 

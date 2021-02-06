@@ -11,7 +11,7 @@ interface ChatMessageDao {
     fun getAllMessages(): LiveData<List<ChatMessage>>;
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(vararg messages: List<ChatMessage>);
+    fun insertAll(messages: List<ChatMessage>);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(message: ChatMessage);

@@ -11,7 +11,7 @@ class ParkScoutApplication: Application() {
     }
 
     @Override
-    public fun onCreate() {
+    public override fun onCreate() {
         super.onCreate();
         ParkScoutApplication.Companion.context = applicationContext;
     }

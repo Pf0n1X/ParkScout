@@ -81,7 +81,7 @@
         android:backgroundTint="@color/orange"
         app:tint="@color/white"
         app:layout_anchor="@id/bottomAppBar"
-        android:src="@drawable/chat_icon"/>
+        android:src="@drawable/ic_baseline_chat_bubble_24"/>
 
     <FrameLayout
         android:id="@+id/park_layout"

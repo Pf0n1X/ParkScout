@@ -12,11 +12,9 @@ import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parkscout.Adapter.MessageAdapter
-import com.example.parkscout.Model.ChatMessage
+import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_chat.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

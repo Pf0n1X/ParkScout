@@ -8,9 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.parkscout.Model.ChatMessage
+import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.R
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
 class MessageAdapter(val context: Context, val chatMessages: List<ChatMessage>, val imageURL: String): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {

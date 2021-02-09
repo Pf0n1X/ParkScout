@@ -9,11 +9,11 @@ class ChatMessageModelSQL {
         return AppLocalDb.getInstance().chatMessageDao().getAllMessages();
     }
 
-    public interface AddChatMessageListener {
-        fun onComplete();
-    }
+//    public interface AddChatMessageListener {
+//        fun onComplete();
+//    }
 
-    public fun addChatMessage(message: ChatMessage, listener: AddChatMessageListener) {
+    public fun addChatMessage(message: ChatMessage, listener: (() -> Unit)?) {
         class MyAsyncTask: AsyncTask<ChatMessage, Void, ChatMessage>() {
             override fun doInBackground(vararg params: ChatMessage?): ChatMessage {
                 AppLocalDb.getInstance().chatMessageDao().insert(message);
@@ -25,7 +25,7 @@ class ChatMessageModelSQL {
                 super.onPostExecute(result);
 
                 if (listener != null) {
-                    listener.onComplete();
+                    listener();
                 }
             }
         }

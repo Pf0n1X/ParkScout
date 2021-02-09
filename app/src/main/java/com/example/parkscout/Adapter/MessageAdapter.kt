@@ -6,17 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.R
 import com.google.firebase.auth.FirebaseUser
 
-class MessageAdapter(val context: Context, val chatMessages: List<ChatMessage>, val imageURL: String): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+class MessageAdapter(val context: Context, val chatMessages: LiveData<List<ChatMessage>>, val imageURL: String): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     // Data Members
     private var mContext: Context
-    private var mChatMessages: List<ChatMessage>
+    private var mChatMessages: LiveData<List<ChatMessage>>
     private var mImageURL: String
     private lateinit var mFBUser: FirebaseUser
 
@@ -44,12 +45,16 @@ class MessageAdapter(val context: Context, val chatMessages: List<ChatMessage>, 
     }
 
     override fun getItemCount(): Int {
-        return mChatMessages.size
+        if ( mChatMessages.value == null) {
+            return 0;
+        } else {
+            return mChatMessages.value!!.size;
+        }
     }
 
     override fun onBindViewHolder(holder: MessageAdapter.ViewHolder, position: Int) {
-        var msg = mChatMessages[position]
-        holder.show_message.text = msg.message
+        var msg = mChatMessages.value?.get(position)
+        holder.show_message.text = msg?.message
 
         if (imageURL.equals("default")) {
             holder.profile_image.setImageResource(R.drawable.profile_icon)
@@ -68,7 +73,7 @@ class MessageAdapter(val context: Context, val chatMessages: List<ChatMessage>, 
 //            return MSG_TYPE_LEFT
 //        }
 
-        if (mChatMessages[position].sender == "Tom") {
+        if (mChatMessages.value?.get(position)?.sender == "Tomer") {
             return MSG_TYPE_RIGHT
         } else {
             return MSG_TYPE_LEFT

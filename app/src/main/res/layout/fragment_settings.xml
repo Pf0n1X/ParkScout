@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="60dp"
+        android:layout_margin="50dp"
         android:background="#FFFFFF">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -46,12 +46,12 @@
 
         <Button
             android:id="@+id/select_photo_btn"
-            android:layout_width="150dp"
-            android:layout_height="35dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginTop="16dp"
 
-            android:background="@drawable/buttonshape"
-            android:text="SELECT PHOTO"
+            android:background="@drawable/imgupd"
+            app:backgroundTint="#fe9110"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"

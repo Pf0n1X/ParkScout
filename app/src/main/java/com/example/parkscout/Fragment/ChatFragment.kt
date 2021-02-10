@@ -12,11 +12,9 @@ import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parkscout.Adapter.MessageAdapter
-import com.example.parkscout.Model.ChatMessage
+import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_chat.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,9 +74,9 @@ class ChatFragment : Fragment() {
 
     fun readMessages(myId: String, userId: String, imageURL: String) {
         mChatMessages = ArrayList<ChatMessage>()
-        mChatMessages += ChatMessage("Tom", "Eden", "Hello")
-        mChatMessages += ChatMessage("Eden", "Tom", "How are you?")
-        mChatMessages += ChatMessage("Tom", "Eden", "I'm fine thank you")
+        mChatMessages += ChatMessage("1","Tom", "Eden", "Hello", 0)
+        mChatMessages += ChatMessage("2","Eden", "Tom", "How are you?", 0)
+        mChatMessages += ChatMessage("3","Tom", "Eden", "I'm fine thank you", 0)
 
 //        reference = FirebaseDatabase.instance.getReference("Messages")
 

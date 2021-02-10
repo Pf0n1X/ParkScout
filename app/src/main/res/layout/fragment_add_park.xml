@@ -27,7 +27,7 @@
             android:id="@+id/fragLayout"
             android:layout_width="115dp"
             android:layout_height="99dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView10"
+            app:layout_constraintBottom_toTopOf="@+id/locationTXT"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ParkName">
@@ -40,9 +40,12 @@
         </FrameLayout>
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textView10"
+            android:id="@+id/locationTXT"
             android:layout_width="146dp"
             android:layout_height="42dp"
+            android:duplicateParentState="false"
+            android:editable="true"
+            android:enabled="true"
             android:text="enter location"
             android:textColor="#837D7D"
             android:textSize="18sp"
@@ -61,12 +64,12 @@
             app:layout_constraintBottom_toTopOf="@+id/chipGroup"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+            app:layout_constraintTop_toBottomOf="@+id/locationTXT" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroup"
             android:layout_width="328dp"
-            android:layout_height="131dp"
+            android:layout_height="110dp"
             app:layout_constraintBottom_toTopOf="@+id/facilities"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -155,14 +158,26 @@
 
         <Button
             android:id="@+id/uploadPhotobBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Upload Photos"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/imgupd"
             app:backgroundTint="#fe9110"
+            app:layout_constraintBottom_toTopOf="@+id/SaveBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/facilities" />
+
+        <Button
+            android:id="@+id/SaveBtn"
+            android:layout_width="86dp"
+            android:layout_height="37dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_select_photo"
+            android:text="Save"
+            app:backgroundTint="#fe9110"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/uploadPhotobBtn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

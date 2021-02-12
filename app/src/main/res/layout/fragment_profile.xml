@@ -14,7 +14,7 @@
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="50dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +31,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="691dp"
                     android:paddingLeft="25dp"
                     android:paddingRight="25dp">
 
@@ -54,9 +54,7 @@
                         android:layout_width="344dp"
                         android:layout_height="75dp"
                         android:layout_marginTop="6dp"
-                        android:layout_marginBottom="20dp"
                         android:text="TextView"
-                        app:layout_constraintBottom_toTopOf="@+id/frameLayout"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.492"
                         app:layout_constraintStart_toStartOf="parent"
@@ -67,31 +65,28 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
 
-                        android:layout_marginEnd="250dp"
-                        android:layout_marginRight="250dp"
                         android:text="@string/chat"
+                        android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.027" />
+                        app:layout_constraintVertical_bias="0.060000002" />
 
                     <FrameLayout
                         android:id="@+id/frameLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginBottom="16dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.471">
+                        app:layout_constraintTop_toBottomOf="@+id/textView3">
 
                         <fragment
                             android:id="@+id/mainMap"
                             android:name="com.google.android.gms.maps.SupportMapFragment"
-                            android:layout_width="350dp"
-                            android:layout_height="332dp" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
                     </FrameLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -103,9 +98,9 @@
             android:id="@+id/linearLayout4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="550dp"
+            android:layout_marginTop="80dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/linearLayout2"
             app:layout_constraintTop_toTopOf="parent">

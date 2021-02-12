@@ -1,6 +1,5 @@
 package com.example.parkscout.Fragment
 
-
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -26,6 +25,17 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
+<<<<<<< Updated upstream
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
+import com.google.android.libraries.places.api.net.PlacesClient
+=======
+//import com.google.android.libraries.places.api.Places
+//import com.google.android.libraries.places.api.model.Place
+//import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
+//import com.google.android.libraries.places.api.net.PlacesClient
+>>>>>>> Stashed changes
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -49,6 +59,11 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
     private var lastKnownLocation: Location? = null
     private val defaultLocation = LatLng(-33.8523341, 151.2106085)
     private var cameraPosition: CameraPosition? = null
+<<<<<<< Updated upstream
+    private lateinit var placesClient: PlacesClient
+=======
+//    private lateinit var placesClient: PlacesClient
+>>>>>>> Stashed changes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +94,14 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION)
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION)
         }
+<<<<<<< Updated upstream
+        Places.initialize(requireContext(), getString(R.string.map_key))
+=======
+//        Places.initialize(this.requireContext(), getString(R.string.map_key))
+       /// Places.initialize(this.requireContext(), "AIzaSyAnuIy58d0pc8fZtclTxjqyqzDD1L3K1ek")
+
+>>>>>>> Stashed changes
+
         return rootView
     }
 
@@ -106,11 +129,13 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
                 }
             }
     }
+
     private fun selectPhoto() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         startActivityForResult(intent, 0)
     }
+
     private fun getLocationPermission() {
         /*
          * Request location permission, so that we can get the location of the
@@ -126,6 +151,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
         }
     }
+
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>,
                                             grantResults: IntArray) {
@@ -142,6 +168,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         }
         updateLocationUI()
     }
+
     private fun updateLocationUI() {
         if (map == null) {
             return
@@ -160,6 +187,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
             Log.e("Exception: %s", e.message, e)
         }
     }
+
     private fun getDeviceLocation() {
         /*
          * Get the best and most recent location of the device, which may be null in rare
@@ -167,7 +195,9 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
          */
         try {
             if (locationPermissionGranted) {
+                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
                 val locationResult = fusedLocationProviderClient.lastLocation
+
                 locationResult.addOnCompleteListener{task ->
                     if (task.isSuccessful) {
                         // Set the map's camera position to the current location of the device.
@@ -191,6 +221,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
             Log.e("Exception: %s", e.message, e)
         }
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         map?.let { map ->
             outState.putParcelable(KEY_CAMERA_POSITION, map.cameraPosition)
@@ -198,46 +229,18 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         }
         super.onSaveInstanceState(outState)
     }
+
     override fun onMapReady(googleMap: GoogleMap?) {
         map = googleMap!!
-//        val sydney = LatLng(-34.0, 151.0)
-//        map!!.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-//        map!!.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-
         getLocationPermission()
         updateLocationUI()
         getDeviceLocation()
 
+<<<<<<< Updated upstream
+=======
 
-//        val latLng = LatLng(currentLocation.latitude, currentLocation.longitude)
-//        val markerOptions = MarkerOptions().position(latLng).title("I am here!")
-//        googleMap?.animateCamera(CameraUpdateFactory.newLatLng(latLng))
-//        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5f))
-//        googleMap?.addMarker(markerOptions)
-//        if (googleMap != null) {
-//
-//                if ((activity?.let { it1 ->
-//                        ContextCompat.checkSelfPermission(
-//                            it1,
-//                            ACCESS_FINE_LOCATION
-//                        )
-//                    }) ==  (PackageManager.PERMISSION_GRANTED) &&
-//                    ( activity?.let { it1 ->
-//                        ContextCompat.checkSelfPermission(
-//                            it1,
-//                            ACCESS_COARSE_LOCATION
-//                        )
-//                    } )== (PackageManager.PERMISSION_GRANTED))
-//
-//                {
-//                    getCuurentLocation()
-//                }
-//
-//            true
-//            }
-
+>>>>>>> Stashed changes
     }
-
 
     override fun onMarkerClick(p0: Marker?): Boolean {
         TODO("Not yet implemented")

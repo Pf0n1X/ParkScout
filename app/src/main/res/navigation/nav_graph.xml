@@ -33,7 +33,7 @@
         android:id="@+id/settingsFragment"
         android:name="com.example.parkscout.Fragment.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings"/>
     <action
         android:id="@+id/action_global_addParkFragment"
         app:destination="@id/addParkFragment" />
@@ -110,4 +110,5 @@
         android:name="com.example.parkscout.PersonalInfo"
         android:label="fragment_personal_info"
         tools:layout="@layout/fragment_personal_info" /><action android:id="@+id/action_global_personalInfo" app:destination="@id/personalInfo"/>
+>>>>>>> main
 </navigation>

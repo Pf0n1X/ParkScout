@@ -24,6 +24,7 @@
         android:layout_height="match_parent"
         tools:context=".MapsActivity"
         android:fitsSystemWindows="true"/>
+
     <FrameLayout
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
@@ -38,23 +39,6 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_graph" />
-
-        <FrameLayout
-            android:id="@+id/park_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="450dp">
-
-        </FrameLayout>
-
-        <fragment
-            android:id="@+id/park_details"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="87dp"
-            android:layout_marginTop="440sp"
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph" />
 
@@ -97,6 +81,30 @@
         android:backgroundTint="@color/orange"
         app:tint="@color/white"
         app:layout_anchor="@id/bottomAppBar"
-        android:src="@drawable/add_icon"/>
+        android:src="@drawable/ic_baseline_chat_bubble_24"/>
+
+    <FrameLayout
+        android:id="@+id/park_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="150dp">
+
+        <!--        <fragment-->
+        <!--            android:id="@+id/park_details"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="87dp"-->
+        <!--            android:layout_marginTop="440sp"-->
+        <!--       />-->
+        <fragment
+            android:id="@+id/fragment2"
+            android:name="com.example.parkscout.Fragment.ParkDetails"
+            android:layout_width="match_parent"
+            android:layout_height="68dp" />
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

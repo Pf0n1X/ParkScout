@@ -1,15 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue"
-    tools:context=".Fragment.AddParkFragment">
+    android:background="@drawable/buttonshape"
+    tools:context=".Fragment.AddParkFragment" >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Add Park" />
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ParkName"
+            android:layout_width="176dp"
+            android:layout_height="47dp"
+            android:text="Enter Park Name"
+            android:textColor="#837D7D"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/fragLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/fragLayout"
+            android:layout_width="115dp"
+            android:layout_height="99dp"
+            app:layout_constraintBottom_toTopOf="@+id/locationTXT"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ParkName">
+
+            <fragment
+                android:id="@+id/mapFrag"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/locationTXT"
+            android:layout_width="146dp"
+            android:layout_height="42dp"
+            android:duplicateParentState="false"
+            android:editable="true"
+            android:enabled="true"
+            android:text="enter location"
+            android:textColor="#837D7D"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/textView11"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragLayout" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="What kind is it?"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/chipGroup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/locationTXT" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroup"
+            android:layout_width="328dp"
+            android:layout_height="110dp"
+            app:layout_constraintBottom_toTopOf="@+id/facilities"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView11">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/tennisChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:text="tennis"
+                android:textColor="@color/black"
+                app:chipBackgroundColor="#fe9110" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/soccerChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:text="soccer"
+                android:textColor="@color/black"
+                app:chipBackgroundColor="#fe9110" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/basketballChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:text="basketball"
+                android:textColor="@color/black"
+                app:chipBackgroundColor="#fe9110" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/vollyballChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:text="volleyball"
+                android:textColor="@color/black"
+                app:chipBackgroundColor="#fe9110" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/gymParkChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:text="gym park"
+                android:textColor="@color/black"
+                app:chipBackgroundColor="#fe9110" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/otherChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:clickable="true"
+                android:text="Other"
+                android:textColor="@color/black"
+                app:chipBackgroundColor="#fe9110" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/facilities"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="What facilities in there? "
+            android:textColor="#837D7D"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/uploadPhotobBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chipGroup"
+            tools:ignore="MissingConstraints" />
+
+        <Button
+            android:id="@+id/uploadPhotobBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/imgupd"
+            app:backgroundTint="#fe9110"
+            app:layout_constraintBottom_toTopOf="@+id/SaveBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/facilities" />
+
+        <Button
+            android:id="@+id/SaveBtn"
+            android:layout_width="86dp"
+            android:layout_height="37dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_select_photo"
+            android:text="Save"
+            app:backgroundTint="#fe9110"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/uploadPhotobBtn" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

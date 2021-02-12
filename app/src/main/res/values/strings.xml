@@ -39,4 +39,5 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="map_key">AIzaSyAnuIy58d0pc8fZtclTxjqyqzDD1L3K1ek</string>
 </resources>

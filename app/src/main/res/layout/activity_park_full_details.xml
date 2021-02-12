@@ -12,16 +12,15 @@
         android:background="@drawable/buttonshape">
 
         <FrameLayout
-            android:id="@+id/frameLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/data_frm"
+            android:layout_width="349dp"
+            android:layout_height="154dp"
             android:layout_marginStart="30sp"
             android:layout_marginLeft="30sp"
-            android:layout_marginTop="50sp"
+            android:layout_marginTop="50dp"
             android:layout_marginEnd="30sp"
             android:layout_marginRight="30sp"
-            android:layout_marginBottom="400sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/img_frm"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -110,28 +109,23 @@
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
-            <ImageView
-                android:id="@+id/image1"
-                android:layout_width="127dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10sp"
-                android:layout_marginLeft="10sp"
-                android:layout_marginTop="150sp"
-                app:srcCompat="@drawable/noimage" />
-
-            <ImageView
-                android:id="@+id/image2"
-                android:layout_width="131dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="170sp"
-                android:layout_marginLeft="170sp"
-                android:layout_marginTop="150sp"
-                app:srcCompat="@drawable/noimage" />
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/img_frm"
             android:layout_width="340dp"
-            android:layout_height="346dp"
+            android:layout_height="139dp"
+            app:layout_constraintBottom_toTopOf="@+id/commentsFrm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/data_frm">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/commentsFrm"
+            android:layout_width="335dp"
+            android:layout_height="160dp"
             android:layout_marginStart="30sp"
             android:layout_marginLeft="30sp"
             android:layout_marginEnd="30sp"
@@ -139,13 +133,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/frameLayout2">
+            app:layout_constraintTop_toBottomOf="@+id/img_frm">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycle_v"
+                android:id="@+id/comments_recycle_v"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/rounded" />
+
         </FrameLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

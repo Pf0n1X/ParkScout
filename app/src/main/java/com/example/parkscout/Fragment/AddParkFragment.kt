@@ -25,17 +25,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
-<<<<<<< Updated upstream
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
-=======
-//import com.google.android.libraries.places.api.Places
-//import com.google.android.libraries.places.api.model.Place
-//import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
-//import com.google.android.libraries.places.api.net.PlacesClient
->>>>>>> Stashed changes
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,11 +51,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
     private var lastKnownLocation: Location? = null
     private val defaultLocation = LatLng(-33.8523341, 151.2106085)
     private var cameraPosition: CameraPosition? = null
-<<<<<<< Updated upstream
     private lateinit var placesClient: PlacesClient
-=======
-//    private lateinit var placesClient: PlacesClient
->>>>>>> Stashed changes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,13 +82,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION)
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION)
         }
-<<<<<<< Updated upstream
         Places.initialize(requireContext(), getString(R.string.map_key))
-=======
-//        Places.initialize(this.requireContext(), getString(R.string.map_key))
-       /// Places.initialize(this.requireContext(), "AIzaSyAnuIy58d0pc8fZtclTxjqyqzDD1L3K1ek")
-
->>>>>>> Stashed changes
 
         return rootView
     }
@@ -235,11 +217,6 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         getLocationPermission()
         updateLocationUI()
         getDeviceLocation()
-
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {

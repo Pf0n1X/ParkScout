@@ -61,13 +61,13 @@
             android:text="What kind is it?"
             android:textColor="@color/black"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/chipGroup"
+            app:layout_constraintBottom_toTopOf="@+id/park_kind"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/locationTXT" />
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroup"
+            android:id="@+id/park_kind"
             android:layout_width="328dp"
             android:layout_height="110dp"
             app:layout_constraintBottom_toTopOf="@+id/facilities"
@@ -153,7 +153,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chipGroup"
+            app:layout_constraintTop_toBottomOf="@+id/park_kind"
             tools:ignore="MissingConstraints" />
 
         <Button

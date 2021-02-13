@@ -7,9 +7,9 @@ import com.example.parkscout.data.model.TrainingSpot
 @Dao
 interface TrainingSpotDao {
 
-    @Query("SELECT * FROM training_spot")
-    fun getAllParks(): LiveData<List<TrainingSpot>>;
+//    @Query("SELECT * FROM training_spot")
+//    fun getAllParks(): LiveData<List<TrainingSpot>>;
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPark(parks: TrainingSpot)
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    fun insertPark(parks: TrainingSpot)
 }

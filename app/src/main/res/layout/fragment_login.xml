@@ -12,7 +12,7 @@
     android:paddingRight="@dimen/fragment_horizontal_margin"
     android:paddingBottom="@dimen/fragment_vertical_margin"
     android:theme="@style/Theme.ParkScout"
-    tools:context=".Fragment.LoginFragment">
+    tools:context=".Fragment.LoginFragment1">
 
     <TextView
         android:id="@+id/textView2"
@@ -110,7 +110,7 @@
         app:layout_constraintVertical_bias="0.901" />
 
     <ImageButton
-        android:id="@+id/facebookSignUp"
+        android:id="@+id/facebookSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/buttonshape"
@@ -123,7 +123,7 @@
         app:layout_constraintVertical_bias="0.891" />
 
     <ImageButton
-        android:id="@+id/googleSignUp"
+        android:id="@+id/googleSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/buttonshape"

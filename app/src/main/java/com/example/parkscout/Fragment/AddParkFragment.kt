@@ -12,6 +12,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.parkscout.R
@@ -27,6 +29,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.material.chip.ChipGroup
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -74,16 +77,35 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         selectPhotoBtn.setOnClickListener {
             selectPhoto()
         }
-        val mapFragment =
-            childFragmentManager.fragments[0] as SupportMapFragment?
-        mapFragment!!.getMapAsync(this)
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        if (savedInstanceState != null) {
-            lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION)
-            cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION)
-        }
-        Places.initialize(requireContext(), getString(R.string.map_key))
 
+        val saveBtn = rootView.findViewById(R.id.SaveBtn) as Button
+
+        saveBtn.setOnClickListener {
+            val park_name = rootView.findViewById(R.id.ParkName) as TextView
+            val park_location = rootView.findViewById(R.id.locationTXT) as TextView
+            val parkKind =  rootView.findViewById(R.id.park_kind) as ChipGroup
+            val facilities = rootView.findViewById(R.id.facilities) as TextView
+            if (park_name.text == null || park_name.text == ""  || park_name.text == "Enter Park Name"){
+                val msg = "park name is invalid"
+                // TODO : initiate successful logged in experience
+                Toast.makeText(
+                    requireContext(),
+                    "$msg",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+        // *******************************************************************************************
+//        val mapFragment =
+//            childFragmentManager.fragments[0] as SupportMapFragment?
+//        mapFragment!!.getMapAsync(this)
+//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+//        if (savedInstanceState != null) {
+//            lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION)
+//            cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION)
+//        }
+//        Places.initialize(requireContext(), getString(R.string.map_key))
+//        // *******************************************************************************************
         return rootView
     }
 
@@ -118,105 +140,105 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         startActivityForResult(intent, 0)
     }
 
-    private fun getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
-        if (ContextCompat.checkSelfPermission(this.requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true
-        } else {
-            ActivityCompat.requestPermissions(this.requireContext() as Activity, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>,
-                                            grantResults: IntArray) {
-        locationPermissionGranted = false
-        when (requestCode) {
-            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
-
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.isNotEmpty() &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationPermissionGranted = true
-                }
-            }
-        }
-        updateLocationUI()
-    }
-
-    private fun updateLocationUI() {
-        if (map == null) {
-            return
-        }
-        try {
-            if (locationPermissionGranted) {
-                map?.isMyLocationEnabled = true
-                map?.uiSettings?.isMyLocationButtonEnabled = true
-            } else {
-                map?.isMyLocationEnabled = false
-                map?.uiSettings?.isMyLocationButtonEnabled = false
-                lastKnownLocation = null
-                getLocationPermission()
-            }
-        } catch (e: SecurityException) {
-            Log.e("Exception: %s", e.message, e)
-        }
-    }
-
-    private fun getDeviceLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
-        try {
-            if (locationPermissionGranted) {
-                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-                val locationResult = fusedLocationProviderClient.lastLocation
-
-                locationResult.addOnCompleteListener{task ->
-                    if (task.isSuccessful) {
-                        // Set the map's camera position to the current location of the device.
-                        lastKnownLocation = task.result
-                        if (lastKnownLocation != null) {
-                            map?.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                LatLng(lastKnownLocation!!.latitude,
-                                    lastKnownLocation!!.longitude), DEFAULT_ZOOM.toFloat()))
-                        }
-                    } else {
-                        Log.d(TAG, "Current location is null. Using defaults.")
-                        Log.e(TAG, "Exception: %s", task.exception)
-                        map?.moveCamera(CameraUpdateFactory
-                            .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
-                        map?.uiSettings?.isMyLocationButtonEnabled = false
-                    }
-                }
-
-            }
-        } catch (e: SecurityException) {
-            Log.e("Exception: %s", e.message, e)
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        map?.let { map ->
-            outState.putParcelable(KEY_CAMERA_POSITION, map.cameraPosition)
-            outState.putParcelable(KEY_LOCATION, lastKnownLocation)
-        }
-        super.onSaveInstanceState(outState)
-    }
-
+//    private fun getLocationPermission() {
+//        /*
+//         * Request location permission, so that we can get the location of the
+//         * device. The result of the permission request is handled by a callback,
+//         * onRequestPermissionsResult.
+//         */
+//        if (ContextCompat.checkSelfPermission(this.requireContext(),
+//                android.Manifest.permission.ACCESS_FINE_LOCATION)
+//            == PackageManager.PERMISSION_GRANTED) {
+//            locationPermissionGranted = true
+//        } else {
+//            ActivityCompat.requestPermissions(this.requireContext() as Activity, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+//                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+//        }
+//    }
+//
+//    override fun onRequestPermissionsResult(requestCode: Int,
+//                                            permissions: Array<String>,
+//                                            grantResults: IntArray) {
+//        locationPermissionGranted = false
+//        when (requestCode) {
+//            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
+//
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.isNotEmpty() &&
+//                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    locationPermissionGranted = true
+//                }
+//            }
+//        }
+//        updateLocationUI()
+//    }
+//
+//    private fun updateLocationUI() {
+//        if (map == null) {
+//            return
+//        }
+//        try {
+//            if (locationPermissionGranted) {
+//                map?.isMyLocationEnabled = true
+//                map?.uiSettings?.isMyLocationButtonEnabled = true
+//            } else {
+//                map?.isMyLocationEnabled = false
+//                map?.uiSettings?.isMyLocationButtonEnabled = false
+//                lastKnownLocation = null
+//                getLocationPermission()
+//            }
+//        } catch (e: SecurityException) {
+//            Log.e("Exception: %s", e.message, e)
+//        }
+//    }
+//
+//    private fun getDeviceLocation() {
+//        /*
+//         * Get the best and most recent location of the device, which may be null in rare
+//         * cases when a location is not available.
+//         */
+//        try {
+//            if (locationPermissionGranted) {
+//                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+//                val locationResult = fusedLocationProviderClient.lastLocation
+//
+//                locationResult.addOnCompleteListener{task ->
+//                    if (task.isSuccessful) {
+//                        // Set the map's camera position to the current location of the device.
+//                        lastKnownLocation = task.result
+//                        if (lastKnownLocation != null) {
+//                            map?.moveCamera(CameraUpdateFactory.newLatLngZoom(
+//                                LatLng(lastKnownLocation!!.latitude,
+//                                    lastKnownLocation!!.longitude), DEFAULT_ZOOM.toFloat()))
+//                        }
+//                    } else {
+//                        Log.d(TAG, "Current location is null. Using defaults.")
+//                        Log.e(TAG, "Exception: %s", task.exception)
+//                        map?.moveCamera(CameraUpdateFactory
+//                            .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
+//                        map?.uiSettings?.isMyLocationButtonEnabled = false
+//                    }
+//                }
+//
+//            }
+//        } catch (e: SecurityException) {
+//            Log.e("Exception: %s", e.message, e)
+//        }
+//    }
+//
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        map?.let { map ->
+//            outState.putParcelable(KEY_CAMERA_POSITION, map.cameraPosition)
+//            outState.putParcelable(KEY_LOCATION, lastKnownLocation)
+//        }
+//        super.onSaveInstanceState(outState)
+//    }
+//
     override fun onMapReady(googleMap: GoogleMap?) {
-        map = googleMap!!
-        getLocationPermission()
-        updateLocationUI()
-        getDeviceLocation()
+//        map = googleMap!!
+//        getLocationPermission()
+//        updateLocationUI()
+//        getDeviceLocation()
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {

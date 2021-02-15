@@ -6,7 +6,7 @@
 <!--    <item android:id="@+id/action_global_chatFragment"-->
 <!--        android:icon="@drawable/chat_icon"-->
 <!--        android:title="Chat" />-->
-    <item android:id="@+id/action_global_addParkFragment"
+    <item android:id="@+id/addParkFragment"
         android:icon="@drawable/add_icon"
         android:title="Add Park" />
     <item android:id="@+id/placeholder"

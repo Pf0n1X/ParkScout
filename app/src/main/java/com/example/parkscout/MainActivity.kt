@@ -26,7 +26,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import kotlinx.android.synthetic.main.activity_main.*
-
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
+import com.google.android.libraries.places.api.net.PlacesClient
 
 class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     private lateinit var mMap: GoogleMap
@@ -34,6 +37,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     private var park_fragment: Fragment? = null
     var marker: Marker? = null
     var bundle=Bundle()
+    private lateinit var placesClient: PlacesClient
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +47,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-
+        Places.initialize(applicationContext, getString(R.string.map_key))
+        placesClient = Places.createClient(this)
       var fl :FrameLayout = findViewById(R.id.park_layout)
         fl.setTransitionVisibility(View.INVISIBLE)
         // Setup the app and the bottom app bar UI.
@@ -80,6 +85,10 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                 R.id.profileFragment -> {
                     navController
                         .navigate(R.id.action_global_profileFragment)
+                }
+                R.id.addParkFragment -> {
+                    navController
+                        .navigate(R.id.action_global_addParkFragment)
                 }
             }
 

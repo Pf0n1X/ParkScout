@@ -6,7 +6,7 @@
     android:layout_height="500dp"
     android:background="@drawable/rounded"
     android:orientation="vertical"
-    tools:context=".RegisterFragment">
+    tools:context=".Fragment.RegisterFragment">
 
     <EditText
         android:id="@+id/regname"
@@ -40,7 +40,7 @@
         app:layout_constraintVertical_bias="0.301" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/moveToReg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Already registered? Click here to login"
@@ -189,7 +189,7 @@
         tools:src="@tools:sample/avatars" />
 
     <ImageButton
-        android:id="@+id/facebookSignUp"
+        android:id="@+id/facebookSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/buttonshape"
@@ -202,7 +202,7 @@
         app:layout_constraintVertical_bias="0.891" />
 
     <ImageButton
-        android:id="@+id/googleSignUp"
+        android:id="@+id/googleSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/buttonshape"

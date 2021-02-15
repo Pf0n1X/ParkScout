@@ -1,7 +1,8 @@
-package com.example.parkscout
+package com.example.parkscout.Fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,13 +11,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
+import com.example.parkscout.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
@@ -41,6 +48,8 @@ class RegisterFragment : Fragment() {
     private var param2: String? = null
     private var mAuth: FirebaseAuth? = null
     var selectedPhotoUri: Uri? = null;
+    private var locationPermissionGranted = false
+    lateinit var facebookSignInButton: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mAuth = FirebaseAuth.getInstance();
@@ -107,7 +116,7 @@ class RegisterFragment : Fragment() {
         startActivityForResult(intent, 0)
     }
 
-    private fun googleSignUp() {
+    public fun googleSignUp() {
         lateinit var mGoogleSignInClient: GoogleSignInClient
         lateinit var mGoogleSignInOptions: GoogleSignInOptions
         mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -116,8 +125,48 @@ class RegisterFragment : Fragment() {
             .build()
         val activity = this.activity as Activity
         mGoogleSignInClient = GoogleSignIn.getClient(activity, mGoogleSignInOptions)
+        mGoogleSignInClient.signOut()
         val signInIntent: Intent = mGoogleSignInClient.signInIntent
         startActivityForResult(signInIntent, 1)
+    }
+
+    private fun getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(
+                this.requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            locationPermissionGranted = true
+        } else {
+            ActivityCompat.requestPermissions(
+                this.requireContext() as Activity,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+            )
+        }
+    }
+
+    private fun facebookSignUp() {
+
+    }
+
+    private fun firebaseAuthWithFacebook(token: String) {
+        val credential = FacebookAuthProvider.getCredential(token)
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnCompleteListener({
+                Log.d("Main", "Successfully created google user with uid: ${it.result?.user?.uid}")
+                val user = FirebaseAuth.getInstance().currentUser
+            })
+            .addOnFailureListener {
+                Toast.makeText(getActivity(), "Register failed: ${it.message}", Toast.LENGTH_SHORT)
+                    .show()
+            }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -125,7 +174,7 @@ class RegisterFragment : Fragment() {
         if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
             selectedPhotoUri = data.data
             profilepic.setImageURI(selectedPhotoUri)
-        } else if (requestCode == 1) {
+        } else if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 // Google Sign In was successful, authenticate with Firebase
@@ -144,16 +193,28 @@ class RegisterFragment : Fragment() {
         FirebaseAuth.getInstance().signInWithCredential(credential)
             .addOnCompleteListener({
                 Log.d("Main", "Successfully created google user with uid: ${it.result?.user?.uid}")
-                val acct: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(activity)
-                if(acct != null) {
-                    UplaodImage(acct.photoUrl.toString(), acct.displayName.toString())
-                }
+                checkIfUserExists(it.result?.user?.uid.toString())
             })
             .addOnFailureListener {
                 Toast.makeText(getActivity(), "Register failed: ${it.message}", Toast.LENGTH_SHORT)
                     .show()
             }
+    }
 
+    private fun checkIfUserExists(uid: String) {
+        FirebaseFirestore.getInstance().collection("users").whereEqualTo("uid", uid)
+            .limit(1).get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() > 0)
+                    Toast.makeText(getActivity(), "Google user already exists", Toast.LENGTH_SHORT)
+                        .show()
+                else {
+                    val acct: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(activity)
+                    if (acct != null) {
+                        SaveUserInformationToFirebase("google", acct.displayName.toString())
+                    }
+                }
+            }
     }
 
     private fun SaveUserInformationToFirebase(profileImageUri: String, name: String) {
@@ -179,10 +240,12 @@ class RegisterFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =
-            inflater.inflate(com.example.parkscout.R.layout.fragment_register, container, false)
-        var signupbtn = view.findViewById(com.example.parkscout.R.id.signupbtn) as Button
+            inflater.inflate(R.layout.fragment_register, container, false)
+        var signupbtn = view.findViewById(R.id.signupbtn) as Button
         var selectPhotoBtn =
-            view.findViewById(com.example.parkscout.R.id.reg_select_photo) as Button
+            view.findViewById(R.id.reg_select_photo) as Button
+
+//        FirebaseAuth.getInstance().signOut()
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -190,9 +253,17 @@ class RegisterFragment : Fragment() {
             .requestEmail()
             .build()
 
-        val googleSignUpBtn: ImageButton = view?.findViewById(R.id.googleSignUp) as ImageButton
 
+        FirebaseAuth.getInstance().signOut()
 
+        val googleSignUpBtn: ImageButton = view?.findViewById(R.id.googleSignIn) as ImageButton
+        val facebookSignUpBtn: ImageButton = view?.findViewById(R.id.facebookSignIn) as ImageButton
+        val loginText: TextView = view?.findViewById(R.id.moveToReg) as TextView
+
+        loginText.setOnClickListener {
+            val navController = Navigation.findNavController(view)
+            navController.navigate(R.id.loginFragment)
+        }
 // set on-click listener
         signupbtn.setOnClickListener {
             Register()
@@ -205,10 +276,16 @@ class RegisterFragment : Fragment() {
         googleSignUpBtn.setOnClickListener {
             googleSignUp()
         }
+
+        facebookSignUpBtn.setOnClickListener {
+            facebookSignUp()
+        }
         return view
     }
 
     companion object {
+        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
@@ -228,5 +305,3 @@ class RegisterFragment : Fragment() {
             }
     }
 }
-
-class User(val uid: String, val username: String, val profilePic: String)

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageButton
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -23,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.parkscout.Repository.Model.ChatModel
 import com.google.firebase.firestore.FieldValue
 import kotlinx.android.synthetic.main.fragment_chat.*
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,12 +46,13 @@ class ChatFragment : Fragment() {
     private lateinit var viewModel: ChatFragmentViewModel;
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState);
 //        arguments?.let {
 //            param1 = it.getString(ARG_PARAM1)
 //            param2 = it.getString(ARG_PARAM2)
 //        }
 
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
      }
 
     override fun onCreateView(
@@ -80,7 +83,11 @@ class ChatFragment : Fragment() {
         }
 
         val messageListener: Observer<List<ChatMessage>> = Observer { messages ->
+            mAdapter.chatMessages.clear();
+            mAdapter.chatMessages.addAll(messages);
             mAdapter.notifyDataSetChanged();
+            mMsgRecyclerView.scrollToPosition(messages.size - 1);
+
         };
 
         viewModel.msgList.observe(viewLifecycleOwner, messageListener);
@@ -110,7 +117,7 @@ class ChatFragment : Fragment() {
 //        reference = FirebaseDatabase.instance.getReference("Messages")
 
         // TODO: Att a valueEventListener to the db reference
-        mAdapter = MessageAdapter(this.requireContext(), mChatMessages, imageURL);
+         mAdapter = MessageAdapter(this.requireContext(), mChatMessages.value!! as LinkedList<ChatMessage>, imageURL);
         mMsgRecyclerView.adapter = mAdapter
     }
 

@@ -11,7 +11,7 @@ import com.example.parkscout.Repository.ModelSQL.dao.ChatMessageDao
 import com.example.parkscout.Repository.ModelSQL.dao.TrainingSpotDao
 import com.example.parkscout.Repository.TrainingSpot
 
-@Database(entities = [ChatMessage::class , TrainingSpot:: class], version = 1)
+@Database(entities = [ChatMessage::class , TrainingSpot:: class], version = 2)
 abstract class AppLocalDb: RoomDatabase() {
 
     abstract fun chatMessageDao(): ChatMessageDao;
@@ -27,7 +27,9 @@ abstract class AppLocalDb: RoomDatabase() {
                 instance?: Room.databaseBuilder(
                     ParkScoutApplication.context,
                     AppLocalDb::class.java, DB_NAME
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
             }
         }
     }

@@ -2,7 +2,9 @@ package com.example.parkscout.Repository.Model
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.parkscout.ParkScoutApplication
 import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.Repository.ModelFirebase.ChatMessageModelFirebase
@@ -18,24 +20,24 @@ class ChatModel {
     }
 
     // Data Members
-    private var modelFirebase: ChatMessageModelFirebase;
+    var modelFirebase: ChatMessageModelFirebase;
     private var modelSQL: ChatMessageModelSQL;
-    private var messageList: LiveData<List<ChatMessage>>;
+    private var messageList: ChatMessageLiveData;
 
     // Constructors
     init {
         this.modelFirebase = ChatMessageModelFirebase();
         this.modelSQL = ChatMessageModelSQL();
-        this.messageList = modelSQL.getAllMessages();
+        this.messageList = ChatMessageLiveData();
     }
 
     // Methods
     public fun getAllMessages(): LiveData<List<ChatMessage>> {
-        if (this.messageList.value == null) {
-            this.messageList = modelSQL.getAllMessages();
-            refreshAllMessages(null);
-        }
-
+//        if (this.messageList.value == null) {
+//            this.messageList = modelSQL.getAllMessages();
+//            refreshAllMessages(null);
+//        }
+//
         return this.messageList;
     }
 
@@ -46,7 +48,7 @@ class ChatModel {
         var lastUpdated: Long = sp.getLong("lastUpdated", 0);
 
         // Get all the updated record from firebase, since the last retrieval.
-        val listener = { messages: LinkedList<ChatMessage> ->
+        val listener = { messages: List<ChatMessage> ->
 
             // Find the last message date
             var maxLastU: Long = 0;
@@ -74,6 +76,47 @@ class ChatModel {
     }
 
     public fun addMessage(msg: ChatMessage, listener: () -> Unit) {
-        modelFirebase.addMessage(msg, listener);
+        var refreshListener: () -> Unit = {
+            listener();
+        };
+
+        var addListener: () -> Unit = {
+            refreshAllMessages(refreshListener);
+        };
+
+        modelFirebase.addMessage(msg, addListener);
+    }
+
+    inner class ChatMessageLiveData: MutableLiveData<List<ChatMessage>>() {
+
+        // Constructors
+        init {
+            value = LinkedList<ChatMessage>();
+        }
+
+        // Methods
+        override fun onActive() {
+            super.onActive();
+
+            val sp: SharedPreferences = ParkScoutApplication.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
+            var lastUpdated: Long = sp.getLong("lastUpdated", 0);
+
+            modelFirebase.getAllMessages(lastUpdated, { messages: List<ChatMessage> ->
+                value = messages;
+                Log.d("BP", "The messages were received: " + messages.size);
+
+                for (msg in messages) {
+                    modelSQL.addChatMessage(msg, {
+//                        (value as LinkedList).add(msg);
+                    });
+                }
+            });
+        }
+
+        override fun onInactive() {
+            super.onInactive();
+
+//            modelFirebase.cancelGetAllMessages();
+        }
     }
 }

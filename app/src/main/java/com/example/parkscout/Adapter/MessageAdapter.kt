@@ -12,12 +12,13 @@ import com.bumptech.glide.Glide
 import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.R
 import com.google.firebase.auth.FirebaseUser
+import java.util.*
 
-class MessageAdapter(val context: Context, val chatMessages: LiveData<List<ChatMessage>>, val imageURL: String): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+class MessageAdapter(val context: Context, var chatMessages: LinkedList<ChatMessage>, val imageURL: String): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     // Data Members
     private var mContext: Context
-    private var mChatMessages: LiveData<List<ChatMessage>>
+    private var mChatMessages: List<ChatMessage>
     private var mImageURL: String
     private lateinit var mFBUser: FirebaseUser
 
@@ -45,15 +46,15 @@ class MessageAdapter(val context: Context, val chatMessages: LiveData<List<ChatM
     }
 
     override fun getItemCount(): Int {
-        if ( mChatMessages.value == null) {
+        if ( mChatMessages == null) {
             return 0;
         } else {
-            return mChatMessages.value!!.size;
+            return mChatMessages.size;
         }
     }
 
     override fun onBindViewHolder(holder: MessageAdapter.ViewHolder, position: Int) {
-        var msg = mChatMessages.value?.get(position)
+        var msg = mChatMessages.get(position)
         holder.show_message.text = msg?.message
 
         if (imageURL.equals("default")) {
@@ -73,7 +74,7 @@ class MessageAdapter(val context: Context, val chatMessages: LiveData<List<ChatM
 //            return MSG_TYPE_LEFT
 //        }
 
-        if (mChatMessages.value?.get(position)?.sender == "Tomer") {
+        if (mChatMessages?.get(position)?.sender == "Tomer") {
             return MSG_TYPE_RIGHT
         } else {
             return MSG_TYPE_LEFT

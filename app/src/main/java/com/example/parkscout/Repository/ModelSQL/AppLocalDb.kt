@@ -7,15 +7,18 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.parkscout.ParkScoutApplication
 import com.example.parkscout.Repository.ChatMessage
+import com.example.parkscout.Repository.Comment
 import com.example.parkscout.Repository.ModelSQL.dao.ChatMessageDao
+import com.example.parkscout.Repository.ModelSQL.dao.CommentsDao
 import com.example.parkscout.Repository.ModelSQL.dao.TrainingSpotDao
 import com.example.parkscout.Repository.TrainingSpot
 
-@Database(entities = [ChatMessage::class , TrainingSpot:: class], version = 1)
+@Database(entities = [ChatMessage::class , TrainingSpot:: class,Comment:: class], version = 1)
 abstract class AppLocalDb: RoomDatabase() {
 
     abstract fun chatMessageDao(): ChatMessageDao;
     abstract fun trainingSpotDao(): TrainingSpotDao;
+    abstract fun commentDao(): CommentsDao;
 
     companion object {
         const val DB_NAME: String = "ParkScoutDB";

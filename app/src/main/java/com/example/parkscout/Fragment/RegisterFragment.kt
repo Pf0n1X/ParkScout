@@ -2,6 +2,7 @@ package com.example.parkscout.Fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,8 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.example.parkscout.R
@@ -45,6 +48,7 @@ class RegisterFragment : Fragment() {
     private var param2: String? = null
     private var mAuth: FirebaseAuth? = null
     var selectedPhotoUri: Uri? = null;
+    private var locationPermissionGranted = false
     lateinit var facebookSignInButton: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,7 +116,7 @@ class RegisterFragment : Fragment() {
         startActivityForResult(intent, 0)
     }
 
-    private fun googleSignUp() {
+    public fun googleSignUp() {
         lateinit var mGoogleSignInClient: GoogleSignInClient
         lateinit var mGoogleSignInOptions: GoogleSignInOptions
         mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -121,8 +125,31 @@ class RegisterFragment : Fragment() {
             .build()
         val activity = this.activity as Activity
         mGoogleSignInClient = GoogleSignIn.getClient(activity, mGoogleSignInOptions)
+        mGoogleSignInClient.signOut()
         val signInIntent: Intent = mGoogleSignInClient.signInIntent
         startActivityForResult(signInIntent, 1)
+    }
+
+    private fun getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(
+                this.requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            locationPermissionGranted = true
+        } else {
+            ActivityCompat.requestPermissions(
+                this.requireContext() as Activity,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+            )
+        }
     }
 
     private fun facebookSignUp() {
@@ -147,7 +174,7 @@ class RegisterFragment : Fragment() {
         if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
             selectedPhotoUri = data.data
             profilepic.setImageURI(selectedPhotoUri)
-        } else if (requestCode == 1) {
+        } else if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 // Google Sign In was successful, authenticate with Firebase
@@ -166,14 +193,27 @@ class RegisterFragment : Fragment() {
         FirebaseAuth.getInstance().signInWithCredential(credential)
             .addOnCompleteListener({
                 Log.d("Main", "Successfully created google user with uid: ${it.result?.user?.uid}")
-                val acct: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(activity)
-                if (acct != null) {
-                    SaveUserInformationToFirebase("google", acct.displayName.toString())
-                }
+                checkIfUserExists(it.result?.user?.uid.toString())
             })
             .addOnFailureListener {
                 Toast.makeText(getActivity(), "Register failed: ${it.message}", Toast.LENGTH_SHORT)
                     .show()
+            }
+    }
+
+    private fun checkIfUserExists(uid: String) {
+        FirebaseFirestore.getInstance().collection("users").whereEqualTo("uid", uid)
+            .limit(1).get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() > 0)
+                    Toast.makeText(getActivity(), "Google user already exists", Toast.LENGTH_SHORT)
+                        .show()
+                else {
+                    val acct: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(activity)
+                    if (acct != null) {
+                        SaveUserInformationToFirebase("google", acct.displayName.toString())
+                    }
+                }
             }
     }
 
@@ -205,14 +245,19 @@ class RegisterFragment : Fragment() {
         var selectPhotoBtn =
             view.findViewById(R.id.reg_select_photo) as Button
 
+//        FirebaseAuth.getInstance().signOut()
+
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 
-        val googleSignUpBtn: ImageButton = view?.findViewById(R.id.googleSignUp) as ImageButton
-        val facebookSignUpBtn: ImageButton = view?.findViewById(R.id.facebookSignUp) as ImageButton
+
+        FirebaseAuth.getInstance().signOut()
+
+        val googleSignUpBtn: ImageButton = view?.findViewById(R.id.googleSignIn) as ImageButton
+        val facebookSignUpBtn: ImageButton = view?.findViewById(R.id.facebookSignIn) as ImageButton
         val loginText: TextView = view?.findViewById(R.id.moveToReg) as TextView
 
         loginText.setOnClickListener {
@@ -239,6 +284,8 @@ class RegisterFragment : Fragment() {
     }
 
     companion object {
+        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
@@ -258,5 +305,3 @@ class RegisterFragment : Fragment() {
             }
     }
 }
-
-class User(val uid: String, val username: String, val profilePic: String)

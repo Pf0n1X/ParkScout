@@ -1,6 +1,8 @@
 package com.example.parkscout.Fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.util.Log
@@ -12,10 +14,18 @@ import androidx.navigation.Navigation
 
 import com.example.parkscout.R
 import com.example.parkscout.ui.login.LoginViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.fragment_register.*
 
-class LoginFragment : Fragment() {
+class LoginFragment1 : Fragment() {
 
     private lateinit var loginViewModel: LoginViewModel
 
@@ -40,6 +50,60 @@ class LoginFragment : Fragment() {
             }
     }
 
+    private fun googleLogin() {
+        lateinit var mGoogleSignInClient: GoogleSignInClient
+        lateinit var mGoogleSignInOptions: GoogleSignInOptions
+        mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        val activity = this.activity as Activity
+        mGoogleSignInClient = GoogleSignIn.getClient(activity, mGoogleSignInOptions)
+        mGoogleSignInClient.signOut()
+        val signInIntent: Intent = mGoogleSignInClient.signInIntent
+        startActivityForResult(signInIntent, 1)
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnCompleteListener({
+                checkIfUserExists(it.result?.user?.uid.toString())
+            })
+            .addOnFailureListener {
+                Toast.makeText(getActivity(), "Register failed: ${it.message}", Toast.LENGTH_SHORT)
+                    .show()
+            }
+    }
+
+    private fun checkIfUserExists(uid: String) {
+        FirebaseFirestore.getInstance().collection("users").whereEqualTo("uid", uid)
+            .limit(1).get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() > 0)
+                    Log.d("Main", "Successfully Logged in with google uid: ${uid}")
+                else {
+                    Toast.makeText(getActivity(),"Google user doesn't exists",Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                val account = task.getResult(ApiException::class.java)!!
+                firebaseAuthWithGoogle(account.idToken!!)
+            } catch (e: ApiException) {
+                // Google Sign In failed, update UI appropriately
+
+                Log.d("Main", "Google sign in failed", e)
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,8 +121,10 @@ class LoginFragment : Fragment() {
     @SuppressLint("FragmentLiveDataObserve")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val registerText: TextView = view?.findViewById(R.id.moveToReg) as TextView
         var loginBtn = view.findViewById(R.id.loginbtn) as Button
+        val googleSignUpBtn: ImageButton = view?.findViewById(R.id.googleSignIn) as ImageButton
 
         registerText.setOnClickListener {
             Log.d("Main", "click")
@@ -67,6 +133,10 @@ class LoginFragment : Fragment() {
 
         loginBtn.setOnClickListener {
             Login();
+        }
+
+        googleSignUpBtn.setOnClickListener {
+            googleLogin();
         }
     }
 

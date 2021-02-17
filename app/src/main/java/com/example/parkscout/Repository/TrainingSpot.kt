@@ -1,9 +1,6 @@
 package com.example.parkscout.Repository
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.example.parkscout.data.model.Comment
+import androidx.room.*
 import com.example.parkscout.data.model.Location
 import com.example.parkscout.data.model.Rating
 import com.example.parkscout.data.model.SportType
@@ -12,20 +9,40 @@ import java.util.*
 @Entity(tableName = "training_spot")
 data class TrainingSpot(
     @PrimaryKey
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "parkId")
     val parkId: String = UUID.randomUUID().toString(),
-    @ColumnInfo(name = "parkName")
-    val parkName : String = ""
-//    @ColumnInfo(name = "parkLocation")
-//    val parkLocation: Location ,
-//    @ColumnInfo(name = "comments")
-//    val comments : Array<Comment>,
-//    @ColumnInfo(name = "ratings")
-//    val ratings : Array<Rating>,
-//    @ColumnInfo(name = "sportTypes")
-//    val sportTypes : Array<SportType>,
-//    @ColumnInfo(name = "chatId")
-//    val chatId : String = ""
+    val parkName : String,
+    @Embedded val parkLocation: Location,
+    @Embedded val comments : Comment,
+    @Embedded val ratings : Rating,
+    @Embedded val sportTypes : SportType,
+    val chatId : String
 ){
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
+        other as TrainingSpot
+
+        if (parkId != other.parkId) return false
+        if (parkName != other.parkName) return false
+        if (parkLocation != other.parkLocation) return false
+        if (comments != other.comments) return false
+        if (ratings != other.ratings) return false
+        if (sportTypes != other.sportTypes) return false
+        if (chatId != other.chatId) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = parkId.hashCode()
+        result = 31 * result + parkName.hashCode()
+        result = 31 * result + parkLocation.hashCode()
+        result = 31 * result + comments.hashCode()
+        result = 31 * result + ratings.hashCode()
+        result = 31 * result + sportTypes.hashCode()
+        result = 31 * result + chatId.hashCode()
+        return result
+    }
 }

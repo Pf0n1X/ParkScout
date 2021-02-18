@@ -5,15 +5,14 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.type.DateTime
+import java.time.format.DateTimeFormatter
 
-@Entity(tableName = "rating")
+@Entity(tableName = "rating",primaryKeys = ["user_Id","trainingSpotId"])
 data class Rating (
-    @PrimaryKey
     @ColumnInfo(name = "user_Id")
     val user_Id : String,
-    @PrimaryKey
     @ColumnInfo(name = "trainingSpotId")
     val trainingSpotId : String,
     val rate : Int,
-    @Embedded val rate_dateTime : DateTime
+    @Embedded val rate_dateTime : DateTimeFormatter
 )

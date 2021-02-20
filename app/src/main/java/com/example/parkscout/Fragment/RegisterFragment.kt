@@ -1,22 +1,26 @@
 package com.example.parkscout.Fragment
 
 import android.app.Activity
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import com.example.parkscout.MainActivity
 import com.example.parkscout.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -29,6 +33,8 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.fragment_register.*
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.util.*
 
 
@@ -50,6 +56,7 @@ class RegisterFragment : Fragment() {
     var selectedPhotoUri: Uri? = null;
     private var locationPermissionGranted = false
     lateinit var facebookSignInButton: ImageButton
+    var profilePic: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mAuth = FirebaseAuth.getInstance();
@@ -65,6 +72,7 @@ class RegisterFragment : Fragment() {
         val password = regpass.text.toString();
         val con_password = regconpass.text.toString();
         val name = regname.text.toString();
+        profilePic = profilepic
 
         if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
             Toast.makeText(getActivity(), "Name or email or password are empty", Toast.LENGTH_SHORT)
@@ -90,7 +98,7 @@ class RegisterFragment : Fragment() {
             }
     }
 
-    private fun UplaodImage(uriString: String, name: String) {
+    public fun UplaodImage(uriString: String, name: String) {
 
         if (uriString == null) return
         val filename = UUID.randomUUID().toString()
@@ -143,6 +151,7 @@ class RegisterFragment : Fragment() {
             == PackageManager.PERMISSION_GRANTED
         ) {
             locationPermissionGranted = true
+            moveToMainActivity()
         } else {
             ActivityCompat.requestPermissions(
                 this.requireContext() as Activity,
@@ -150,6 +159,33 @@ class RegisterFragment : Fragment() {
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
             )
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        locationPermissionGranted = false
+        when (requestCode) {
+            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
+
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.isNotEmpty() &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+                    locationPermissionGranted = true
+                    moveToMainActivity()
+                }
+            }
+        }
+    }
+
+    public fun getImageUriFromBitmap(bitmap: Bitmap): Uri{
+        val bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path = MediaStore.Images.Media.insertImage(getActivity()?.contentResolver, bitmap, "Title", null)
+        return Uri.parse(path.toString())
     }
 
     private fun facebookSignUp() {
@@ -211,13 +247,17 @@ class RegisterFragment : Fragment() {
                 else {
                     val acct: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(activity)
                     if (acct != null) {
-                        SaveUserInformationToFirebase("google", acct.displayName.toString())
+//                        SaveUserInformationToFirebase("google", acct.displayName.toString())
+                        val downImage = DownloadImage(profilepic, this, acct.displayName.toString())
+                        downImage.execute(acct.photoUrl.toString())
+//                        val bitmap = downloadImage(acct.photoUrl.toString())
+//                        profilePic?.setImageBitmap(bitmap)
                     }
                 }
             }
     }
 
-    private fun SaveUserInformationToFirebase(profileImageUri: String, name: String) {
+    public fun SaveUserInformationToFirebase(profileImageUri: String, name: String) {
         val uid = FirebaseAuth.getInstance().uid
         val newUser: MutableMap<String, Any> = HashMap()
         newUser["uid"] = uid.toString()
@@ -228,10 +268,20 @@ class RegisterFragment : Fragment() {
             .addOnSuccessListener {
                 Toast.makeText(getActivity(), "User created successfully", Toast.LENGTH_SHORT)
                     .show()
+                registered()
             }
             .addOnFailureListener {
                 Log.d("Main", "Info failed: ${it.message}")
             }
+    }
+
+    private fun moveToMainActivity() {
+        val intent = Intent(getActivity(), MainActivity::class.java)
+        getActivity()?.startActivity(intent)
+    }
+
+    private fun registered() {
+        getLocationPermission()
     }
 
     override fun onCreateView(
@@ -304,4 +354,38 @@ class RegisterFragment : Fragment() {
                 }
             }
     }
+
+    private class DownloadImage(
+        profilepic: ImageView,
+        registerFragment: RegisterFragment,
+        name: String
+    ) : AsyncTask<String, Bitmap, Bitmap>() {
+
+        var profilePic: ImageView? = profilepic
+        var name: String? = name
+        var registerFragment: RegisterFragment? = registerFragment
+
+        override fun doInBackground(vararg URL: String?): Bitmap? {
+            val imageURL = URL[0]
+            var bitmap: Bitmap? = null
+            try {
+                // Download Image from URL
+                val input: InputStream = java.net.URL(imageURL).openStream()
+                // Decode Bitmap
+                bitmap = BitmapFactory.decodeStream(input)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return bitmap
+        }
+
+        override fun onPostExecute(result: Bitmap) {
+            super.onPostExecute(result)
+            profilePic?.setImageBitmap(result)
+            val path = registerFragment?.getImageUriFromBitmap(result)
+            registerFragment?.UplaodImage(path.toString(), name.toString())
+
+        }
+    }
 }
+

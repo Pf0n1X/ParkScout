@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.FieldValue
-import java.sql.Timestamp
+import com.google.firebase.Timestamp
 
 
 @Entity(tableName = "chat_message")
@@ -23,11 +23,11 @@ data class ChatMessage(
         sender = map["sender"] as String;
         receiver = map["receiver"] as String;
         message = map["message"] as String;
-        var ts: Timestamp = Timestamp(map["lastUpdated"] as Long);
+        var ts: Timestamp = map["lastUpdated"] as Timestamp;
         lastUpdated = ts.seconds as Long;
     }
 
-    fun toMap(): Map<String, Any>? {
+    fun toMap(): Map<String, Any> {
         val result: HashMap<String, Any> = HashMap()
         result["id"] = id
         result["sender"] = sender

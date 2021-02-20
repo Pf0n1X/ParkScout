@@ -2,25 +2,27 @@ package com.example.parkscout.Repository.ModelFirebase
 
 import com.example.parkscout.Repository.ChatMessage
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
+import io.perfmark.Link
 import java.sql.Timestamp
 import java.util.*
 
 class ChatMessageModelFirebase {
 
-    interface GetAllChatMessagesListener {
-        fun onComplete(message: LinkedList<ChatMessage>);
+    companion object {
+        val COLLECTION_NAME: String = "chat_message";
     }
 
-    public fun getAllMessages(lastUpdated: Long, listener: GetAllChatMessagesListener) {
+    public fun getAllMessages(lastUpdated: Long, listener: (List<ChatMessage>) -> Unit) {
         var db: FirebaseFirestore = FirebaseFirestore.getInstance();
         var ts: Timestamp = Timestamp(lastUpdated);
+        var messages: LinkedList<ChatMessage> = LinkedList<ChatMessage>();
 
-        db.collection("chat_message")
-            .whereGreaterThanOrEqualTo("lastUpdated", ts)
-            .get()
+        var query: Query = db.collection(Companion.COLLECTION_NAME)
+            .whereGreaterThanOrEqualTo("lastUpdated", ts);
+            query.get()
             .addOnCompleteListener(OnCompleteListener {
-                var messages: LinkedList<ChatMessage> = LinkedList<ChatMessage>();
+
 
                 if (it.isSuccessful) {
                     for (doc in it.result!!) {
@@ -30,7 +32,29 @@ class ChatMessageModelFirebase {
                     }
                 }
 
-                listener.onComplete(messages);
+                listener(messages);
             });
+
+        query.addSnapshotListener({ value: QuerySnapshot?, error: FirebaseFirestoreException? ->
+            for (dc in value!!.documentChanges) {
+                var msg: ChatMessage = ChatMessage("", "", "", "", 0);
+                msg.fromMap(dc.document.data);
+                (messages as LinkedList<ChatMessage>).add(msg);
+            }
+
+            listener(messages);
+        });
+    }
+
+    fun addMessage(msg: ChatMessage, listener: () -> Unit) {
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+        var doc: DocumentReference = db.collection(Companion.COLLECTION_NAME)
+            .document();
+
+        msg.id = doc.id;
+
+        doc.set(msg.toMap())
+            .addOnSuccessListener { listener(); }
+            .addOnFailureListener { listener(); }
     }
 }

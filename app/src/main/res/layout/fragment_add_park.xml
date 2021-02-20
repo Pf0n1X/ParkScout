@@ -41,8 +41,11 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/locationTXT"
-            android:layout_width="146dp"
-            android:layout_height="42dp"
+            android:layout_width="202dp"
+            android:layout_height="39dp"
+            android:layout_marginStart="92dp"
+            android:layout_marginLeft="92dp"
+            android:background="#F4CB9B"
             android:duplicateParentState="false"
             android:editable="true"
             android:enabled="true"
@@ -50,9 +53,22 @@
             android:textColor="#837D7D"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/textView11"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/SearchBtn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fragLayout" />
+
+        <Button
+            android:id="@+id/SearchBtn"
+            android:layout_width="51dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="64dp"
+            android:layout_marginRight="64dp"
+            android:background="@drawable/quantum_ic_search_grey600_24"
+            app:backgroundTint="@color/black"
+            app:layout_constraintBottom_toTopOf="@+id/textView11"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/locationTXT"
+            app:layout_constraintTop_toTopOf="@+id/locationTXT" />
 
         <TextView
             android:id="@+id/textView11"

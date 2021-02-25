@@ -26,7 +26,7 @@ class ChatMessageModelFirebase {
 
                 if (it.isSuccessful) {
                     for (doc in it.result!!) {
-                        var message: ChatMessage = ChatMessage("", "", "", "", 0);
+                        var message: ChatMessage = ChatMessage("", "" ,"", "", "", 0);
                         message.fromMap(doc.data);
                         messages.add(message);
                     }
@@ -37,7 +37,7 @@ class ChatMessageModelFirebase {
 
         query.addSnapshotListener({ value: QuerySnapshot?, error: FirebaseFirestoreException? ->
             for (dc in value!!.documentChanges) {
-                var msg: ChatMessage = ChatMessage("", "", "", "", 0);
+                var msg: ChatMessage = ChatMessage("", "", "", "", "", 0);
                 msg.fromMap(dc.document.data);
                 (messages as LinkedList<ChatMessage>).add(msg);
             }

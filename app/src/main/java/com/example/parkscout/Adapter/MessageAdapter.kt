@@ -66,7 +66,7 @@ class MessageAdapter(val context: Context, var chatMessages: LinkedList<ChatMess
 
     override fun getItemViewType(position: Int): Int {
         // TODO: Uncomment when firebase is ready
-//        mFBUser = FirebaseAuth.getInstance().currentUser!!
+//        mFBUser = FirebaseAuth.getFInstance().currentUser!!
 
 //        if (mChatMessages[position].sender.equals(mFBUser.uid)) {
 //            return MSG_TYPE_RIGHT

@@ -3,11 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/chat_nav_graph"
-    app:startDestination="@id/chatFragment2">
-
+    app:startDestination="@id/existing_chats2">
     <fragment
-        android:id="@+id/chatFragment2"
-        android:name="com.example.parkscout.Fragment.ChatFragment"
-        android:label="fragment_chat"
-        tools:layout="@layout/fragment_chat" />
+        android:id="@+id/existing_chats2"
+        android:name="com.example.parkscout.Fragment.Existing_chats"
+        android:label="fragment_existing_chats"
+        tools:layout="@layout/fragment_existing_chats" />
 </navigation>

@@ -6,9 +6,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.parkscout.ParkScoutApplication
+import com.example.parkscout.Repository.Chat
 import com.example.parkscout.Repository.ChatMessage
+import com.example.parkscout.Repository.ChatWithAll
+import com.example.parkscout.Repository.ChatWithChatMessages
 import com.example.parkscout.Repository.ModelFirebase.ChatMessageModelFirebase
+import com.example.parkscout.Repository.ModelFirebase.ChatModelFireBase
 import com.example.parkscout.Repository.ModelSQL.ChatMessageModelSQL
+import com.example.parkscout.Repository.ModelSQL.ChatModelSQL
 import java.util.*
 
 class ChatModel {
@@ -22,13 +27,19 @@ class ChatModel {
     // Data Members
     var modelFirebase: ChatMessageModelFirebase;
     private var modelSQL: ChatMessageModelSQL;
+    private var modelChatSQL: ChatModelSQL;
     private var messageList: ChatMessageLiveData;
+    private var chatList: ChatLiveData;
+    var modelChatFirebase: ChatModelFireBase;
 
     // Constructors
     init {
         this.modelFirebase = ChatMessageModelFirebase();
         this.modelSQL = ChatMessageModelSQL();
+        this.modelChatSQL = ChatModelSQL();
         this.messageList = ChatMessageLiveData();
+        this.chatList = ChatLiveData();
+        this.modelChatFirebase = ChatModelFireBase();
     }
 
     // Methods
@@ -39,6 +50,10 @@ class ChatModel {
 //        }
 //
         return this.messageList;
+    }
+
+    public fun getAllChats(): LiveData<List<ChatWithAll>> {
+        return this.chatList;
     }
 
     public fun refreshAllMessages(refListener: (() -> Unit)?) {
@@ -85,6 +100,39 @@ class ChatModel {
         };
 
         modelFirebase.addMessage(msg, addListener);
+    }
+
+    inner class ChatLiveData: MutableLiveData<List<ChatWithAll>>() {
+
+        // Constructors
+        init {
+            value = LinkedList<ChatWithAll>();
+        }
+
+        // Methods
+        override fun onActive() {
+            super.onActive();
+
+            val sp: SharedPreferences = ParkScoutApplication.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
+
+            // Select
+
+            modelChatFirebase.getAllChats("", { chats: List<ChatWithAll> ->
+                value = chats;
+////                for (msg in messages) {
+////                    modelSQL.addChatMessage(msg, {
+//////                        (value as LinkedList).add(msg);
+//                    });
+//                }
+            });
+        }
+        override fun onInactive() {
+            super.onInactive();
+
+//            modelFirebase.cancelGetAllMessages();
+        }
+
+
     }
 
     inner class ChatMessageLiveData: MutableLiveData<List<ChatMessage>>() {

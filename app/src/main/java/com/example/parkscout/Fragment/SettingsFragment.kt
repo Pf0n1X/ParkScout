@@ -2,15 +2,13 @@ package com.example.parkscout.Fragment
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.navigation.Navigation
-import com.example.parkscout.PersonalInfo
+import androidx.fragment.app.Fragment
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.example.parkscout.R
-import com.example.parkscout.park_full_details
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,7 +20,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [SettingsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class SettingsFragment : Fragment() {
+class SettingsFragment : PreferenceFragmentCompat() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -39,24 +37,21 @@ class SettingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_settings, container, false)
-
-        val personalInfo_btn: Button = rootView.findViewById(R.id.PersonalAccountBtn) as Button
-        var selectPhotoBtn =
-            rootView.findViewById(R.id.select_photo_btn) as Button
-
-        // Inflate the layout for this fragment
-        personalInfo_btn.setOnClickListener {
-            val transaction = activity?.supportFragmentManager?.beginTransaction()
-            transaction?.replace(R.id.settingsFragment, PersonalInfo())
-            transaction?.disallowAddToBackStack()
-            transaction?.commit()
+        return super.onCreateView(inflater, container, savedInstanceState)?.apply {
+            this.background = resources.getDrawable(R.drawable.buttonshape);
         }
-        selectPhotoBtn.setOnClickListener {
-            selectPhoto()
-        }
-    return rootView
     }
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.root_preferences, rootKey);
+
+        val preference: Preference? = findPreference("image");
+        preference?.setOnPreferenceClickListener{ it ->
+            selectPhoto();
+            return@setOnPreferenceClickListener true;
+        }
+    }
+
     private fun selectPhoto() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"

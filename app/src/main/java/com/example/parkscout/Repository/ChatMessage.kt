@@ -13,27 +13,27 @@ data class ChatMessage(
     @PrimaryKey
     @ColumnInfo(name = "id")
     var id: String,
+    var chatId: String,
     var sender: String,
-    var receiver: String,
     var message: String,
     var lastUpdated: Long
 ) {
     fun fromMap(map: Map<String?, Any?>) {
         id = (map["id"] as String?)!!;
+        chatId = map["chatId"] as String;
         sender = map["sender"] as String;
-        receiver = map["receiver"] as String;
         message = map["message"] as String;
-        var ts: Timestamp = map["lastUpdated"] as Timestamp;
+        var ts: Timestamp = map["last_updated"] as Timestamp;
         lastUpdated = ts.seconds as Long;
     }
 
     fun toMap(): Map<String, Any> {
         val result: HashMap<String, Any> = HashMap()
         result["id"] = id
+        result["chatId"] = chatId;
         result["sender"] = sender
-        result["receiver"] = receiver
         result["message"] = message
-        result["lastUpdated"] = FieldValue.serverTimestamp()
+        result["last_updated"] = FieldValue.serverTimestamp()
 
         return result
     }

@@ -27,8 +27,6 @@ import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import kotlinx.android.synthetic.main.activity_main.*
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 
 class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{

@@ -21,7 +21,6 @@ import com.example.parkscout.R
 import com.example.parkscout.ViewModel.ChatFragmentViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.lifecycle.ViewModelProvider
-import com.example.parkscout.Repository.Model.ChatModel
 import com.google.firebase.firestore.FieldValue
 import kotlinx.android.synthetic.main.fragment_chat.*
 import java.util.*
@@ -100,7 +99,7 @@ class ChatFragment : Fragment() {
 
         // Setup the "Send" button operation.
         chat_btnSendMessage.setOnClickListener{event  ->
-            var msg: ChatMessage = ChatMessage("0", "Tomer", "Eden", chat_messageInput.text.toString(), System.currentTimeMillis());
+            var msg: ChatMessage = ChatMessage("0", "" ,"Tomer", chat_messageInput.text.toString(), System.currentTimeMillis());
             viewModel.addMessage(msg, {
                 Log.d("TAG", "Success when trying to save");
             });

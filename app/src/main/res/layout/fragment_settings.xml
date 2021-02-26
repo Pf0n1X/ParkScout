@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/buttonshape"
     tools:context=".Fragment.SettingsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
         android:background="#FFFFFF">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -42,14 +42,13 @@
             tools:src="@drawable/ic_baseline_person_outline_24"
             tools:visibility="visible"
             tools:ignore="MissingClass" />
--->
+            -->
 
-        <Button
+        <ImageView
             android:id="@+id/select_photo_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginTop="16dp"
-
             android:background="@drawable/imgupd"
             app:backgroundTint="#fe9110"
             app:layout_constraintEnd_toEndOf="parent"
@@ -57,100 +56,129 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profileImage" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
-            android:layout_width="277dp"
-            android:layout_height="310dp"
-            android:layout_margin="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/select_photo_btn"
-            app:layout_constraintVertical_bias="0.01999998">
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/constraintLayout"-->
+<!--            android:layout_width="277dp"-->
+<!--            android:layout_height="310dp"-->
+<!--            android:layout_margin="20dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/select_photo_btn"-->
+<!--            app:layout_constraintVertical_bias="0.01999998">-->
 
-            <Button
-                android:id="@+id/PersonalAccountBtn"
-                android:layout_width="229dp"
-                android:layout_height="46dp"
-                android:background="@drawable/rounded_message_bg"
-                android:text="Personal Info"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                app:backgroundTint="#fe9110"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+<!--            <Button-->
+<!--                android:id="@+id/PersonalAccountBtn"-->
+<!--                android:layout_width="229dp"-->
+<!--                android:layout_height="46dp"-->
+<!--                android:background="@drawable/rounded_message_bg"-->
+<!--                android:text="Personal Info"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="18sp"-->
+<!--                app:backgroundTint="#fe9110"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
 
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Preferences"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/PersonalAccountBtn"
-                app:layout_constraintVertical_bias="0.07999998" />
+<!--            <TextView-->
+<!--                android:id="@+id/textView5"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Preferences"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="18sp"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/PersonalAccountBtn"-->
+<!--                app:layout_constraintVertical_bias="0.07999998" />-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="269dp"
-                android:layout_height="208dp"
-                android:layout_marginStart="3dp"
-                android:layout_marginLeft="3dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView5">
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="3dp"-->
+<!--                android:layout_marginLeft="3dp"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/textView5">-->
 
-                <TextView
-                    android:id="@+id/textView8"
-                    android:layout_width="115dp"
-                    android:layout_height="23dp"
-                    android:layout_marginTop="32dp"
-                    android:layout_weight="1"
-                    android:text="Search distance"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toTopOf="@+id/notficatoiins"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.103"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+<!--                <TextView-->
+<!--                    android:id="@+id/textView8"-->
+<!--                    android:layout_width="115dp"-->
+<!--                    android:layout_height="23dp"-->
+<!--                    android:layout_marginTop="32dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:text="Search distance"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="14sp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@+id/notficatoiins"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0.103"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintVertical_bias="0.0" />-->
 
-                <Switch
-                    android:id="@+id/notficatoiins"
-                    android:layout_width="140dp"
-                    android:layout_height="24dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="109dp"
-                    android:scrollbarSize="2dp"
-                    android:text="Notfications"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.124"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/seekBar5"
-                    app:layout_constraintVertical_bias="0.0" />
+<!--                <Switch-->
+<!--                    android:id="@+id/notficatoiins"-->
+<!--                    android:layout_width="140dp"-->
+<!--                    android:layout_height="24dp"-->
+<!--                    android:layout_marginTop="15dp"-->
+<!--                    android:layout_marginBottom="109dp"-->
+<!--                    android:scrollbarSize="2dp"-->
+<!--                    android:text="Notfications"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="14sp"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0.124"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/seekBar5"-->
+<!--                    app:layout_constraintVertical_bias="0.0" />-->
 
-                <SeekBar
-                    android:id="@+id/seekBar5"
-                    android:layout_width="117dp"
-                    android:layout_height="23dp"
-                    android:layout_marginTop="32dp"
-                    android:layout_weight="1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.238"
-                    app:layout_constraintStart_toEndOf="@+id/textView8"
-                    app:layout_constraintTop_toTopOf="parent" />
+<!--                <SeekBar-->
+<!--                    android:id="@+id/seekBar5"-->
+<!--                    android:layout_width="117dp"-->
+<!--                    android:layout_height="23dp"-->
+<!--                    android:layout_marginTop="32dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintHorizontal_bias="0.238"-->
+<!--                    app:layout_constraintStart_toEndOf="@+id/textView8"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        <TextView-->
+<!--            android:id="@+id/Personal_info_title"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Personal Info"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="18sp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />-->
+
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/Personal_info_title">-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="16dp"-->
+<!--                android:text="Hi"-->
+<!--                android:textColor="@color/black"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </FrameLayout>

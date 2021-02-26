@@ -6,13 +6,27 @@
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorSecondary">@color/orange</item>
+        <item name="colorSecondaryVariant">@color/orange</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
 <!--        <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>-->
         <item name="android:windowFullscreen">true</item>
         <!-- Customize your theme here. -->
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <!-- Custom Preference Theme -->
+    <style name="AppPreferenceTheme"
+        parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="preferenceFragmentCompatStyle">
+            @style/AppPreferenceFragmentCompatStyle
+        </item>
+    </style>
+    <!-- Custom Style for PreferenceFragmentCompat -->
+    <style name="AppPreferenceFragmentCompatStyle"
+        parent="@style/PreferenceFragment.Material">
+        <item name="android:layout">@layout/fragment_settings</item>
     </style>
 </resources>

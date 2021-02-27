@@ -263,6 +263,7 @@ class RegisterFragment : Fragment() {
         newUser["uid"] = uid.toString()
         newUser["name"] = name
         newUser["profilePic"] = profileImageUri
+        newUser["distance"] = 5
 
         FirebaseFirestore.getInstance().collection("users").add(newUser)
             .addOnSuccessListener {
@@ -307,7 +308,7 @@ class RegisterFragment : Fragment() {
         FirebaseAuth.getInstance().signOut()
 
         val googleSignUpBtn: ImageButton = view?.findViewById(R.id.googleSignIn) as ImageButton
-        val facebookSignUpBtn: ImageButton = view?.findViewById(R.id.facebookSignIn) as ImageButton
+//        val facebookSignUpBtn: ImageButton = view?.findViewById(R.id.facebookSignIn) as ImageButton
         val loginText: TextView = view?.findViewById(R.id.moveToReg) as TextView
 
         loginText.setOnClickListener {
@@ -327,9 +328,9 @@ class RegisterFragment : Fragment() {
             googleSignUp()
         }
 
-        facebookSignUpBtn.setOnClickListener {
-            facebookSignUp()
-        }
+//        facebookSignUpBtn.setOnClickListener {
+//            facebookSignUp()
+//        }
         return view
     }
 

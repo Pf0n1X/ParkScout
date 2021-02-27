@@ -2,13 +2,19 @@ package com.example.parkscout.Fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.example.parkscout.R
+import com.example.parkscout.Repository.User
+import com.example.parkscout.ViewModel.ChatFragmentViewModel
+import com.example.parkscout.ViewModel.SettingsFragmentViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,25 +27,40 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class SettingsFragment : PreferenceFragmentCompat() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
+    // Data Members
+    // TODO: Rename and change types of parameters
+//    private var param1: String? = null
+//    private var param2: String? = null
+    private lateinit var viewModel: SettingsFragmentViewModel;
+
+    // Methods
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+//        arguments?.let {
+//            param1 = it.getString(ARG_PARAM1)
+//            param2 = it.getString(ARG_PARAM2)
+//        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)?.apply {
+        var view: View?
+            = super.onCreateView(inflater, container, savedInstanceState)?.apply {
             this.background = resources.getDrawable(R.drawable.buttonshape);
         }
+
+        viewModel = ViewModelProvider(this).get(SettingsFragmentViewModel::class.java);
+
+        var user: User? = viewModel.user.value;
+        viewModel.user.observe(viewLifecycleOwner, Observer {obUser: User? ->
+            if (obUser != null)
+                Log.d("TAG", obUser.name);
+        });
+
+        return view;
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

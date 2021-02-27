@@ -9,7 +9,7 @@ import com.example.parkscout.ParkScoutApplication
 import com.example.parkscout.Repository.*
 import com.example.parkscout.Repository.ModelSQL.dao.*
 
-@Database(entities = [ChatMessage::class , TrainingSpot:: class,Comment:: class,Rating::class,SportTypes::class, Chat::class], version = 3)
+@Database(entities = [ChatMessage::class , TrainingSpot:: class,Comment:: class,Rating::class,SportTypes::class, Chat::class, User::class], version = 4)
 abstract class AppLocalDb: RoomDatabase() {
 
     abstract fun chatMessageDao(): ChatMessageDao;
@@ -18,6 +18,7 @@ abstract class AppLocalDb: RoomDatabase() {
     abstract fun ratingDao(): RatingDao;
     abstract fun sportTypesDAO(): SportTypesDAO;
     abstract fun chatDao(): ChatDao;
+    abstract fun userDao(): UserDao;
 
     companion object {
         const val DB_NAME: String = "ParkScoutDB";

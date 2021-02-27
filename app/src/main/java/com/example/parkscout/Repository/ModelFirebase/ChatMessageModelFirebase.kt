@@ -27,6 +27,7 @@ class ChatMessageModelFirebase {
                 if (it.isSuccessful) {
                     for (doc in it.result!!) {
                         var message: ChatMessage = ChatMessage("", "" , "", "", 0);
+
                         message.fromMap(doc.data);
                         messages.add(message);
                     }

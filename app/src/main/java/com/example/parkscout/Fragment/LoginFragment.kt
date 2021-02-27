@@ -74,6 +74,8 @@ class LoginFragment1 : Fragment() {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         FirebaseAuth.getInstance().signInWithCredential(credential)
             .addOnCompleteListener({
+//                Log.d("Main", "Successfully Logged in with google uid: ${it.result?.user?.uid.toString()}")
+//                loggedIn()
                 checkIfUserExists(it.result?.user?.uid.toString())
             })
             .addOnFailureListener {
@@ -90,7 +92,7 @@ class LoginFragment1 : Fragment() {
                     Log.d("Main", "Successfully Logged in with google uid: ${uid}")
                     loggedIn()
                 } else {
-                    Toast.makeText(getActivity(), "Google user doesn't exists", Toast.LENGTH_SHORT)
+                    Toast.makeText(getActivity(), "Google user doesn't exists, please register first", Toast.LENGTH_SHORT)
                         .show()
                 }
             }

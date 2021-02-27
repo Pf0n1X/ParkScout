@@ -18,10 +18,13 @@ class UserModelFirebase {
         var uid: String = FirebaseAuth.getInstance().currentUser?.uid!!;
         var db: FirebaseFirestore = FirebaseFirestore.getInstance();
 
-        db.collection(COLLECTION_NAME).document(uid)
+        db.collection(COLLECTION_NAME)
+//            .document(uid)
+            .whereEqualTo("uid", uid)
+            .limit(1)
             .get()
-            .addOnSuccessListener{ documentSnapshot: DocumentSnapshot? ->
-                var user: User? = documentSnapshot?.toObject(User::class.java);
+            .addOnSuccessListener{ querySnapshot: QuerySnapshot ->
+                var user: User? = querySnapshot.documents[0].toObject(User::class.java);
 
                 if (user != null) {
                     listener(user);

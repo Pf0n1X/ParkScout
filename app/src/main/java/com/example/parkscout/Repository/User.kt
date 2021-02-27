@@ -13,6 +13,11 @@ data class User (
     var profilePic: String,
     var distance: Int
 ){
+
+    // Constructors
+    constructor() : this("", "", "", 0);
+
+    // Methods
     fun fromMap(map: Map<String?, Any?>) {
         uId = (map["uid"] as String?)!!;
         name = map["name"] as String;

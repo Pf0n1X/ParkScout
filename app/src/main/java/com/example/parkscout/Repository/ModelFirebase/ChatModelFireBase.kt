@@ -44,7 +44,7 @@ class ChatModelFireBase {
                         chatswithchatmessages.add(chatwithchatmessages);
 
                         var userRef: DocumentReference ;
-                        var user: User = User("","","");
+                        var user: User = User("","","", 0);
                         for (chatUsers in doc.data["users"] as ArrayList<*>) {
                             userRef = chatUsers as DocumentReference;
                                 userRef.get().addOnSuccessListener {

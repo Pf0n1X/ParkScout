@@ -10,12 +10,14 @@ data class User (
     @ColumnInfo(name = "uid")
     var uId: String,
     var name: String,
-    var profilePic: String
+    var profilePic: String,
+    var distance: Int
 ){
     fun fromMap(map: Map<String?, Any?>) {
         uId = (map["uid"] as String?)!!;
         name = map["name"] as String;
         profilePic = map["profilePic"] as String;
+        distance = map["distance"] as Int;
     }
 
     fun toMap(): Map<String, Any> {
@@ -23,6 +25,7 @@ data class User (
         result["uid"] = uId
         result["name"] = name;
         result["profilePic"] = profilePic;
+        result["distance"] = distance;
         return result
     }
 }

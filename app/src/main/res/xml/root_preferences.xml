@@ -17,6 +17,7 @@
 
     <SeekBarPreference
         app:defaultValue="50"
+        app:showSeekBarValue="true"
         app:title="Search Range"
         app:key="search_range" />
         

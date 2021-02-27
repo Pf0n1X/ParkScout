@@ -31,4 +31,17 @@ class UserModelFirebase {
                 }
             };
     }
+
+    fun setUser(user: User, listener: () -> Unit) {
+        var uid: String = FirebaseAuth.getInstance().currentUser?.uid!!;
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+
+        db.collection(COLLECTION_NAME)
+            .whereEqualTo("uid", uid)
+            .get().addOnSuccessListener { it: QuerySnapshot ->
+                it.forEach{ doc ->
+                    doc.reference.set(user.toMap()).addOnSuccessListener { listener(); }
+                }
+            }
+    }
 }

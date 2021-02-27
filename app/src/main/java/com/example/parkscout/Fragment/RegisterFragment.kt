@@ -263,6 +263,7 @@ class RegisterFragment : Fragment() {
         newUser["uid"] = uid.toString()
         newUser["name"] = name
         newUser["profilePic"] = profileImageUri
+        newUser["distance"] = 5
 
         FirebaseFirestore.getInstance().collection("users").add(newUser)
             .addOnSuccessListener {

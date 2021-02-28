@@ -11,14 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.R
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import java.util.*
 
-class MessageAdapter(val context: Context, var chatMessages: LinkedList<ChatMessage>, val imageURL: String): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+class MessageAdapter(val context: Context, var chatMessages: List<ChatMessage>, val imageURL: String): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     // Data Members
     private var mContext: Context
-    private var mChatMessages: List<ChatMessage>
+    public var mChatMessages: List<ChatMessage>
     private var mImageURL: String
     private lateinit var mFBUser: FirebaseUser
 
@@ -74,7 +75,7 @@ class MessageAdapter(val context: Context, var chatMessages: LinkedList<ChatMess
 //            return MSG_TYPE_LEFT
 //        }
 
-        if (mChatMessages?.get(position)?.sender == "Tomer") {
+        if (mChatMessages?.get(position)?.sender == FirebaseAuth.getInstance().currentUser?.uid) {
             return MSG_TYPE_RIGHT
         } else {
             return MSG_TYPE_LEFT

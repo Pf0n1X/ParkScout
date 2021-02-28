@@ -20,7 +20,7 @@ data class ChatMessage(
 ) {
     fun fromMap(map: Map<String?, Any?>) {
         id = (map["id"] as String?)!!;
-        chatId = map["chatId"] as String;
+        chatId = (map["chatId"] as String?)!!;
         sender = map["sender"] as String;
         message = map["message"] as String;
         var ts: Timestamp = map["last_updated"] as Timestamp;

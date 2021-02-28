@@ -22,7 +22,7 @@ data class User (
         uId = (map["uid"] as String?)!!;
         name = map["name"] as String;
         profilePic = map["profilePic"] as String;
-        distance = map["distance"] as Int;
+        distance = (map["distance"] as Long).toInt();
     }
 
     fun toMap(): Map<String, Any> {

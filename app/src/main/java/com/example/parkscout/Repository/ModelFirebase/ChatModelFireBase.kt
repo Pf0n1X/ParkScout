@@ -1,4 +1,4 @@
-    package com.example.parkscout.Repository.ModelFirebase
+package com.example.parkscout.Repository.ModelFirebase
 
 import com.example.parkscout.Repository.*
 import com.example.parkscout.Repository.ModelSQL.ChatModelSQL
@@ -8,11 +8,11 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 
-    class ChatModelFireBase {
+class ChatModelFireBase {
     private var modelChatSQL: ChatModelSQL = ChatModelSQL();
-        var isFirstListener: AtomicBoolean = AtomicBoolean(true)
+    var isFirstListener: AtomicBoolean = AtomicBoolean(true)
 
-        companion object {
+    companion object {
         val COLLECTION_NAME: String = "chat";
     }
 
@@ -46,7 +46,7 @@ import java.util.concurrent.atomic.AtomicBoolean
                             chatMessages = chatmessages
                         );
                         var userRef: DocumentReference;
-                        var user: User = User("", "", "");
+                        var user: User = User("", "", "", 0);
                         for (chatUsers in doc.data["users"] as ArrayList<*>) {
                             userRef = chatUsers as DocumentReference;
                             userRef.get().addOnSuccessListener {
@@ -93,7 +93,7 @@ import java.util.concurrent.atomic.AtomicBoolean
                     );
 
                     var userRef: DocumentReference;
-                    var user: User = User("", "", "");
+                    var user: User = User("", "", "", 0);
                     for (chatUsers in dc.document.data["users"] as ArrayList<*>) {
                         userRef = chatUsers as DocumentReference;
                         userRef.get().addOnSuccessListener {
@@ -117,13 +117,13 @@ import java.util.concurrent.atomic.AtomicBoolean
                 }
 
                 listener(ChatWithAlllist);
-            }
-            else {
+            } else {
                 isFirstListener.set(false);
             }
         }
     }
-    fun addMessage(chatWithAll: ChatWithAll, listener: () -> Unit) {
+
+    fun addChat(chatWithAll: ChatWithAll, listener: () -> Unit) {
         var db: FirebaseFirestore = FirebaseFirestore.getInstance();
         var doc: DocumentReference = db.collection(ChatModelFireBase.COLLECTION_NAME)
             .document();
@@ -133,26 +133,38 @@ import java.util.concurrent.atomic.AtomicBoolean
             users.add("/users/" + user.uId);
         }
 
-        var chatCollectionFireStore = chatCollectionFireStore(doc.id,chatWithAll.chat.training_spot_id,chatWithAll.chatWithChatMessages.chatMessages,users)
+        var chatCollectionFireStore = chatCollectionFireStore(
+            doc.id,
+            chatWithAll.chat.training_spot_id,
+            chatWithAll.chatWithChatMessages.chatMessages,
+            users
+        )
 
         doc.set(chatCollectionFireStore.toMap())
             .addOnSuccessListener { listener(); }
             .addOnFailureListener { listener(); }
     }
+
+//    fun addMessage(chatId: Int, message: ChatMessage, listener: () -> Unit) {
+//        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+//        db.collection(ChatModelFireBase.COLLECTION_NAME)
+//            .document(message.chatId)
+//            .set()
+//    }
 }
 
-    data class chatCollectionFireStore(
-        val id : String,
-        val training_spot_id: String,
-        val chat_messages: List<ChatMessage>,
-        val users: List<String>
-    ) {
-        fun toMap(): Map<String, Any> {
-            val result: HashMap<String, Any> = HashMap()
-            result["id"] = id
-            result["training_spot_id"] = training_spot_id;
-            result["chat_messages"] = chat_messages;
-            result["users"] = users;
-            return result
-        }
+data class chatCollectionFireStore(
+    val id: String,
+    val training_spot_id: String,
+    val chat_messages: List<ChatMessage>,
+    val users: List<String>
+) {
+    fun toMap(): Map<String, Any> {
+        val result: HashMap<String, Any> = HashMap()
+        result["id"] = id
+        result["training_spot_id"] = training_spot_id;
+        result["chat_messages"] = chat_messages;
+        result["users"] = users;
+        return result
     }
+}

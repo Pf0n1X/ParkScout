@@ -15,10 +15,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/main_navhost_frag" />
+        app:layout_constraintTop_toTopOf="@+id/chat_navhost_frag" />
 
     <fragment
-        android:id="@+id/main_navhost_frag"
+        android:id="@+id/chat_navhost_frag"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -35,7 +35,8 @@ class ChatAdapter(val context: Context, var chats: LinkedList<ChatWithAll>): Rec
         public var time_last_message: TextView
         public var number_of_updates: TextView
         public var profile_image: ImageView
-        public var chat_id: Int = 0;
+        public var chat_id: String = "";
+        public var chat_index: Int = 0;
 
         init {
             chat_name = itemView.findViewById(R.id.Chat_Name)
@@ -50,7 +51,8 @@ class ChatAdapter(val context: Context, var chats: LinkedList<ChatWithAll>): Rec
                 val navController = Navigation.findNavController(itemView.context as Activity, R.id.chat_navhost_frag);
                 var arguments: Bundle = Bundle();
                 arguments.apply {
-                    putInt("CHAT_ID", chat_id);
+                    putString("CHAT_ID", chat_id);
+                    putInt("CHAT_INDEX", chat_index);
                 }
                 navController.navigate(R.id.action_existing_chats2_to_chatFragment2, arguments);
             };
@@ -64,8 +66,9 @@ class ChatAdapter(val context: Context, var chats: LinkedList<ChatWithAll>): Rec
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var chat = mChats.get(position)
         var rightNow = Calendar.getInstance().timeInMillis;
-        var chatTime = chat.chatWithChatMessages.chatMessages[chat.chatWithChatMessages.chatMessages.lastIndex]?.lastUpdated;
-        holder.chat_id = position;
+        var chatTime = chat.chatWithChatMessages.chatMessages[chat.chatWithChatMessages.chatMessages.lastIndex]?.last_updated;
+        holder.chat_id = chat.chatWithChatMessages.Chat.chatId;
+        holder.chat_index = position;
         holder.time_last_message.text = (((rightNow / 1000) - chatTime) / 60).toString() + "m";
         holder.last_message.text = chat.chatWithChatMessages.chatMessages[chat.chatWithChatMessages.chatMessages.lastIndex]?.message;
     }

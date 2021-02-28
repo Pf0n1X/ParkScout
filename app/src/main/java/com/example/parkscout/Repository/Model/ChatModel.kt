@@ -68,8 +68,8 @@ class ChatModel {
             for (msg in messages) {
                 modelSQL.addChatMessage(msg, null);
 
-                if (msg.lastUpdated > maxLastU) {
-                    maxLastU = msg.lastUpdated;
+                if (msg.last_updated > maxLastU) {
+                    maxLastU = msg.last_updated;
                 }
 
             }
@@ -85,16 +85,21 @@ class ChatModel {
         modelFirebase.getAllMessages(lastUpdated, listener);
     }
 
-    public fun addMessage(msg: ChatMessage, listener: () -> Unit) {
-        var refreshListener: () -> Unit = {
+    public fun addMessage(chatId: String, msg: ChatMessage, listener: () -> Unit) {
+//        var refreshListener: () -> Unit = {
+//            listener();
+//        };
+//
+//        var addListener: () -> Unit = {
+//            refreshAllMessages(refreshListener);
+//        };
+//
+//        modelFirebase.addMessage(msg, addListener);
+        modelChatFirebase.addMessage(chatId, msg, {
+            // TODO: Update the local DB.
+
             listener();
-        };
-
-        var addListener: () -> Unit = {
-            refreshAllMessages(refreshListener);
-        };
-
-        modelFirebase.addMessage(msg, addListener);
+        });
     }
 
     inner class ChatLiveData: MutableLiveData<List<ChatWithAll>>() {

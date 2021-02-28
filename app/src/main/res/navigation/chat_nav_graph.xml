@@ -18,9 +18,16 @@
         android:name="com.example.parkscout.Fragment.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat">
+
         <argument
             android:name="CHAT_ID"
+            app:argType="string"
+            android:defaultValue="" />
+
+        <argument
+            android:name="CHAT_INDEX"
             app:argType="integer"
             android:defaultValue="0" />
+
     </fragment>
 </navigation>

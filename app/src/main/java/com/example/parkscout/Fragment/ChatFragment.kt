@@ -16,15 +16,14 @@ import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parkscout.Adapter.MessageAdapter
-import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.R
 import com.example.parkscout.ViewModel.ChatFragmentViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
-import com.example.parkscout.Repository.Chat
-import com.example.parkscout.Repository.ChatWithAll
+import com.example.parkscout.Repository.*
 import com.example.parkscout.ViewModel.ExistingChatsFragmentViewModel
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_chat.*
 import java.util.*
 
@@ -46,7 +45,9 @@ class ChatFragment : Fragment() {
     private lateinit var mChatMessages: List<ChatMessage>
     private lateinit var mMsgRecyclerView: RecyclerView
     private lateinit var viewModel: ExistingChatsFragmentViewModel;
-    private var chatId: Int = 0;
+    private var mChat: ChatWithAll? = null;
+    private var chatIndex: Int = 0;
+    private var chatId: String = "";
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
@@ -55,7 +56,8 @@ class ChatFragment : Fragment() {
 //            param2 = it.getString(ARG_PARAM2)
 //        }
         arguments?.let {
-            chatId = it.getInt("CHAT_ID");
+            chatIndex = it.getInt("CHAT_INDEX");
+            chatId = it.getString("CHAT_ID", "");
         }
 
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -69,6 +71,7 @@ class ChatFragment : Fragment() {
         // Inflate the layout for this fragment
         val fragmentView = inflater.inflate(R.layout.fragment_chat, container, false)
         mChatMessages = LinkedList<ChatMessage>();
+        mChat = null;
         mMsgRecyclerView = fragmentView.findViewById(R.id.chat_rvMessages)
         mMsgRecyclerView.setHasFixedSize(true)
         var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(activity?.applicationContext)
@@ -106,16 +109,19 @@ class ChatFragment : Fragment() {
 
         // Setup the "Send" button operation.
         chat_btnSendMessage.setOnClickListener{event  ->
-            var msg: ChatMessage = ChatMessage("0", "" ,"Tomer", chat_messageInput.text.toString(), System.currentTimeMillis());
-//            viewModel.addMessage(msg, {
-//                Log.d("TAG", "Success when trying to save");
-//            });
+            var uid: String = FirebaseAuth.getInstance().currentUser?.uid!!;
+            var msg: ChatMessage = ChatMessage("0", chatId , uid, chat_messageInput.text.toString(), System.currentTimeMillis());
+            viewModel.addMessage(chatId, msg, {
+                Log.d("TAG", "Success when trying to save");
+            });
         };
     }
 
     fun readMessages(myId: String, userId: String, imageURL: String) {
         viewModel.chatList.observe(viewLifecycleOwner, { chats: List<ChatWithAll> ->
-            mChatMessages = chats[chatId].chatWithChatMessages.chatMessages;
+            mChatMessages = chats[chatIndex].chatWithChatMessages.chatMessages;
+            mChat = chats[chatIndex];
+            mAdapter.mChat = mChat;
             mAdapter.mChatMessages = mChatMessages;
             mAdapter.notifyDataSetChanged()
         })
@@ -128,7 +134,7 @@ class ChatFragment : Fragment() {
 //        reference = FirebaseDatabase.instance.getReference("Messages")
 
         // TODO: Att a valueEventListener to the db reference
-         mAdapter = MessageAdapter(this.requireContext(), mChatMessages, imageURL);
+         mAdapter = MessageAdapter(this.requireContext(), mChatMessages, imageURL, mChat);
         mMsgRecyclerView.adapter = mAdapter
     }
 

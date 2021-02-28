@@ -36,6 +36,7 @@ class ChatModelFireBase {
                         modelChatSQL.addChat(chat, {});
 
                         for (chatm in doc.data["chat_messages"] as ArrayList<*>) {
+                            message = ChatMessage("", "", "", "", 0);
                             message.fromMap(chatm as Map<String?, Any?>);
                             chatmessages.add(message);
                             modelChatSQL.addChatMessage(message, {});
@@ -145,12 +146,13 @@ class ChatModelFireBase {
             .addOnFailureListener { listener(); }
     }
 
-//    fun addMessage(chatId: Int, message: ChatMessage, listener: () -> Unit) {
-//        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
-//        db.collection(ChatModelFireBase.COLLECTION_NAME)
-//            .document(message.chatId)
-//            .set()
-//    }
+    fun addMessage(chatId: String, message: ChatMessage, listener: () -> Unit) {
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+        db.collection(ChatModelFireBase.COLLECTION_NAME)
+            .document(chatId)
+            .update("chat_messages", FieldValue.arrayUnion(message.toMap()))
+            .addOnSuccessListener { listener(); };
+    }
 }
 
 data class chatCollectionFireStore(

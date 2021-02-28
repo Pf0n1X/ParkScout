@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.parkscout.R
-import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.Repository.ChatWithAll
 import java.util.*
 
@@ -49,6 +47,9 @@ class ChatAdapter(val context: Context, var chats: LinkedList<ChatWithAll>): Rec
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var chat = mChats.get(position)
+        var rightNow = Calendar.getInstance().timeInMillis;
+        var chatTime = chat.chatWithChatMessages.chatMessages[chat.chatWithChatMessages.chatMessages.lastIndex]?.lastUpdated;
+        holder.time_last_message.text = (((rightNow / 1000) - chatTime) / 60).toString() + "m";
         holder.last_message.text = chat.chatWithChatMessages.chatMessages[chat.chatWithChatMessages.chatMessages.lastIndex]?.message;
     }
 }

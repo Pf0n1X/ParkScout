@@ -3,11 +3,12 @@ package com.example.parkscout.Repository
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 
-@Entity(tableName = "chat",
-    foreignKeys = [ForeignKey(entity = TrainingSpot::class,
-        parentColumns = ["parkId"],
-        childColumns = ["training_spot_id"],
-        onDelete = CASCADE)]
+@Entity(tableName = "chat"
+//    ,
+//    foreignKeys = [ForeignKey(entity = TrainingSpot::class,
+//        parentColumns = ["parkId"],
+//        childColumns = ["training_spot_id"],
+//        onDelete = CASCADE)]
 )
 data class Chat(
     @PrimaryKey

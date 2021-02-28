@@ -75,15 +75,9 @@ class MessageAdapter(val context: Context, var chatMessages: List<ChatMessage>, 
     }
 
     override fun getItemViewType(position: Int): Int {
-        // TODO: Uncomment when firebase is ready
-//        mFBUser = FirebaseAuth.getFInstance().currentUser!!
 
-//        if (mChatMessages[position].sender.equals(mFBUser.uid)) {
-//            return MSG_TYPE_RIGHT
-//        } else {
-//            return MSG_TYPE_LEFT
-//        }
-
+        // If the sender is the connected user, make the message appear on the right.
+        // Otherwise, show it on the left.
         if (mChatMessages?.get(position)?.sender == FirebaseAuth.getInstance().currentUser?.uid) {
             return MSG_TYPE_RIGHT
         } else {

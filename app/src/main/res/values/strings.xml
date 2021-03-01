@@ -40,4 +40,16 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="map_key">AIzaSyAnuIy58d0pc8fZtclTxjqyqzDD1L3K1ek</string>
+    <string name="tennis">tennis</string>
+    <string name="tennisId">1</string>
+    <string name="soccer">soccer</string>
+    <string name="soccerId">2</string>
+    <string name="basketball">basketball</string>
+    <string name="basketbalId">3</string>
+    <string name="volleyball">volleyball</string>
+    <string name="vollyballId">4</string>
+    <string name="gym_park">gym park</string>
+    <string name="gymId">5</string>
+    <string name="other">Other</string>
+    <string name="OtherId">6</string>
 </resources>

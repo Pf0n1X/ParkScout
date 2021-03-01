@@ -96,6 +96,8 @@ dependencies {
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
 
+    debugCompile 'com.amitshekhar.android:debug-db:1.0.0'
+
     // Declare the dependency for the Cloud Storage library
     // When using the BoM, you don't specify versions in Firebase library dependencies
 

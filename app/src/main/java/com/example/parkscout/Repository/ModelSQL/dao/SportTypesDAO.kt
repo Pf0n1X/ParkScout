@@ -9,9 +9,9 @@ import com.example.parkscout.Repository.SportTypes
 
 @Dao
 interface SportTypesDAO {
-    @Query("SELECT * FROM sport_types")
-    fun getSportTypes(): LiveData<List<SportTypes>>;
+    @Query("SELECT * FROM sport_types WHERE park_Id = :trainingSpotId")
+    fun getSportTypesByPark( trainingSpotId : String): List<SportTypes>;
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertSportType(sportTypes: SportTypes)
+    fun insertSportType(sportTypes: List<SportTypes>)
 }

@@ -1,20 +1,31 @@
 package com.example.parkscout
 
 import android.content.Intent
+import android.location.Address
+import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.example.parkscout.ui.login.ChatActivity
 import com.example.parkscout.Fragment.ParkDetails
+import com.example.parkscout.Repository.ChatMessage
+import com.example.parkscout.Repository.TrainingSpotWithAll
+import com.example.parkscout.ViewModel.ChatFragmentViewModel
+import com.example.parkscout.ViewModel.SearchLoctionViewModel
+import com.example.parkscout.ViewModel.TrainingSpotViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -28,6 +39,8 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import kotlinx.android.synthetic.main.activity_main.*
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
+import java.io.IOException
+import java.util.*
 
 class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     private lateinit var mMap: GoogleMap
@@ -36,6 +49,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     var marker: Marker? = null
     var bundle=Bundle()
     private lateinit var placesClient: PlacesClient
+    private val viewModel: SearchLoctionViewModel by viewModels()
+    private lateinit var viewModelTrainingSpot: TrainingSpotViewModel;
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,11 +64,63 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         placesClient = Places.createClient(this)
       var fl :FrameLayout = findViewById(R.id.park_layout)
         fl.setTransitionVisibility(View.INVISIBLE)
+
+        viewModelTrainingSpot = ViewModelProvider(this).get(TrainingSpotViewModel::class.java)
+
         // Setup the app and the bottom app bar UI.
         setupBaseDesign()
 
         // Navigation
         setupNavigation()
+        viewModel.selectedItem.observe(this, Observer { item ->
+            searchLocation(item)
+
+        })
+        val parkListener: Observer<List<TrainingSpotWithAll>> = Observer { parks ->
+            for (park in parks){
+//                 Add a markers to map
+                mMap.addMarker(MarkerOptions().position(LatLng(
+                park.trainingSpot.parkLocation.xscale,
+                park.trainingSpot.parkLocation.yscale))
+                .title(park.trainingSpot.parkName))
+            }
+
+        };
+        viewModelTrainingSpot.parkList.observe(this, parkListener);
+
+    }
+    fun searchLocation(location:String) {
+        var addressList: List<Address>? = null
+
+        if (location == null || location == "") {
+            Toast.makeText(
+                this.getApplicationContext(),
+                "provide location",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        else{
+            val geoCoder = Geocoder(this)
+            try {
+                addressList = geoCoder.getFromLocationName(location, 1)
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            if (addressList != null) {
+                if(addressList.size > 0) {
+                    val address = addressList!![0]
+                    val latLng = LatLng(address.latitude, address.longitude)
+                    mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
+                    mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+                    Toast.makeText(
+                        this,
+                        address.latitude.toString() + " " + address.longitude,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -136,17 +203,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val israel = LatLng(32.087621357223206, 34.791755821340146)
-        val israel2 = LatLng(32.10449058653846, 34.80548873117373)
-        val israel3 = LatLng(32.07365826022543, 34.77321639306481)
-        val israel4 = LatLng(32.08383989573791, 34.80274214920701)
-        mMap.addMarker(MarkerOptions().position(israel).title("park1"))
-        mMap.addMarker(MarkerOptions().position(israel2).title("park2"))
-        mMap.addMarker(MarkerOptions().position(israel3).title("park3"))
-        mMap.addMarker(MarkerOptions().position(israel4).title("park4"))
-      //  mMap.moveCamera(CameraUpdateFactory.newLatLng(israel))
-        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(israel, 13f))
+//        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(israel, 13f))
 
         mMap.setOnMarkerClickListener { marker ->
             if (marker.isInfoWindowShown) {
@@ -165,9 +222,6 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
             setFragment(fragment)
 
-//            val args = ParkDetailsArgs.Builder(marker.title).build().toBundle()
-//            val navController = Navigation.findNavController(this, R.id.park_details)
-//            navController.navigate(R.id.action_global_parkDetails2, args)
             true
         }
 

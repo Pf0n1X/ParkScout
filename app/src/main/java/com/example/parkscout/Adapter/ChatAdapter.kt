@@ -11,8 +11,15 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.parkscout.R
 import com.example.parkscout.Repository.ChatWithAll
+import com.example.parkscout.Repository.User
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import java.sql.Time
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ChatAdapter(val context: Context, var chats: LinkedList<ChatWithAll>): RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
@@ -65,11 +72,24 @@ class ChatAdapter(val context: Context, var chats: LinkedList<ChatWithAll>): Rec
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var chat = mChats.get(position)
-        var rightNow = Calendar.getInstance().timeInMillis;
-        var chatTime = chat.chatWithChatMessages.chatMessages[chat.chatWithChatMessages.chatMessages.lastIndex]?.last_updated;
+
+        // If it is a personal chat show details about the other user.
+        if (chat.chat.training_spot_id == "") {
+            // TODO: Find the other user and put his picture and name in the view.
+            var otherUser: User? = chat.chatWithUsers.Users.find { user: User -> user.uId != FirebaseAuth.getInstance().currentUser?.uid }
+            if (otherUser != null) {
+                holder.chat_name.text = otherUser?.name;
+                Glide.with(holder.itemView).load(otherUser.profilePic).into(holder.profile_image);
+            }
+        } else {
+            // TODO: Find the training spot name and picture and put them in the view.
+        }
+
         holder.chat_id = chat.chatWithChatMessages.Chat.chatId;
         holder.chat_index = position;
-        holder.time_last_message.text = (((rightNow / 1000) - chatTime) / 60).toString() + "m";
+        var curDate: Date = Timestamp(chat.chatWithChatMessages.chatMessages[chat.chatWithChatMessages.chatMessages.size - 1].last_updated, 0).toDate();
+        var dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm")
+        holder.time_last_message.text = dateFormat.format(curDate);
         holder.last_message.text = chat.chatWithChatMessages.chatMessages[chat.chatWithChatMessages.chatMessages.lastIndex]?.message;
     }
 }

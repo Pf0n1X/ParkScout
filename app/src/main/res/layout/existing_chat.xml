@@ -6,7 +6,7 @@
     android:layout_width="400dp"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
-    android:background="@drawable/background_left_message"
+    android:background="@drawable/existing_chat_bg"
     android:padding="10dp">
 
     <androidx.cardview.widget.CardView

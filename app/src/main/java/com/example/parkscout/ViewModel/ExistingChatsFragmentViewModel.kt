@@ -16,4 +16,9 @@ class ExistingChatsFragmentViewModel: ViewModel() {
     init {
         this.chatList = ChatModel.instance.getAllChats();
     }
+
+    // Methods
+    fun addMessage(chatId: String, msg: ChatMessage, listener: () -> Unit) {
+        ChatModel.instance.addMessage(chatId, msg, listener);
+    }
 }

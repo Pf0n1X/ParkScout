@@ -49,22 +49,30 @@ class Existing_chats : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
         val fragmentView = inflater.inflate(R.layout.fragment_existing_chats, container, false);
-        var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(activity?.applicationContext)
+        var linearLayoutManager: LinearLayoutManager =
+            LinearLayoutManager(activity?.applicationContext)
         viewModel = ViewModelProvider(this).get(ExistingChatsFragmentViewModel::class.java);
         mChats = viewModel.chatList;
-        mAdapter = ChatAdapter(this.requireContext(), mChats.value!! as LinkedList<ChatWithAll>);
 
         mMsgRecyclerView = fragmentView.findViewById(R.id.Existing_chats_chats)
         mMsgRecyclerView.setHasFixedSize(true)
         mMsgRecyclerView.layoutManager = linearLayoutManager
-        mMsgRecyclerView.adapter = mAdapter
-
+        var list: LinkedList<ChatWithAll> = LinkedList<ChatWithAll>();
+        list.addAll(mChats.value!!);
+        mAdapter = ChatAdapter(this.requireContext(), list);
+        mMsgRecyclerView.adapter = mAdapter;
+        mAdapter.notifyDataSetChanged();
+        mMsgRecyclerView.scrollToPosition(mChats.value!!.size - 1);
 
         val chatListener: Observer<List<ChatWithAll>> = Observer { chats ->
             mAdapter.chats.clear();

@@ -11,14 +11,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.R
+import com.example.parkscout.Repository.ChatWithAll
+import com.example.parkscout.Repository.User
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import java.util.*
 
-class MessageAdapter(val context: Context, var chatMessages: LinkedList<ChatMessage>, val imageURL: String): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+class MessageAdapter(val context: Context, var chatMessages: List<ChatMessage>, val imageURL: String, var chat: ChatWithAll?): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     // Data Members
     private var mContext: Context
-    private var mChatMessages: List<ChatMessage>
+    public var mChatMessages: List<ChatMessage>
+    public var mChat: ChatWithAll?;
     private var mImageURL: String
     private lateinit var mFBUser: FirebaseUser
 
@@ -31,6 +35,7 @@ class MessageAdapter(val context: Context, var chatMessages: LinkedList<ChatMess
         mContext = context
         mChatMessages = chatMessages
         mImageURL = imageURL
+        mChat = chat;
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -57,24 +62,23 @@ class MessageAdapter(val context: Context, var chatMessages: LinkedList<ChatMess
         var msg = mChatMessages.get(position)
         holder.show_message.text = msg?.message
 
-        if (imageURL.equals("default")) {
+        if (imageURL.equals("default") || mChat == null) {
             holder.profile_image.setImageResource(R.drawable.profile_icon)
         } else {
-            Glide.with(mContext).load(mImageURL).into(holder.profile_image)
+            var user: User? = mChat!!.chatWithUsers.Users.find { user: User -> user.uId == msg.sender  };
+            if (user != null) {
+                Glide.with(mContext).load(user.profilePic).into(holder.profile_image)
+            } else {
+                holder.profile_image.setImageResource(R.drawable.profile_icon)
+            }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        // TODO: Uncomment when firebase is ready
-//        mFBUser = FirebaseAuth.getFInstance().currentUser!!
 
-//        if (mChatMessages[position].sender.equals(mFBUser.uid)) {
-//            return MSG_TYPE_RIGHT
-//        } else {
-//            return MSG_TYPE_LEFT
-//        }
-
-        if (mChatMessages?.get(position)?.sender == "Tomer") {
+        // If the sender is the connected user, make the message appear on the right.
+        // Otherwise, show it on the left.
+        if (mChatMessages?.get(position)?.sender == FirebaseAuth.getInstance().currentUser?.uid) {
             return MSG_TYPE_RIGHT
         } else {
             return MSG_TYPE_LEFT

@@ -17,7 +17,7 @@ class ChatFragmentViewModel: ViewModel() {
     }
 
     // Methods
-    fun addMessage(msg: ChatMessage, listener: () -> Unit) {
-        ChatModel.instance.addMessage(msg, listener);
+    fun addMessage(chatId: String, msg: ChatMessage, listener: () -> Unit) {
+        ChatModel.instance.addMessage(chatId, msg, listener);
     }
 }

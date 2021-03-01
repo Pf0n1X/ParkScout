@@ -8,5 +8,26 @@
         android:id="@+id/existing_chats2"
         android:name="com.example.parkscout.Fragment.Existing_chats"
         android:label="fragment_existing_chats"
-        tools:layout="@layout/fragment_existing_chats" />
+        tools:layout="@layout/fragment_existing_chats" >
+        <action
+            android:id="@+id/action_existing_chats2_to_chatFragment2"
+            app:destination="@id/chatFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatFragment2"
+        android:name="com.example.parkscout.Fragment.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat">
+
+        <argument
+            android:name="CHAT_ID"
+            app:argType="string"
+            android:defaultValue="" />
+
+        <argument
+            android:name="CHAT_INDEX"
+            app:argType="integer"
+            android:defaultValue="0" />
+
+    </fragment>
 </navigation>

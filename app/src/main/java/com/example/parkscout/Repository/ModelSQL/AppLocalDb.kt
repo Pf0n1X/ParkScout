@@ -9,7 +9,7 @@ import com.example.parkscout.ParkScoutApplication
 import com.example.parkscout.Repository.*
 import com.example.parkscout.Repository.ModelSQL.dao.*
 
-@Database(entities = [ChatMessage::class , TrainingSpot:: class,Comment:: class,Rating::class,SportTypes::class, Chat::class,Images::class, User::class, UserChatCrossRef::class], version = 7)
+@Database(entities = [ChatMessage::class , TrainingSpot:: class,Comment:: class,Rating::class,SportTypes::class, Chat::class,Images::class, User::class, UserChatCrossRef::class], version = 6)
 abstract class AppLocalDb: RoomDatabase() {
 
     abstract fun chatMessageDao(): ChatMessageDao;

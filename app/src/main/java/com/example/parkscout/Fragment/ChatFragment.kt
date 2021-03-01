@@ -63,6 +63,10 @@ class ChatFragment : Fragment() {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
      }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -110,7 +114,7 @@ class ChatFragment : Fragment() {
         // Setup the "Send" button operation.
         chat_btnSendMessage.setOnClickListener{event  ->
             var uid: String = FirebaseAuth.getInstance().currentUser?.uid!!;
-            var msg: ChatMessage = ChatMessage("0", chatId , uid, chat_messageInput.text.toString(), System.currentTimeMillis());
+            var msg: ChatMessage = ChatMessage("" + mChatMessages.size , chatId , uid, chat_messageInput.text.toString(), System.currentTimeMillis());
             viewModel.addMessage(chatId, msg, {
                 Log.d("TAG", "Success when trying to save");
             });

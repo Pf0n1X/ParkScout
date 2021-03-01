@@ -17,7 +17,7 @@ import java.util.*
 
 class ChatAdapter(val context: Context, var chats: LinkedList<ChatWithAll>): RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
     private lateinit var mContext: Context
-    private var mChats: List<ChatWithAll> = chats
+    public var mChats: List<ChatWithAll> = chats
 
     init {
         mChats = chats

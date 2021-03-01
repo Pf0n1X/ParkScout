@@ -7,7 +7,6 @@ import com.google.firebase.firestore.*
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
-
 class ChatModelFireBase {
     private var modelChatSQL: ChatModelSQL = ChatModelSQL();
     var isFirstListener: AtomicBoolean = AtomicBoolean(true)
@@ -30,10 +29,13 @@ class ChatModelFireBase {
             .addOnCompleteListener(OnCompleteListener {
 
                 if (it.isSuccessful) {
+                    ChatWithAlllist.clear();
+                    chats.clear();
                     for (doc in it.result!!) {
                         chat.fromMap(doc.data)
                         chats.add(chat);
                         modelChatSQL.addChat(chat, {});
+                        chatmessages.clear();
 
                         for (chatm in doc.data["chat_messages"] as ArrayList<*>) {
                             message = ChatMessage("", "", "", "", 0);
@@ -57,7 +59,7 @@ class ChatModelFireBase {
                                     UserChatCrossRef(user.uId, chat.chatId);
                                 modelChatSQL.addUser(user, {});
                                 modelChatSQL.addUserChatRelation(userChatCrossRef, {});
-                                listener(ChatWithAlllist)
+//                                listener(ChatWithAlllist)
                             }
                         }
 
@@ -78,16 +80,21 @@ class ChatModelFireBase {
 
         query.addSnapshotListener { value: QuerySnapshot?, error: FirebaseFirestoreException? ->
             if (!isFirstListener.get()) {
-                for (dc in value!!.documentChanges) {
-                    chat.fromMap(dc.document.data)
+                ChatWithAlllist.clear();
+                chats.clear();
+                for (dc in value!!.documents) {
+                    chat.fromMap(dc.data as Map<String?, Any?>)
                     chats.add(chat);
                     modelChatSQL.addChat(chat, {});
+                    chatmessages = LinkedList<ChatMessage>();
 
-                    for (chatm in dc.document.data["chat_messages"] as ArrayList<*>) {
+                    for (chatm in (dc.data as Map<String?, Any?>)["chat_messages"] as ArrayList<*>) {
+                        message = ChatMessage("", "", "", "", 0);
                         message.fromMap(chatm as Map<String?, Any?>);
                         chatmessages.add(message);
                         modelChatSQL.addChatMessage(message, {});
                     }
+
                     var chatwithchatmessages: ChatWithChatMessages = ChatWithChatMessages(
                         Chat = chat,
                         chatMessages = chatmessages
@@ -95,7 +102,7 @@ class ChatModelFireBase {
 
                     var userRef: DocumentReference;
                     var user: User = User("", "", "", 0);
-                    for (chatUsers in dc.document.data["users"] as ArrayList<*>) {
+                    for (chatUsers in (dc.data as Map<String?, Any?>)["users"] as ArrayList<*>) {
                         userRef = chatUsers as DocumentReference;
                         userRef.get().addOnSuccessListener {
                             it.data?.let { it1 -> user.fromMap(it1) };
@@ -104,7 +111,7 @@ class ChatModelFireBase {
                                 UserChatCrossRef(user.uId, chat.chatId);
                             modelChatSQL.addUser(user, {});
                             modelChatSQL.addUserChatRelation(userChatCrossRef, {});
-                            listener(ChatWithAlllist)
+//                            listener(ChatWithAlllist)
                         }
                     }
                     var chatWithUsers: ChatWithUsers = ChatWithUsers(

@@ -51,8 +51,7 @@ class LoginFragment1 : Fragment() {
                 loggedIn()
             })
             .addOnFailureListener {
-                Toast.makeText(getActivity(), "Sign in failed: ${it.message}", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(getActivity(), "Sign in failed: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -79,7 +78,7 @@ class LoginFragment1 : Fragment() {
                 checkIfUserExists(it.result?.user?.uid.toString())
             })
             .addOnFailureListener {
-                Toast.makeText(getActivity(), "Register failed: ${it.message}", Toast.LENGTH_SHORT)
+                Toast.makeText(getActivity(), "Google login failed: ${it.message}", Toast.LENGTH_SHORT)
                     .show()
             }
     }
@@ -108,8 +107,7 @@ class LoginFragment1 : Fragment() {
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
-
-                Log.d("Main", "Google sign in failed", e)
+                Toast.makeText(getActivity(), "Google sign in failed: ${e}", Toast.LENGTH_SHORT).show()
             }
         }
     }

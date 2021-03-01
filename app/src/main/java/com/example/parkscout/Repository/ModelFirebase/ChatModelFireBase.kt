@@ -59,7 +59,7 @@ class ChatModelFireBase {
                                     UserChatCrossRef(user.uId, chat.chatId);
                                 modelChatSQL.addUser(user, {});
                                 modelChatSQL.addUserChatRelation(userChatCrossRef, {});
-//                                listener(ChatWithAlllist)
+                                listener(ChatWithAlllist)
                             }
                         }
 

@@ -23,7 +23,7 @@ class UserModelFirebase {
             .whereEqualTo("uid", uid)
             .limit(1)
             .get()
-            .addOnSuccessListener{ querySnapshot: QuerySnapshot ->
+            .addOnSuccessListener { querySnapshot: QuerySnapshot ->
                 var user: User? = querySnapshot.documents[0].toObject(User::class.java);
 
                 if (user != null) {
@@ -39,9 +39,17 @@ class UserModelFirebase {
         db.collection(COLLECTION_NAME)
             .whereEqualTo("uid", uid)
             .get().addOnSuccessListener { it: QuerySnapshot ->
-                it.forEach{ doc ->
+                it.forEach { doc ->
                     doc.reference.set(user.toMap()).addOnSuccessListener { listener(); }
                 }
             }
+    }
+
+    fun addUser(user: User, listener: () -> Unit) {
+        var uid: String = user.uId;
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+
+        db.collection(COLLECTION_NAME).document(user.uId).set(user)
+            .addOnSuccessListener { listener(); }
     }
 }

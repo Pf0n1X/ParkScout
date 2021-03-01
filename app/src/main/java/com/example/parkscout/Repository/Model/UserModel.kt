@@ -41,6 +41,13 @@ class UserModel {
         });
     }
 
+    fun addUser(user: User, listener: () -> Unit) {
+        this.user.value = user;
+        modelFirebase.addUser(user, {
+            modelSQL.setUser(user, listener)
+        });
+    }
+
     inner class UserLiveData: MutableLiveData<User>() {
 
         // Methods

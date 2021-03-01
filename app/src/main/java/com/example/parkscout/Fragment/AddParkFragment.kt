@@ -18,6 +18,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.parkscout.R
+import com.example.parkscout.Repository.*
+import com.example.parkscout.ViewModel.TrainingSpotViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -30,6 +32,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import java.io.IOException
 
@@ -58,7 +61,8 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
     private var cameraPosition: CameraPosition? = null
     private lateinit var placesClient: PlacesClient
     private lateinit var park_location: TextView
-
+    private lateinit var trainModel: TrainingSpotViewModel;
+    private  var latLng= defaultLocation;
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,6 +80,8 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
     ): View? {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_add_park, container, false)
+        trainModel =TrainingSpotViewModel()
+
         var selectPhotoBtn =
             rootView.findViewById(R.id.uploadPhotobBtn) as Button
 
@@ -96,15 +102,31 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
             val park_name = rootView.findViewById(R.id.ParkName) as TextView
             val parkKind =  rootView.findViewById(R.id.park_kind) as ChipGroup
             val facilities = rootView.findViewById(R.id.facilities) as TextView
-            if (park_name.text == null || park_name.text == ""  || park_name.text == "Enter Park Name"){
-                val msg = "park name is invalid"
-                // TODO : initiate successful logged in experience
-                Toast.makeText(
-                    requireContext(),
-                    "$msg",
-                    Toast.LENGTH_LONG
-                ).show()
+            val parkLocation = com.example.parkscout.data.Types.Location(latLng.latitude,latLng.longitude)
+            val comment : Comment = Comment("", "", "", null)
+
+            val rating : Rating = Rating("", "", 0, null)
+
+            val sportTypesList : MutableList<SportTypes>  =  mutableListOf();
+
+            val ids: List<Int> = parkKind.getCheckedChipIds()
+            for (id in ids) {
+                val chip: Chip = parkKind.findViewById(id)
+
+                sportTypesList.add(SportTypes(chip.hint.toString(),chip.text.toString(),"0"))
             }
+            var trainingSpot = TrainingSpot("0",park_name.text.toString(),parkLocation,"",facilities.text.toString());
+            var park : TrainingSpotWithAll = TrainingSpotWithAll(
+                (trainingSpot),
+                TrainingSpotsWithComments(trainingSpot,null),
+                TrainingSpotWithRating(trainingSpot,null),
+                TrainingSpotWithSportTypes(trainingSpot,sportTypesList),
+                TrainingSpotWithImages(trainingSpot,null)
+            )
+            trainModel.addPark(park) {
+                Log.d("TAG", "Success when trying to save");
+            }
+
             val savedMsg = "Saved"
             // TODO : initiate successful logged in experience
             Toast.makeText(
@@ -119,7 +141,9 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         val mapFragment =
             childFragmentManager.fragments[0] as SupportMapFragment?
         mapFragment!!.getMapAsync(this)
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(
+            requireActivity()
+        )
         if (savedInstanceState != null) {
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION)
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION)
@@ -165,7 +189,11 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         var addressList: List<Address>? = null
 
         if (location == null || location == "") {
-            Toast.makeText(getActivity()?.getApplicationContext(),"provide location",Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                getActivity()?.getApplicationContext(),
+                "provide location",
+                Toast.LENGTH_SHORT
+            ).show()
         }
         else{
             val geoCoder = Geocoder(requireContext())
@@ -175,11 +203,19 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-            val address = addressList!![0]
-            val latLng = LatLng(address.latitude, address.longitude)
-            map!!.addMarker(MarkerOptions().position(latLng).title(location))
-            map!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
-            Toast.makeText(requireContext(), address.latitude.toString() + " " + address.longitude, Toast.LENGTH_LONG).show()
+            if (addressList != null) {
+                if (addressList.size > 0) {
+                    val address = addressList!![0]
+                     latLng = LatLng(address.latitude, address.longitude)
+                    map!!.addMarker(MarkerOptions().position(latLng).title(location))
+                    map!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+                    Toast.makeText(
+                        requireContext(),
+                        address.latitude.toString() + " " + address.longitude,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
         }
     }
     private fun getLocationPermission() {
@@ -188,26 +224,34 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
          * device. The result of the permission request is handled by a callback,
          * onRequestPermissionsResult.
          */
-        if (ContextCompat.checkSelfPermission(this.requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(
+                this.requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            )
             == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true
         } else {
-            ActivityCompat.requestPermissions(this.requireContext() as Activity, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+            ActivityCompat.requestPermissions(
+                this.requireContext() as Activity,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+            )
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>,
-                                            grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         locationPermissionGranted = false
         when (requestCode) {
             PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
                     locationPermissionGranted = true
                 }
             }
@@ -241,24 +285,32 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
          */
         try {
             if (locationPermissionGranted) {
-                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(
+                    requireActivity()
+                )
                 val locationResult = fusedLocationProviderClient.lastLocation
 
-                locationResult.addOnCompleteListener{task ->
+                locationResult.addOnCompleteListener{ task ->
                     if (task.isSuccessful) {
                         // Set the map's camera position to the current location of the device.
                         lastKnownLocation = task.result
                         if (lastKnownLocation != null) {
-                            map?.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                LatLng(lastKnownLocation!!.latitude,
-                                    lastKnownLocation!!.longitude), DEFAULT_ZOOM.toFloat()))
+                            map?.moveCamera(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    LatLng(
+                                        lastKnownLocation!!.latitude,
+                                        lastKnownLocation!!.longitude
+                                    ), DEFAULT_ZOOM.toFloat()
+                                )
+                            )
                         }
                     } else {
                         Log.d(TAG, "Current location is null. Using defaults.")
                         Log.e(TAG, "Exception: %s", task.exception)
                         map?.moveCamera(
                             CameraUpdateFactory
-                            .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
+                                .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
+                        )
                         map?.uiSettings?.isMyLocationButtonEnabled = false
                     }
                 }

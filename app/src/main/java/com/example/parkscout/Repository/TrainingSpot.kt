@@ -1,48 +1,54 @@
 package com.example.parkscout.Repository
 
 import androidx.room.*
-import com.example.parkscout.data.model.Location
-import com.example.parkscout.data.model.Rating
-import com.example.parkscout.data.model.SportType
 import java.util.*
 
 @Entity(tableName = "training_spot")
 data class TrainingSpot(
     @PrimaryKey
     @ColumnInfo(name = "parkId")
-    val parkId: String = UUID.randomUUID().toString(),
-    val parkName : String,
-    @Embedded val parkLocation: Location,
-    @Embedded val comments : Comment,
-    @Embedded val ratings : Rating,
-    @Embedded val sportTypes : SportType,
-    val chatId : String
+    var parkId: String = UUID.randomUUID().toString(),
+    var parkName: String,
+    @Embedded var parkLocation: com.example.parkscout.data.Types.Location,
+    var chatId: String,
+    var facilities : String
+//    var ImgUrl:
 ){
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as TrainingSpot
-
-        if (parkId != other.parkId) return false
-        if (parkName != other.parkName) return false
-        if (parkLocation != other.parkLocation) return false
-        if (comments != other.comments) return false
-        if (ratings != other.ratings) return false
-        if (sportTypes != other.sportTypes) return false
-        if (chatId != other.chatId) return false
-
-        return true
+    fun fromMap(map: Map<String?, Any?>) {
+        parkId = (map["parkId"] as String?)!!;
+        parkName = map["parkName"] as String;
+        parkLocation = map["parkLocation"] as com.example.parkscout.data.Types.Location;
+//        comments = map["comments"] as Comment;
+//        ratings = map["ratings"] as Rating;
+  //      sportTypes = map["sportTypes"] as MutableList<SportTypes>;
+        chatId = map["chatId"] as String;
+        facilities = map["facilities"] as String;
     }
 
-    override fun hashCode(): Int {
-        var result = parkId.hashCode()
-        result = 31 * result + parkName.hashCode()
-        result = 31 * result + parkLocation.hashCode()
-        result = 31 * result + comments.hashCode()
-        result = 31 * result + ratings.hashCode()
-        result = 31 * result + sportTypes.hashCode()
-        result = 31 * result + chatId.hashCode()
+    fun toMap(): Map<String, Any> {
+        val result: HashMap<String, Any> = HashMap()
+        result["parkId"] = parkId
+        result["parkName"] = parkName
+        result["parkLocation"] = parkLocation
+//        result["comments"] = comments
+//        result["ratings"] = ratings
+    //    result["sportTypes"] = sportTypes
+        result["chatId"] = chatId
+        result["facilities"] = facilities
+
         return result
     }
+
+    @JvmName("getParkId1")
+    fun getParkId(): String {
+        return parkId
+    }
+
+//    fun getTypeName(): String {
+//        return type_name
+//    }
+//
+//    fun setTypeId(typeId: String) {
+//        type_id = typeId
+//    }
 }

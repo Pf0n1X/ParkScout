@@ -10,7 +10,7 @@ import com.example.parkscout.Repository.Rating
 @Dao
 interface RatingDao {
     @Query("SELECT * FROM rating WHERE trainingSpotId = :trainingSpotId")
-    fun getParkRating( trainingSpotId : String): LiveData<List<Rating>>;
+    fun getParkRating( trainingSpotId : String): List<Rating>;
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertRating(rating: Rating)

@@ -10,7 +10,7 @@ import com.example.parkscout.Repository.Comment
 @Dao
 interface CommentsDao {
     @Query("SELECT * FROM comments WHERE trainingId = :trainingSpotId")
-    fun getAllCommentsOfPark( trainingSpotId : String): LiveData<List<Comment>>;
+    fun getAllCommentsOfPark( trainingSpotId : String): List<Comment>;
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertComment(comment: Comment)

@@ -6,15 +6,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.parkscout.ParkScoutApplication
-import com.example.parkscout.Repository.Chat
-import com.example.parkscout.Repository.ChatMessage
-import com.example.parkscout.Repository.ChatWithAll
-import com.example.parkscout.Repository.ChatWithChatMessages
+import com.example.parkscout.Repository.*
 import com.example.parkscout.Repository.ModelFirebase.ChatMessageModelFirebase
 import com.example.parkscout.Repository.ModelFirebase.ChatModelFireBase
 import com.example.parkscout.Repository.ModelSQL.ChatMessageModelSQL
 import com.example.parkscout.Repository.ModelSQL.ChatModelSQL
 import java.util.*
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 class ChatModel {
 
@@ -31,6 +30,7 @@ class ChatModel {
     private var messageList: ChatMessageLiveData;
     private var chatList: ChatLiveData;
     var modelChatFirebase: ChatModelFireBase;
+    private var executor: Executor;
 
     // Constructors
     init {
@@ -40,15 +40,11 @@ class ChatModel {
         this.messageList = ChatMessageLiveData();
         this.chatList = ChatLiveData();
         this.modelChatFirebase = ChatModelFireBase();
+        this.executor = Executors.newSingleThreadExecutor();
     }
 
     // Methods
     public fun getAllMessages(): LiveData<List<ChatMessage>> {
-//        if (this.messageList.value == null) {
-//            this.messageList = modelSQL.getAllMessages();
-//            refreshAllMessages(null);
-//        }
-//
         return this.messageList;
     }
 
@@ -72,12 +68,11 @@ class ChatModel {
             for (msg in messages) {
                 modelSQL.addChatMessage(msg, null);
 
-                if (msg.lastUpdated > maxLastU) {
-                    maxLastU = msg.lastUpdated;
+                if (msg.last_updated > maxLastU) {
+                    maxLastU = msg.last_updated;
                 }
 
             }
-
             // Update the local last update date.
             sp.edit().putLong("lastUpdated", maxLastU).commit();
 
@@ -90,16 +85,21 @@ class ChatModel {
         modelFirebase.getAllMessages(lastUpdated, listener);
     }
 
-    public fun addMessage(msg: ChatMessage, listener: () -> Unit) {
-        var refreshListener: () -> Unit = {
+    public fun addMessage(chatId: String, msg: ChatMessage, listener: () -> Unit) {
+//        var refreshListener: () -> Unit = {
+//            listener();
+//        };
+//
+//        var addListener: () -> Unit = {
+//            refreshAllMessages(refreshListener);
+//        };
+//
+//        modelFirebase.addMessage(msg, addListener);
+        modelChatFirebase.addMessage(chatId, msg, {
+            // TODO: Update the local DB.
+
             listener();
-        };
-
-        var addListener: () -> Unit = {
-            refreshAllMessages(refreshListener);
-        };
-
-        modelFirebase.addMessage(msg, addListener);
+        });
     }
 
     inner class ChatLiveData: MutableLiveData<List<ChatWithAll>>() {
@@ -116,23 +116,40 @@ class ChatModel {
             val sp: SharedPreferences = ParkScoutApplication.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
 
             // Select
+            executor.execute{
+                val chats = modelChatSQL.getAllChats() ;
+                val chatsWithChatMessages = modelChatSQL.getAllChatsWithChatMessages();
+                val chatsWithUsers = modelChatSQL.getAllChatsWithUsers();
 
-            modelChatFirebase.getAllChats("", { chats: List<ChatWithAll> ->
+                val chatWithAllList: LinkedList<ChatWithAll> = LinkedList();
+                for (chat in chats) {
+                    var chatwithchatmessages: ChatWithChatMessages =
+                        chatsWithChatMessages.find { it.Chat == chat }?.chatMessages?.let {
+                            ChatWithChatMessages(
+                                Chat = chat,
+                                chatMessages = it
+                            )
+                        }!!
+                    var chatWithUsers: ChatWithUsers =
+                        chatsWithUsers.find { it.Chat == chat }?.Users?.let {
+                            ChatWithUsers(
+                                Chat = chat,
+                                Users = it
+                            )
+                        }!!
+                    var chatWithAll = ChatWithAll(chat, chatwithchatmessages, chatWithUsers);
+                    chatWithAllList.add(chatWithAll);
+                }
+                postValue(chatWithAllList);
+            }
+
+            modelChatFirebase.getAllChats("") { chats: List<ChatWithAll> ->
                 value = chats;
-////                for (msg in messages) {
-////                    modelSQL.addChatMessage(msg, {
-//////                        (value as LinkedList).add(msg);
-//                    });
-//                }
-            });
+            };
         }
         override fun onInactive() {
             super.onInactive();
-
-//            modelFirebase.cancelGetAllMessages();
         }
-
-
     }
 
     inner class ChatMessageLiveData: MutableLiveData<List<ChatMessage>>() {
@@ -149,22 +166,19 @@ class ChatModel {
             val sp: SharedPreferences = ParkScoutApplication.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
             var lastUpdated: Long = sp.getLong("lastUpdated", 0);
 
-            modelFirebase.getAllMessages(lastUpdated, { messages: List<ChatMessage> ->
+            modelFirebase.getAllMessages(lastUpdated) { messages: List<ChatMessage> ->
                 value = messages;
                 Log.d("BP", "The messages were received: " + messages.size);
 
                 for (msg in messages) {
-                    modelSQL.addChatMessage(msg, {
-//                        (value as LinkedList).add(msg);
-                    });
+                    modelSQL.addChatMessage(msg) {
+                    };
                 }
-            });
+            };
         }
 
         override fun onInactive() {
             super.onInactive();
-
-//            modelFirebase.cancelGetAllMessages();
         }
     }
 }

@@ -5,7 +5,7 @@ import androidx.room.Relation
 import com.google.firebase.Timestamp
 
 data class ChatWithChatMessages(
-    @Embedded val Chat: String,
+    @Embedded val Chat: Chat,
     @Relation(
         parentColumn = "chatId",
         entityColumn = "chatId"

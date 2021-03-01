@@ -127,7 +127,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     fun setupNavigation() {
 
         // Bottom App Bar Navigation
-        val navController = Navigation.findNavController(this, R.id.main_navhost_frag)
+        val navController = Navigation.findNavController(this, R.id.chat_navhost_frag)
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
 
         val nav : BottomNavigationView = findViewById(R.id.bottomNavigationView)

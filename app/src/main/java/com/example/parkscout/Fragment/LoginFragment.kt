@@ -51,8 +51,7 @@ class LoginFragment1 : Fragment() {
                 loggedIn()
             })
             .addOnFailureListener {
-                Toast.makeText(getActivity(), "Sign in failed: ${it.message}", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(getActivity(), "Sign in failed: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -74,10 +73,12 @@ class LoginFragment1 : Fragment() {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         FirebaseAuth.getInstance().signInWithCredential(credential)
             .addOnCompleteListener({
+//                Log.d("Main", "Successfully Logged in with google uid: ${it.result?.user?.uid.toString()}")
+//                loggedIn()
                 checkIfUserExists(it.result?.user?.uid.toString())
             })
             .addOnFailureListener {
-                Toast.makeText(getActivity(), "Register failed: ${it.message}", Toast.LENGTH_SHORT)
+                Toast.makeText(getActivity(), "Google login failed: ${it.message}", Toast.LENGTH_SHORT)
                     .show()
             }
     }
@@ -90,7 +91,7 @@ class LoginFragment1 : Fragment() {
                     Log.d("Main", "Successfully Logged in with google uid: ${uid}")
                     loggedIn()
                 } else {
-                    Toast.makeText(getActivity(), "Google user doesn't exists", Toast.LENGTH_SHORT)
+                    Toast.makeText(getActivity(), "Google user doesn't exists, please register first", Toast.LENGTH_SHORT)
                         .show()
                 }
             }
@@ -106,8 +107,7 @@ class LoginFragment1 : Fragment() {
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
-
-                Log.d("Main", "Google sign in failed", e)
+                Toast.makeText(getActivity(), "Google sign in failed: ${e}", Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.parkscout.Repository.Model.UserModel
 import com.example.parkscout.Repository.User
 
-class SettingsFragmentViewModel: ViewModel() {
+class RegisterFragmentViewModel: ViewModel() {
 
     // Data Members
     var user: LiveData<User>
@@ -17,7 +17,7 @@ class SettingsFragmentViewModel: ViewModel() {
     }
 
     // Methods
-    fun setUser(user: User, listener: () -> Unit) {
-        UserModel.instance.setUser(user, listener);
+    fun addUser(user: User, listener: () -> Unit) {
+        UserModel.instance.addUser(user, listener);
     }
 }

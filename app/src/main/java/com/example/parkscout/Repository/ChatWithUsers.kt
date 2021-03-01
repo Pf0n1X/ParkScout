@@ -5,10 +5,10 @@ import androidx.room.Junction
 import androidx.room.Relation
 
 data class ChatWithUsers (
-    @Embedded val Chat: String,
+    @Embedded val Chat: Chat,
     @Relation(
-        parentColumn = "ChatId",
-        entityColumn = "uId",
+        parentColumn = "chatId",
+        entityColumn = "uid",
         associateBy = Junction(UserChatCrossRef::class)
     )
     val Users: List<User>

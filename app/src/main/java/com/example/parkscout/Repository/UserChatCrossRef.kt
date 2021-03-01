@@ -2,8 +2,10 @@ package com.example.parkscout.Repository
 
 import androidx.room.Entity
 
-@Entity(primaryKeys = ["uId", "ChatId"])
+@Entity(primaryKeys = ["uid", "chatId"])
 data class UserChatCrossRef(
-    val userId: String,
+    val uid: String,
     val chatId: String
-)
+){
+
+}

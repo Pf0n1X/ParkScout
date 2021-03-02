@@ -179,7 +179,7 @@ class LoginFragment1 : Fragment() {
 
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
-            loggedIn()
+//            loggedIn()
         }
 
         val registerText: TextView = view?.findViewById(R.id.moveToReg) as TextView

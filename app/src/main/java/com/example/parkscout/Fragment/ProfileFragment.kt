@@ -2,7 +2,6 @@ package com.example.parkscout.Fragment
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import com.bumptech.glide.Glide
 import com.example.parkscout.R
-import com.example.parkscout.ViewModel.ExistingChatsFragmentViewModel
 import com.example.parkscout.ViewModel.ProfileViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -23,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.example.parkscout.Repository.User
+import com.google.android.material.button.MaterialButton
 
 class ProfileFragment : Fragment() , OnMapReadyCallback {
 
@@ -33,6 +32,7 @@ class ProfileFragment : Fragment() , OnMapReadyCallback {
     private lateinit var mUserName: TextView;
     private lateinit var mUserDesc: TextView;
     private lateinit var mUserID: String;
+    private lateinit var mChatButton: MaterialButton;
 
     // Methods
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,14 +58,31 @@ class ProfileFragment : Fragment() , OnMapReadyCallback {
         mUserImageView = rootview.findViewById<ImageView>(R.id.profile_user_image);
         mUserDesc = rootview.findViewById<TextView>(R.id.profile_user_desc);
         mUserName = rootview.findViewById<TextView>(R.id.profile_user_name);
+        mChatButton = rootview.findViewById<MaterialButton>(R.id.profile_chat_button);
 
         if (mUserID != null) {
             viewModel.getUserByID(mUserID);
-            viewModel.user.observe(viewLifecycleOwner, { user: User ->
+            var listener = { user: User ->
+
+                // Change the text and image fields according to the loaded user.
                 Glide.with(activity as Activity).load(user.profilePic).into(mUserImageView);
                 mUserName.text = user.name;
                 mUserDesc.text = user.description;
-            });
+
+                // Show or hide the chat button, according to whether or no it's the logged in user or not.
+                var loggedInUserID: String? = FirebaseAuth.getInstance().currentUser?.uid;
+
+                if (user.uId == loggedInUserID) {
+                    mChatButton.visibility = View.GONE;
+                    mChatButton.isEnabled = false;
+                } else {
+                    mChatButton.visibility = View.VISIBLE;
+                    mChatButton.isEnabled = true;
+                }
+            }
+
+            // Observer changes.
+            viewModel.user.observe(viewLifecycleOwner, listener);
         }
 
         return rootview

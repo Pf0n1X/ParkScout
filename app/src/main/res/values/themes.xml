@@ -16,6 +16,7 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textColorSecondary">@color/quantum_grey</item>
+        <item name="colorAccent">@color/orange</item>
     </style>
 
     <style name="Theme.ParkScout.NoActionBar">
@@ -26,4 +27,5 @@
     <style name="Theme.ParkScout.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.ParkScout.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    
 </resources>

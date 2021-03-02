@@ -14,7 +14,7 @@
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="65dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,12 +29,16 @@
                 app:cardCornerRadius="20dp"
                 tools:cardCornerRadius="10dp">
 
-                <Button
-                    android:id="@+id/button2"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/profile.chat_button"
                     android:layout_width="wrap_content"
+                    android:backgroundTint="@color/orange"
+                    android:textColor="@color/white"
                     android:layout_height="wrap_content"
                     android:text="@string/chat"
-                    android:textSize="12sp" />
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textSize="12sp"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

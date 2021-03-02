@@ -246,10 +246,11 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         when (requestCode) {
             Companion.CHAT_ACTIVITY_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    // TODO Extract the data returned from the child Activity.
                     val returnValue = data?.getStringExtra("user_id");
+                    var arguments = Bundle();
+                    arguments.putString("user_id", returnValue);
                     navController
-                        .navigate(R.id.action_global_profileFragment);
+                        .navigate(R.id.action_global_profileFragment, arguments);
                 }
             }
         }

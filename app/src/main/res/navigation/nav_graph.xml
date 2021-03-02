@@ -42,7 +42,11 @@
         app:destination="@id/searchFragment" />
     <action
         android:id="@+id/action_global_profileFragment"
-        app:destination="@id/profileFragment" />
+        app:destination="@id/profileFragment" >
+        <argument
+            android:name="user_id"
+            app:argType="string" />
+    </action>
     <action
         android:id="@+id/action_global_chatFragment"
         app:destination="@id/chatFragment" />

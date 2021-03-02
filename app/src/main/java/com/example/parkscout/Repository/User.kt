@@ -11,11 +11,12 @@ data class User (
     var uId: String,
     var name: String,
     var profilePic: String,
-    var distance: Int
+    var distance: Int,
+    var description: String
 ){
 
     // Constructors
-    constructor() : this("", "", "", 0);
+    constructor() : this("", "", "", 0, "");
 
     // Methods
     fun fromMap(map: Map<String?, Any?>) {
@@ -23,6 +24,7 @@ data class User (
         name = map["name"] as String;
         profilePic = map["profilePic"] as String;
         distance = (map["distance"] as Long).toInt();
+        description = map["description"] as String;
     }
 
     fun toMap(): Map<String, Any> {
@@ -31,6 +33,8 @@ data class User (
         result["name"] = name;
         result["profilePic"] = profilePic;
         result["distance"] = distance;
+        result["description"] = description;
+
         return result
     }
 }

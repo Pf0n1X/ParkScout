@@ -19,9 +19,14 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.parkscout.MainActivity
 import com.example.parkscout.R
+import com.example.parkscout.Repository.Chat
+import com.example.parkscout.Repository.User
+import com.example.parkscout.ViewModel.RegisterFragmentViewModel
+import com.example.parkscout.ViewModel.SettingsFragmentViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -57,6 +62,9 @@ class RegisterFragment : Fragment() {
     private var locationPermissionGranted = false
     lateinit var facebookSignInButton: ImageButton
     var profilePic: ImageView? = null
+
+    // Data Members
+    private lateinit var viewModel: RegisterFragmentViewModel;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mAuth = FirebaseAuth.getInstance();
@@ -113,7 +121,7 @@ class RegisterFragment : Fragment() {
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(getActivity(), "Register failed: ${it.message}", Toast.LENGTH_SHORT)
+                Toast.makeText(getActivity(), "Upload image failed: ${it.message}", Toast.LENGTH_SHORT)
                     .show()
             }
     }
@@ -218,8 +226,7 @@ class RegisterFragment : Fragment() {
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
-
-                Log.d("Main", "Google sign in failed", e)
+                Toast.makeText(getActivity(), "Google sign in failed", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -242,7 +249,7 @@ class RegisterFragment : Fragment() {
             .limit(1).get()
             .addOnSuccessListener { documents ->
                 if (documents.size() > 0)
-                    Toast.makeText(getActivity(), "Google user already exists", Toast.LENGTH_SHORT)
+                    Toast.makeText(getActivity(), "Google user already exists, please login", Toast.LENGTH_SHORT)
                         .show()
                 else {
                     val acct: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(activity)
@@ -259,21 +266,27 @@ class RegisterFragment : Fragment() {
 
     public fun SaveUserInformationToFirebase(profileImageUri: String, name: String) {
         val uid = FirebaseAuth.getInstance().uid
+        var user: User = User(uid.toString(), name, profileImageUri, 5 );
+
         val newUser: MutableMap<String, Any> = HashMap()
         newUser["uid"] = uid.toString()
         newUser["name"] = name
         newUser["profilePic"] = profileImageUri
         newUser["distance"] = 5
 
-        FirebaseFirestore.getInstance().collection("users").add(newUser)
-            .addOnSuccessListener {
-                Toast.makeText(getActivity(), "User created successfully", Toast.LENGTH_SHORT)
-                    .show()
-                registered()
-            }
-            .addOnFailureListener {
-                Log.d("Main", "Info failed: ${it.message}")
-            }
+        viewModel.addUser(user, {});
+        Toast.makeText(getActivity(), "User created successfully", Toast.LENGTH_SHORT).show()
+        registered()
+
+//        FirebaseFirestore.getInstance().collection("users").add(newUser)
+//            .addOnSuccessListener {
+//                Toast.makeText(getActivity(), "User created successfully", Toast.LENGTH_SHORT)
+//                    .show()
+//                registered()
+//            }
+//            .addOnFailureListener {
+//                Log.d("Main", "Info failed: ${it.message}")
+//            }
     }
 
     private fun moveToMainActivity() {
@@ -295,6 +308,8 @@ class RegisterFragment : Fragment() {
         var signupbtn = view.findViewById(R.id.signupbtn) as Button
         var selectPhotoBtn =
             view.findViewById(R.id.reg_select_photo) as Button
+
+        viewModel = ViewModelProvider(this).get(RegisterFragmentViewModel::class.java);
 
 //        FirebaseAuth.getInstance().signOut()
 

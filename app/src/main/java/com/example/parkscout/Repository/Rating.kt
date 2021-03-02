@@ -14,5 +14,5 @@ data class Rating (
     @ColumnInfo(name = "trainingSpotId")
     val trainingSpotId : String,
     val rate : Int,
-    @Embedded val rate_dateTime : DateTimeFormatter
+    @Embedded val rate_dateTime : DateTimeFormatter?
 )

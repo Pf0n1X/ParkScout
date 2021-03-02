@@ -80,6 +80,8 @@ class ChatModel {
             if (refListener != null) {
                 refListener();
             }
+
+
         }
 
         modelFirebase.getAllMessages(lastUpdated, listener);
@@ -143,9 +145,10 @@ class ChatModel {
                 postValue(chatWithAllList);
             }
 
-            modelChatFirebase.getAllChats("") { chats: List<ChatWithAll> ->
+            // TODO: User the user ID to get the specific user's chats.
+            modelChatFirebase.getAllChats("", { chats: List<ChatWithAll> ->
                 value = chats;
-            };
+            });
         }
         override fun onInactive() {
             super.onInactive();

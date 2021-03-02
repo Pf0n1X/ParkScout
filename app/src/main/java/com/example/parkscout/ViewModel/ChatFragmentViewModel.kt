@@ -5,6 +5,7 @@ import com.example.parkscout.Repository.ChatMessage
 import androidx.lifecycle.LiveData
 import com.example.parkscout.Repository.Model.ChatModel
 
+// TODO: Delete this class.
 class ChatFragmentViewModel: ViewModel() {
 
     // Data Members

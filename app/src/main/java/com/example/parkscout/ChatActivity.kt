@@ -1,4 +1,4 @@
-package com.example.parkscout.ui.login
+package com.example.parkscout
 
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity

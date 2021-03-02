@@ -53,6 +53,7 @@ class ChatModelFireBase {
                         for (chatUsers in doc.data["users"] as ArrayList<*>) {
                             userRef = chatUsers as DocumentReference;
                             userRef.get().addOnSuccessListener {
+                                user = User("", "", "", 0);
                                 it.data?.let { it1 -> user.fromMap(it1) };
                                 users.add(user);
                                 var userChatCrossRef: UserChatCrossRef =

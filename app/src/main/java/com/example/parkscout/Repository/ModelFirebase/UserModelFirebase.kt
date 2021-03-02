@@ -52,4 +52,21 @@ class UserModelFirebase {
         db.collection(COLLECTION_NAME).document(user.uId).set(user)
             .addOnSuccessListener { listener(); }
     }
+
+    fun getUserByID(id: String, listener: (User) -> Unit) {
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+
+        db.collection(COLLECTION_NAME)
+//            .document(uid)
+            .whereEqualTo("uid", id)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { querySnapshot: QuerySnapshot ->
+                var user: User? = querySnapshot.documents[0].toObject(User::class.java);
+
+                if (user != null) {
+                    listener(user);
+                }
+            };
+    }
 }

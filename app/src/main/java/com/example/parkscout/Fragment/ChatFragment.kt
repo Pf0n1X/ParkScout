@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageButton
+import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -21,6 +23,7 @@ import com.example.parkscout.ViewModel.ChatFragmentViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
+import com.bumptech.glide.Glide
 import com.example.parkscout.Repository.*
 import com.example.parkscout.ViewModel.ExistingChatsFragmentViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -45,6 +48,8 @@ class ChatFragment : Fragment() {
     private lateinit var mChatMessages: List<ChatMessage>
     private lateinit var mMsgRecyclerView: RecyclerView
     private lateinit var viewModel: ExistingChatsFragmentViewModel;
+    private lateinit var mTVUserName: TextView;
+    private lateinit var mIBUserImage: ImageButton;
     private var mChat: ChatWithAll? = null;
     private var chatIndex: Int = 0;
     private var chatId: String = "";
@@ -77,13 +82,17 @@ class ChatFragment : Fragment() {
         mChatMessages = LinkedList<ChatMessage>();
         mChat = null;
         mMsgRecyclerView = fragmentView.findViewById(R.id.chat_rvMessages)
+        mTVUserName = fragmentView.findViewById<TextView>(R.id.chat_tvName);
+        mIBUserImage = fragmentView.findViewById<ImageButton>(R.id.chat_ibUserImage);
         mMsgRecyclerView.setHasFixedSize(true)
         var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(activity?.applicationContext)
         mMsgRecyclerView.layoutManager = linearLayoutManager
         viewModel = ViewModelProvider(this).get(ExistingChatsFragmentViewModel::class.java);
 
+        // TODO: Remove parameters.
         readMessages("Tom", "Eden", "https://mymodernmet.com/wp/wp-content/uploads/2019/09/100k-ai-faces-5.jpg")
 
+        // TODO: Handle user profile navigation.
         fragmentView.findViewById<ImageButton>(R.id.chat_ibUserImage)
                 .setOnClickListener{ view ->
             val navController = Navigation
@@ -118,6 +127,8 @@ class ChatFragment : Fragment() {
             viewModel.addMessage(chatId, msg, {
                 Log.d("TAG", "Success when trying to save");
             });
+
+            chat_messageInput.setText("");
         };
     }
 
@@ -125,6 +136,20 @@ class ChatFragment : Fragment() {
         viewModel.chatList.observe(viewLifecycleOwner, { chats: List<ChatWithAll> ->
             mChatMessages = chats[chatIndex].chatWithChatMessages.chatMessages;
             mChat = chats[chatIndex];
+
+            if (mChat!!.chat.training_spot_id == "") {
+                // TODO: Show the other user's image and name.
+                var otherUser: User? = mChat!!.chatWithUsers.Users.find { user: User -> user.uId != FirebaseAuth.getInstance().currentUser?.uid };
+                var otherUserName: String? = otherUser?.name;
+
+                if (otherUserName != null) {
+                    mTVUserName.text = otherUserName
+                }
+
+                Glide.with(requireContext()).load(otherUser!!.profilePic).into(mIBUserImage);
+            } else {
+                // TODO: Show the park image or a generic image and the park's name.
+            }
             mAdapter.mChat = mChat;
             mAdapter.mChatMessages = mChatMessages;
             mAdapter.notifyDataSetChanged()
@@ -138,6 +163,7 @@ class ChatFragment : Fragment() {
 //        reference = FirebaseDatabase.instance.getReference("Messages")
 
         // TODO: Att a valueEventListener to the db reference
+        // TODO: Remove imageURL parameter.
          mAdapter = MessageAdapter(this.requireContext(), mChatMessages, imageURL, mChat);
         mMsgRecyclerView.adapter = mAdapter
     }

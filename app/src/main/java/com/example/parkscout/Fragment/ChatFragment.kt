@@ -152,7 +152,8 @@ class ChatFragment : Fragment() {
             }
             mAdapter.mChat = mChat;
             mAdapter.mChatMessages = mChatMessages;
-            mAdapter.notifyDataSetChanged()
+            mAdapter.notifyDataSetChanged();
+            mMsgRecyclerView.scrollToPosition(mChatMessages.size - 1);
         })
 //        mChatMessages = viewModel.msgList;
 //        mChatMessages = ArrayList<ChatMessage>()

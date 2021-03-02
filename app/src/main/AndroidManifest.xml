@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:name=".ParkScoutApplication"
         android:theme="@style/Theme.ParkScout">
-        <activity android:name=".ui.login.ChatActivity"
+        <activity android:name=".ChatActivity"
             android:windowSoftInputMode="adjustResize">
 
         </activity>

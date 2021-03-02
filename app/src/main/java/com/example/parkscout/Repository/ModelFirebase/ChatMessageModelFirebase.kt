@@ -7,6 +7,7 @@ import io.perfmark.Link
 import java.sql.Timestamp
 import java.util.*
 
+// TODO: Delete this class
 class ChatMessageModelFirebase {
 
     companion object {

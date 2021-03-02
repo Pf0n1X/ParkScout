@@ -1,5 +1,6 @@
 package com.example.parkscout
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -11,9 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
-import com.example.parkscout.ui.login.ChatActivity
 import com.example.parkscout.Fragment.ParkDetails
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -22,12 +23,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import kotlinx.android.synthetic.main.activity_main.*
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.net.PlacesClient
 
 class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     private lateinit var mMap: GoogleMap
@@ -36,6 +37,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     var marker: Marker? = null
     var bundle=Bundle()
     private lateinit var placesClient: PlacesClient
+    private lateinit var navController: NavController;
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +62,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     fun setupNavigation() {
 
         // Bottom App Bar Navigation
-        val navController = Navigation.findNavController(this, R.id.chat_navhost_frag)
+        navController = Navigation.findNavController(this, R.id.chat_navhost_frag)
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
 
         val nav : BottomNavigationView = findViewById(R.id.bottomNavigationView)
@@ -98,7 +100,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         // Handle FAB navigation
         fab.setOnClickListener{view ->
             val chatIntent: Intent = Intent(this, ChatActivity::class.java);
-            startActivity(chatIntent);
+            startActivityForResult(chatIntent, Companion.CHAT_ACTIVITY_CODE);
             overridePendingTransition(R.anim.slide_out_bottom, R.anim.nothing);
         }
     }
@@ -165,9 +167,6 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
             setFragment(fragment)
 
-//            val args = ParkDetailsArgs.Builder(marker.title).build().toBundle()
-//            val navController = Navigation.findNavController(this, R.id.park_details)
-//            navController.navigate(R.id.action_global_parkDetails2, args)
             true
         }
 
@@ -184,5 +183,23 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
             fragmentTransaction.add(R.id.fragment2, fragment)
             fragmentTransaction.commit()
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data);
+        when (requestCode) {
+            Companion.CHAT_ACTIVITY_CODE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    // TODO Extract the data returned from the child Activity.
+                    val returnValue = data?.getStringExtra("user_id");
+                    navController
+                        .navigate(R.id.action_global_profileFragment);
+                }
+            }
+        }
+    }
+
+    companion object {
+        private var CHAT_ACTIVITY_CODE: Int = 1;
     }
 }

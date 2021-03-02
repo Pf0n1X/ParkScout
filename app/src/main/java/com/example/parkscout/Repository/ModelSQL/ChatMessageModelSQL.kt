@@ -4,6 +4,7 @@ import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import com.example.parkscout.Repository.ChatMessage
 
+// TODO: Delete this class.
 class ChatMessageModelSQL {
     fun getAllMessages(): LiveData<List<ChatMessage>> {
         return AppLocalDb.getInstance().chatMessageDao().getAllMessages();

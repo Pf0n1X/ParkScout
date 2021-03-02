@@ -30,8 +30,8 @@
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
-            app:key="email"
-            app:title="Email Address"
+            app:key="description"
+            app:title="Description"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

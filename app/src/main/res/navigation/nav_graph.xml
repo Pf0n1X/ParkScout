@@ -65,6 +65,10 @@
             android:name="star_rate"
             android:defaultValue="0"
             app:argType="integer" />
+
+        <action
+            android:id="@+id/action_parkDetails2_to_parkDetailsFragment"
+            app:destination="@id/parkDetailsFragment" />
     </fragment>
     <action
         android:id="@+id/action_global_parkDetails2"
@@ -114,5 +118,9 @@
         android:name="com.example.parkscout.PersonalInfo"
         android:label="fragment_personal_info"
         tools:layout="@layout/fragment_personal_info" /><action android:id="@+id/action_global_personalInfo" app:destination="@id/personalInfo"/>
->>>>>>> main
+    <fragment
+        android:id="@+id/parkDetailsFragment"
+        android:name="com.example.parkscout.Fragment.ParkDetailsFragment"
+        android:label="fragment_park_details_layout"
+        tools:layout="@layout/fragment_park_details_layout" />
 </navigation>

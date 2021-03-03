@@ -266,7 +266,7 @@ class RegisterFragment : Fragment() {
 
     public fun SaveUserInformationToFirebase(profileImageUri: String, name: String) {
         val uid = FirebaseAuth.getInstance().uid
-        var user: User = User(uid.toString(), name, profileImageUri, 5 );
+        var user: User = User(uid.toString(), name, profileImageUri, 5 ,"");
 
         val newUser: MutableMap<String, Any> = HashMap()
         newUser["uid"] = uid.toString()

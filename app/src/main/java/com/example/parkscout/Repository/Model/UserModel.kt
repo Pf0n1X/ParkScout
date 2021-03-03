@@ -1,5 +1,6 @@
 package com.example.parkscout.Repository.Model
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.parkscout.Repository.ModelFirebase.UserModelFirebase
 import com.example.parkscout.Repository.ModelSQL.UserModelSQL
@@ -48,6 +49,16 @@ class UserModel {
         });
     }
 
+    fun getUserByID(uid: String): LiveData<User> {
+        modelFirebase.getUserByID(uid, { fbUser: User ->
+            modelSQL.setUser(fbUser, {
+                user.postValue(fbUser);
+            });
+        });
+
+        return user;
+    }
+
     inner class UserLiveData: MutableLiveData<User>() {
 
         // Methods
@@ -70,4 +81,6 @@ class UserModel {
             super.onInactive();
         }
     }
+
+
 }

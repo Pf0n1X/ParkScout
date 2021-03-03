@@ -14,7 +14,7 @@
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="65dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,58 +29,68 @@
                 app:cardCornerRadius="20dp"
                 tools:cardCornerRadius="10dp">
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/profile.chat_button"
+                    android:layout_width="wrap_content"
+                    android:backgroundTint="@color/orange"
+                    android:textColor="@color/white"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chat"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textSize="12sp"/>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="691dp"
+                    android:layout_height="match_parent"
                     android:paddingLeft="25dp"
+                    android:paddingTop="100dp"
                     android:paddingRight="25dp">
 
                     <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="335dp"
-                        android:layout_height="61dp"
-                        android:layout_marginTop="100dp"
-                        android:layout_marginBottom="10dp"
-                        android:text="TextView"
-                        app:layout_constraintBottom_toTopOf="@+id/textView3"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.463"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.854" />
-
-                    <TextView
-                        android:id="@+id/textView3"
-                        android:layout_width="344dp"
-                        android:layout_height="75dp"
-                        android:layout_marginTop="6dp"
-                        android:text="TextView"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.492"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-                    <Button
-                        android:id="@+id/button2"
+                        android:id="@+id/profile.user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
-                        android:text="@string/chat"
-                        android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="This is a user name"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@+id/profile.user_desc"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.060000002" />
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/profile.user_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:layout_marginBottom="10dp"
+                        android:text="This is a description"
+                        app:layout_constraintBottom_toTopOf="@+id/profile.map_title"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/profile.user_name" />
+
+                    <TextView
+                        android:id="@+id/profile.map_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Last Place Visited"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/profile.user_desc" />
 
                     <FrameLayout
                         android:id="@+id/frameLayout"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="50dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.74"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView3">
+                        app:layout_constraintTop_toBottomOf="@+id/profile.map_title">
 
                         <fragment
                             android:id="@+id/mainMap"
@@ -112,9 +122,10 @@
                 app:cardElevation="20dp">
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/profile.user_image"
                     android:layout_width="130dp"
                     android:layout_height="130dp"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/profile_pic" />
             </androidx.cardview.widget.CardView>
         </LinearLayout>

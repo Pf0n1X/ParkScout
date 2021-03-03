@@ -49,10 +49,11 @@ class ChatModelFireBase {
                             chatMessages = chatmessages
                         );
                         var userRef: DocumentReference;
-                        var user: User = User("", "", "", 0);
+                        var user: User = User("", "", "", 0,"");
                         for (chatUsers in doc.data["users"] as ArrayList<*>) {
                             userRef = chatUsers as DocumentReference;
                             userRef.get().addOnSuccessListener {
+                                user = User("", "", "", 0, "");
                                 it.data?.let { it1 -> user.fromMap(it1) };
                                 users.add(user);
                                 var userChatCrossRef: UserChatCrossRef =
@@ -101,7 +102,7 @@ class ChatModelFireBase {
                     );
 
                     var userRef: DocumentReference;
-                    var user: User = User("", "", "", 0);
+                    var user: User = User("", "", "", 0, "");
                     for (chatUsers in (dc.data as Map<String?, Any?>)["users"] as ArrayList<*>) {
                         userRef = chatUsers as DocumentReference;
                         userRef.get().addOnSuccessListener {

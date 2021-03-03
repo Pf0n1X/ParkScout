@@ -55,6 +55,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val editor: SharedPreferences.Editor = settings.edit();
                 editor.putInt("search_range", obUser.distance);
                 editor.putString("name", obUser.name);
+                editor.putString("description", obUser.description);
                 var profileImg: CircleImageView? = view?.findViewById<CircleImageView>(R.id.profileImage);
                 if (profileImg != null) {
                     Glide.with(this).load(obUser.profilePic).into(profileImg)
@@ -83,6 +84,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
             if (curUser != null) {
                 curUser.name = newValue as String;
+                viewModel.setUser(curUser, {
+
+                });
+            }
+
+            true;
+        };
+
+        // Handle the name preference.
+        val descPreferences: Preference? = findPreference("description");
+        descPreferences?.setOnPreferenceChangeListener{ preference, newValue ->
+            var curUser: User? = viewModel.user.value;
+
+            if (curUser != null) {
+                curUser.description = newValue as String;
                 viewModel.setUser(curUser, {
 
                 });

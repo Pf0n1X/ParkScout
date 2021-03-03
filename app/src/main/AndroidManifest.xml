@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".park_full_details"
+            android:name=".ParkDetailsActivity"
             android:label="@string/title_activity_park_full_details"
             android:theme="@style/Theme.ParkScout.NoActionBar"></activity>
 

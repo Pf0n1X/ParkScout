@@ -9,7 +9,7 @@ import android.widget.Button
 import android.widget.RatingBar
 import androidx.fragment.app.Fragment
 import com.example.parkscout.R
-import com.example.parkscout.park_full_details
+import com.example.parkscout.ParkDetailsActivity
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -52,7 +52,7 @@ class ParkDetails : Fragment()   {
      //       final FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
       //          fragTransaction.setCustomAnimations(R.anim.fragment_slide_from_right, R.anim.animation_leave);
 
-            val intent = Intent(activity, park_full_details::class.java)
+            val intent = Intent(activity, ParkDetailsActivity::class.java)
             intent.putExtra("parkId",requireArguments().getString("parkId") )
             startActivity(intent)
 

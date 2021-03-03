@@ -1,28 +1,21 @@
 package com.example.parkscout.Fragment
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parkscout.Adapter.ChatAdapter
-import com.example.parkscout.Adapter.MessageAdapter
 import com.example.parkscout.R
-import com.example.parkscout.Repository.Chat
-import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.Repository.ChatWithAll
 import com.example.parkscout.Repository.User
-import com.example.parkscout.ViewModel.ChatFragmentViewModel
 import com.example.parkscout.ViewModel.ExistingChatsFragmentViewModel
 import java.util.*
 
@@ -66,7 +59,6 @@ class Existing_chats : Fragment() {
             mAdapter.chats.clear();
             mAdapter.chats.addAll(chats);
             mAdapter.notifyDataSetChanged();
-//            mMsgRecyclerView.scrollToPosition(chats.size - 1);
         };
 
         viewModel.chatList.observe(viewLifecycleOwner, chatListener);

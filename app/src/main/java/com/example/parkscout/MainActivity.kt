@@ -209,6 +209,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
 
     }
+
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap

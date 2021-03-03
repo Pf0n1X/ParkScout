@@ -3,6 +3,7 @@ package com.example.parkscout.Repository.ModelFirebase
 import com.example.parkscout.Repository.*
 import com.example.parkscout.Repository.ModelSQL.ChatModelSQL
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -23,8 +24,9 @@ class ChatModelFireBase {
         var chats: LinkedList<Chat> = LinkedList<Chat>();
         var chatmessages: LinkedList<ChatMessage> = LinkedList<ChatMessage>();
         var users: LinkedList<User> = LinkedList<User>();
-        var query: Query = db.collection(ChatModelFireBase.COLLECTION_NAME)
-//            .whereArrayContains("users",FirebaseAuth.getInstance().currentUser?.uid);
+        var ref:DocumentReference =
+            FirebaseAuth.getInstance().currentUser?.uid?.let { db.collection("Users").document(it) }!!
+        var query: Query = db.collection(ChatModelFireBase.COLLECTION_NAME).whereArrayContains("users",ref);
         query.get()
             .addOnCompleteListener(OnCompleteListener {
 

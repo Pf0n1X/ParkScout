@@ -7,43 +7,80 @@
     tools:context=".Fragment.SearchFragment"
     android:background="@android:color/transparent">
 
-
     <RelativeLayout
         android:id="@+id/searchLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="30dp">
-
-    <!-- TODO: Update blank fragment layout -->
+        android:background="@drawable/existing_chat_bg"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="15dp">
 
         <EditText
             android:id="@+id/searchText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="50dp"
-            android:layout_marginRight="50dp"
-            android:background="@drawable/buttonshape"
-            android:hint="Search"
+            android:layout_toLeftOf="@+id/searchBtnPark"
+            android:background="@android:color/transparent"
+            android:hint="Search..."
+            android:inputType="textShortMessage"
             android:padding="20dp"
+            android:paddingRight="500dp"
             android:textColor="@color/black"
-            android:textColorHint="@color/quantum_grey900" />
+            android:textColorHint="@android:color/darker_gray" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/searchBtnPark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/searchText"
-            android:layout_alignRight="@+id/searchText"
-            android:layout_marginEnd="-35dp"
-            android:layout_marginRight="-35dp"
-            android:src="@android:drawable/ic_menu_search" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:maxWidth="50dp"
+            android:minWidth="50dp"
+            android:src="@drawable/ic_baseline_search_24" />
 
     </RelativeLayout>
+
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/searchLayout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_marginStart="15dp"-->
+<!--        android:layout_marginLeft="15dp"-->
+<!--        android:layout_marginEnd="15dp"-->
+<!--        android:layout_marginRight="15dp"-->
+<!--        android:layout_marginBottom="30dp">-->
+
+<!--    &lt;!&ndash; TODO: Update blank fragment layout &ndash;&gt;-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/searchText"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:layout_marginEnd="50dp"-->
+<!--            android:layout_marginRight="50dp"-->
+<!--            android:background="@drawable/buttonshape"-->
+<!--            android:hint="Search"-->
+<!--            android:padding="20dp"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textColorHint="@color/quantum_grey900" />-->
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/searchBtnPark"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignEnd="@+id/searchText"-->
+<!--            android:layout_alignRight="@+id/searchText"-->
+<!--            android:layout_marginEnd="-35dp"-->
+<!--            android:layout_marginRight="-35dp"-->
+<!--            android:src="@android:drawable/ic_menu_search" />-->
+
+<!--    </RelativeLayout>-->
 
 </FrameLayout>

@@ -34,19 +34,48 @@ class TrainingSpotModelSQL {
         return parkWithAllList;
     }
 
-    public interface AddParkListener {
-        fun onComplete();
-    }
 
+
+    fun getParkById(parkId:String): TrainingSpotWithAll? {
+        var parkWithAll : TrainingSpotWithAll;
+        var trainingSpot : TrainingSpot;
+        var comments : List<Comment>
+        var rating : List<Rating>
+        var types : List<SportTypes>
+        var images : List<Images>
+        trainingSpot = AppLocalDb.getInstance().trainingSpotDao().getParkById(parkId);
+            comments = AppLocalDb.getInstance().commentDao().getAllCommentsOfPark(trainingSpot.getParkId());
+            rating = AppLocalDb.getInstance().ratingDao().getParkRating(trainingSpot.getParkId());
+            types = AppLocalDb.getInstance().sportTypesDAO().getSportTypesByPark(trainingSpot.getParkId());
+            images = AppLocalDb.getInstance().imagesDao().getAllImgsOfPark(trainingSpot.getParkId());
+            parkWithAll = TrainingSpotWithAll(trainingSpot,
+                TrainingSpotsWithComments(trainingSpot,comments), TrainingSpotWithRating(trainingSpot,rating),
+                TrainingSpotWithSportTypes(trainingSpot,types),TrainingSpotWithImages(trainingSpot,images))
+
+
+        return parkWithAll;
+    }
 
         public fun addPark(trainingSpotWithAll: TrainingSpotWithAll, listener: (() -> Unit)?) {
         class MyAsyncTask: AsyncTask<TrainingSpotWithAll, Void, TrainingSpotWithAll>() {
             override fun doInBackground(vararg params: TrainingSpotWithAll?): TrainingSpotWithAll {
-                AppLocalDb.getInstance().trainingSpotDao().insert(trainingSpotWithAll.getTariningSpot());
-                AppLocalDb.getInstance().trainingSpotDao().insertKinds(trainingSpotWithAll.getSportTypes())
-                AppLocalDb.getInstance().trainingSpotDao().insertComments(trainingSpotWithAll.getComments())
-                AppLocalDb.getInstance().trainingSpotDao().insertRatings(trainingSpotWithAll.getRating())
-                AppLocalDb.getInstance().trainingSpotDao().insertImages(trainingSpotWithAll.getImages())
+                  AppLocalDb.getInstance().trainingSpotDao().insert(trainingSpotWithAll.getTariningSpot());
+                if(trainingSpotWithAll.getSportTypes() != null) {
+                    AppLocalDb.getInstance().trainingSpotDao()
+                        .insertKinds(trainingSpotWithAll.getSportTypes());
+                }
+                if(trainingSpotWithAll.getComments() != null) {
+                    AppLocalDb.getInstance().trainingSpotDao()
+                        .insertComments(trainingSpotWithAll.getComments())
+                }
+                if(trainingSpotWithAll.getRating() != null) {
+                    AppLocalDb.getInstance().trainingSpotDao()
+                        .insertRatings(trainingSpotWithAll.getRating())
+                }
+                if (trainingSpotWithAll.getImages() != null) {
+                    AppLocalDb.getInstance().trainingSpotDao()
+                        .insertImages(trainingSpotWithAll.getImages())
+                }
 
                 return trainingSpotWithAll;
             }

@@ -1,7 +1,6 @@
 package com.example.parkscout.ViewModel
 
-import android.content.ClipData
-import android.view.View
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

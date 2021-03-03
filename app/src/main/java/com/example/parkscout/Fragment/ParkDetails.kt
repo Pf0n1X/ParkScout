@@ -45,6 +45,7 @@ class ParkDetails : Fragment()   {
         val star_rate: RatingBar = rootView.findViewById(R.id.ratingBar) as RatingBar
 
         val strtext = arguments?.getString("park_name")
+        val parkId =  arguments?.getString("parkId")
         park_name_b.setText(strtext)
 //        star_rate.numStars = arguments?.getInt("star_num")!!
         park_name_b.setOnClickListener {
@@ -52,7 +53,7 @@ class ParkDetails : Fragment()   {
       //          fragTransaction.setCustomAnimations(R.anim.fragment_slide_from_right, R.anim.animation_leave);
 
             val intent = Intent(activity, park_full_details::class.java)
-            intent.putExtra("park_name",requireArguments().getString("park_name") )
+            intent.putExtra("parkId",requireArguments().getString("parkId") )
             startActivity(intent)
 
         }

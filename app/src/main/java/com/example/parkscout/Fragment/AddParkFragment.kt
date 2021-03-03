@@ -6,17 +6,21 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.parkscout.R
 import com.example.parkscout.Repository.*
 import com.example.parkscout.ViewModel.TrainingSpotViewModel
@@ -34,7 +38,9 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.firebase.storage.FirebaseStorage
 import java.io.IOException
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -63,6 +69,8 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
     private lateinit var park_location: TextView
     private lateinit var trainModel: TrainingSpotViewModel;
     private  var latLng= defaultLocation;
+    var selectedPhotoUri: Uri? = null;
+    private lateinit var mImggRecyclerView: RecyclerView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +100,10 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         val saveBtn = rootView.findViewById(R.id.SaveBtn) as Button
         val searchBtn = rootView.findViewById(R.id.SearchBtn) as Button
         park_location = rootView.findViewById(R.id.locationTXT) as TextView
-
+        mImggRecyclerView = rootView.findViewById(R.id.ImagesUploaded)
+        mImggRecyclerView.setHasFixedSize(true)
+        var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(activity?.applicationContext)
+        mImggRecyclerView.layoutManager = linearLayoutManager
         searchBtn.setOnClickListener{
             searchLocation(it);
         }
@@ -102,7 +113,10 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
             val park_name = rootView.findViewById(R.id.ParkName) as TextView
             val parkKind =  rootView.findViewById(R.id.park_kind) as ChipGroup
             val facilities = rootView.findViewById(R.id.facilities) as TextView
-            val parkLocation = com.example.parkscout.data.Types.Location(latLng.latitude,latLng.longitude)
+            val parkLocation = com.example.parkscout.data.Types.Location(
+                latLng.latitude,
+                latLng.longitude
+            )
             val comment : Comment = Comment("", "", "", null)
 
             val rating : Rating = Rating("", "", 0, null)
@@ -113,15 +127,21 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
             for (id in ids) {
                 val chip: Chip = parkKind.findViewById(id)
 
-                sportTypesList.add(SportTypes(chip.hint.toString(),chip.text.toString(),"0"))
+                sportTypesList.add(SportTypes(chip.hint.toString(), chip.text.toString(), "0"))
             }
-            var trainingSpot = TrainingSpot("0",park_name.text.toString(),parkLocation,"",facilities.text.toString());
+            var trainingSpot = TrainingSpot(
+                "0",
+                park_name.text.toString(),
+                parkLocation,
+                "",
+                facilities.text.toString()
+            );
             var park : TrainingSpotWithAll = TrainingSpotWithAll(
                 (trainingSpot),
-                TrainingSpotsWithComments(trainingSpot,null),
-                TrainingSpotWithRating(trainingSpot,null),
-                TrainingSpotWithSportTypes(trainingSpot,sportTypesList),
-                TrainingSpotWithImages(trainingSpot,null)
+                TrainingSpotsWithComments(trainingSpot, null),
+                TrainingSpotWithRating(trainingSpot, null),
+                TrainingSpotWithSportTypes(trainingSpot, sportTypesList),
+                TrainingSpotWithImages(trainingSpot, null)
             )
             trainModel.addPark(park) {
                 Log.d("TAG", "Success when trying to save");
@@ -177,7 +197,57 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
                 }
             }
     }
+    public fun UplaodImage(uriString: String, name: String) {
 
+        if (uriString == null) return
+        val filename = UUID.randomUUID().toString()
+        val ref = FirebaseStorage.getInstance().getReference("/park_images/$filename")
+        val myUri = Uri.parse(uriString)
+        ref.putFile(myUri)
+            .addOnSuccessListener {
+                Log.d("Main", "Successfully uploaded image: ${it.metadata?.path}")
+                ref.downloadUrl.addOnSuccessListener {
+                    Log.d("Main", "File location: $it")
+                    SaveParkInformationToFirebase(it.toString(), name)
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(
+                    getActivity(),
+                    "Upload image failed: ${it.message}",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+            }
+    }
+    public fun SaveParkInformationToFirebase(profileImageUri: String, name: String) {
+//        val uid = FirebaseAuth.getInstance().uid
+//        var user: User = User(uid.toString(), name, profileImageUri, 5 );
+//
+//        val newUser: MutableMap<String, Any> = HashMap()
+//        newUser["uid"] = uid.toString()
+//        newUser["name"] = name
+//        newUser["profilePic"] = profileImageUri
+//        newUser["distance"] = 5
+//
+//        viewModel.addUser(user, {});
+//        Toast.makeText(getActivity(), "User created successfully", Toast.LENGTH_SHORT).show()
+//        registered()
+
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val image = ImageView(context)
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+            selectedPhotoUri = data.data
+            image.setImageURI(selectedPhotoUri)
+            mImggRecyclerView.addView(image);
+//            mImggRecyclerView.adapter =
+//            mImggRecyclerView.addItemDecoration()
+//            ImagesUploaded.addItemDecoration(ImageView())
+//            ImagesUploaded.addItemDecoration() setImageURI(selectedPhotoUri)
+        }
+    }
     private fun selectPhoto() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"

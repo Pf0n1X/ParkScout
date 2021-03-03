@@ -21,9 +21,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.example.parkscout.ui.login.ChatActivity
 import com.example.parkscout.Fragment.ParkDetails
-import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.Repository.TrainingSpotWithAll
-import com.example.parkscout.ViewModel.ChatFragmentViewModel
 import com.example.parkscout.ViewModel.SearchLoctionViewModel
 import com.example.parkscout.ViewModel.TrainingSpotViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -51,6 +49,9 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     private lateinit var placesClient: PlacesClient
     private val viewModel: SearchLoctionViewModel by viewModels()
     private lateinit var viewModelTrainingSpot: TrainingSpotViewModel;
+    private lateinit var  listPark: LinkedList<TrainingSpotWithAll>;
+    private lateinit var  parkSelectedId: String;
+
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +66,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
       var fl :FrameLayout = findViewById(R.id.park_layout)
         fl.setTransitionVisibility(View.INVISIBLE)
 
+
         viewModelTrainingSpot = ViewModelProvider(this).get(TrainingSpotViewModel::class.java)
 
         // Setup the app and the bottom app bar UI.
@@ -76,6 +78,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
             searchLocation(item)
 
         })
+        listPark = LinkedList<TrainingSpotWithAll>();
+
         val parkListener: Observer<List<TrainingSpotWithAll>> = Observer { parks ->
             for (park in parks){
 //                 Add a markers to map
@@ -83,6 +87,11 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                 park.trainingSpot.parkLocation.xscale,
                 park.trainingSpot.parkLocation.yscale))
                 .title(park.trainingSpot.parkName))
+                parkSelectedId = park.trainingSpot.parkId;
+                if(listPark.size == 0) {
+                    viewModelTrainingSpot.getParks()?.let { listPark.addAll(it) };
+                }
+
             }
 
         };
@@ -211,6 +220,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
             } else {
                 marker.showInfoWindow()
             }
+            var park_Id = parkSelectedId;
+
             var fl :FrameLayout = findViewById(R.id.park_layout)
             val fragment = ParkDetails()
 
@@ -218,6 +229,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
             getSupportFragmentManager().findFragmentById(R.id.park_layout);
             bundle.putString("park_name",marker.title)
             bundle.putInt("star_num",5)
+            bundle.putString("parkId",park_Id)
+
             fragment.arguments = bundle
 
             setFragment(fragment)

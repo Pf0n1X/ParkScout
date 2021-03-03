@@ -3,6 +3,8 @@ package com.example.parkscout.data.Types
 
 import com.example.parkscout.Repository.*
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 data class TrainingSpotFirebase(
     var parkId: String = UUID.randomUUID().toString(),
@@ -16,17 +18,29 @@ data class TrainingSpotFirebase(
     var images: List<Images>?
 ){
     fun fromMap(map: Map<String?, Any?>) {
+
         parkId = (map["parkId"] as String?)!!;
         parkName = map["parkName"] as String;
        var location = map.get("parkLocation") as Map<String, *>
         parkLocation = Location(location["xscale"] as Double, location["yscale"] as Double)
-//        parkLocation =
-//        parkLocation = map["parkLocation"] as Location;
         chatId = map["chatId"] as String;
         facilities = map["facilities"] as String;
         comment = map["comment"]  as List<Comment>?;
         ratings = map["ratings"]  as List<Rating>?;
-        types = map["types"]  as List<SportTypes>?;
+
+        //types
+        var type : SportTypes = SportTypes("","","");
+        var typesList =LinkedList<SportTypes>();
+        var arr_type:ArrayList<HashMap<String, Object>> =  map["types"]  as ArrayList<HashMap<String, Object>>;
+        arr_type.forEachIndexed { index, hashMap ->
+            type.type_name = hashMap["type_name"] as String;
+            type.type_id = hashMap["type_id"] as String;
+            type.park_Id = hashMap["park_Id"] as String;
+
+
+            typesList?.add(type);
+        }
+        types = typesList.toList();
         images = map["images"]  as List<Images>?;
     }
 
@@ -39,7 +53,7 @@ data class TrainingSpotFirebase(
         result["facilities"] = facilities
         result["comment"] = comment as List<Comment?>?
         result["ratings"] = ratings as List<Rating?>?
-        result["types"] = types as List<SportTypes?>?
+        result["types"] = types as  List<SportTypes?>?
         result["images"] = images as List<Images?>?
 
         return result

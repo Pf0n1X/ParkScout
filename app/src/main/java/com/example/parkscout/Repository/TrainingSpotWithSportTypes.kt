@@ -15,6 +15,7 @@ data class TrainingSpotWithSportTypes(
         sport_types = types as List<SportTypes>
     }
     fun getTypes(): List<SportTypes>? {
+
         return sport_types
     }
     fun getTariningSpot():TrainingSpot{

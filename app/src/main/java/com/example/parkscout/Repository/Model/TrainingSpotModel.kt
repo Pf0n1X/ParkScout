@@ -5,13 +5,10 @@ import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.parkscout.ParkScoutApplication
-import com.example.parkscout.Repository.ChatMessage
-import com.example.parkscout.Repository.ChatWithAll
-import com.example.parkscout.Repository.ModelFirebase.ChatModelFireBase
+import com.example.parkscout.Repository.*
 import com.example.parkscout.Repository.ModelFirebase.TrainingSpotModelFirebase
 import com.example.parkscout.Repository.ModelSQL.TrainingSpotModelSQL
-import com.example.parkscout.Repository.TrainingSpotWithAll
-import com.example.parkscout.Repository.TrainingSpotWithSportTypes
+import com.example.parkscout.data.Types.Location
 import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -27,6 +24,7 @@ class TrainingSpotModel {
     var modelFirebase: TrainingSpotModelFirebase;
     private var modelSQL: TrainingSpotModelSQL;
     private lateinit var parksList: TrainingSpotModel.ParkLiveData;
+    private lateinit var parkToShow: TrainingSpotModel.ParkSelectedLiveData;
     private lateinit var executor:Executor;
     // Constructors
     init {
@@ -48,6 +46,15 @@ class TrainingSpotModel {
         return this.parksList;
     }
 
+    public fun getParkById(parkId:String): LiveData<TrainingSpotWithAll> {
+            this.parkToShow = ParkSelectedLiveData();
+        if (parkId != ""){
+            this.parkToShow.GetParkById(parkId);
+            }
+            return this.parkToShow
+
+
+    }
     public fun addTrainingSpot(park: TrainingSpotWithAll, listener: () -> Unit) {
         var refreshListener: () -> Unit = {
             listener();
@@ -55,7 +62,6 @@ class TrainingSpotModel {
 
         var addListener: () -> Unit = {
             modelSQL.addPark(park,refreshListener)
-
         };
 
         modelFirebase.addPark(park,addListener);
@@ -82,7 +88,9 @@ class TrainingSpotModel {
 
             modelFirebase.getAllTrainingSpot({ parks: List<TrainingSpotWithAll> ->
                 value = parks;
-
+                for (park in parks) {
+                    modelSQL.addPark(park){};
+                }
             });
         }
         override fun onInactive() {
@@ -90,5 +98,32 @@ class TrainingSpotModel {
 
         }
     }
+    inner class ParkSelectedLiveData: LiveData<TrainingSpotWithAll>() {
+
+        // Constructors
+        init {
+            var park : TrainingSpot = TrainingSpot("","", Location(0.0,0.0),"","");
+            value = TrainingSpotWithAll(park, TrainingSpotsWithComments(park,null),
+                TrainingSpotWithRating(park,null), TrainingSpotWithSportTypes(park,null),
+                TrainingSpotWithImages(park,null)
+            );
+        }
+
+        fun GetParkById(parkId: String){
+
+            val sp: SharedPreferences = ParkScoutApplication.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
+
+            executor.execute {
+                val parkById = modelSQL.getParkById(parkId)
+
+                postValue(parkById)
+            }
+
+            modelFirebase.getTrainingSpotById(parkId,{ park: TrainingSpotWithAll? ->
+            value = park;
+            });
+        }
+    }
+
 
 }

@@ -7,10 +7,9 @@ import androidx.room.PrimaryKey
 import java.util.*
 
 ////@Entity(tableName = "sport_types" , primaryKeys = arrayOf("type_id","park_Id"))
-@Entity(tableName = "sport_types" )
+@Entity(tableName = "sport_types"  ,primaryKeys = arrayOf("type_id","park_Id"))
 data class SportTypes(
     @ColumnInfo(name = "type_id")
-    @PrimaryKey
     var type_id: String ,
     var type_name: String,
     @ForeignKey

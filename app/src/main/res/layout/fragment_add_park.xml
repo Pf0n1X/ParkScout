@@ -16,8 +16,8 @@
             android:layout_width="176dp"
             android:layout_height="47dp"
             android:hint="Enter Park Name"
-            android:textColorHint="@color/quantum_grey900"
             android:textColor="@color/black"
+            android:textColorHint="@color/quantum_grey900"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/fragLayout"
             app:layout_constraintEnd_toEndOf="parent"
@@ -51,8 +51,8 @@
             android:editable="true"
             android:enabled="true"
             android:hint="enter location"
-            android:textColorHint="@color/quantum_grey900"
             android:textColor="@color/black"
+            android:textColorHint="@color/quantum_grey900"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/textView11"
             app:layout_constraintEnd_toStartOf="@+id/SearchBtn"
@@ -99,11 +99,11 @@
                 android:layout_height="wrap_content"
                 android:checkable="true"
                 android:clickable="true"
-                android:text="@string/tennis"
+                android:focusable="true"
                 android:hint="@string/tennisId"
+                android:text="@string/tennis"
                 android:textColor="@color/black"
-                app:chipBackgroundColor="#fe9110"
-                android:focusable="true" />
+                app:chipBackgroundColor="#fe9110" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/soccerChip"
@@ -111,11 +111,11 @@
                 android:layout_height="wrap_content"
                 android:checkable="true"
                 android:clickable="true"
-                android:text="@string/soccer"
+                android:focusable="true"
                 android:hint="@string/soccerId"
+                android:text="@string/soccer"
                 android:textColor="@color/black"
-                app:chipBackgroundColor="#fe9110"
-                android:focusable="true" />
+                app:chipBackgroundColor="#fe9110" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/basketballChip"
@@ -123,11 +123,11 @@
                 android:layout_height="wrap_content"
                 android:checkable="true"
                 android:clickable="true"
-                android:text="@string/basketball"
+                android:focusable="true"
                 android:hint="@string/basketbalId"
+                android:text="@string/basketball"
                 android:textColor="@color/black"
-                app:chipBackgroundColor="#fe9110"
-                android:focusable="true" />
+                app:chipBackgroundColor="#fe9110" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/vollyballChip"
@@ -135,11 +135,11 @@
                 android:layout_height="wrap_content"
                 android:checkable="true"
                 android:clickable="true"
-                android:text="@string/volleyball"
+                android:focusable="true"
                 android:hint="@string/vollyballId"
+                android:text="@string/volleyball"
                 android:textColor="@color/black"
-                app:chipBackgroundColor="#fe9110"
-                android:focusable="true" />
+                app:chipBackgroundColor="#fe9110" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/gymParkChip"
@@ -147,11 +147,11 @@
                 android:layout_height="wrap_content"
                 android:checkable="true"
                 android:clickable="true"
-                android:text="@string/gym_park"
+                android:focusable="true"
                 android:hint="@string/gymId"
+                android:text="@string/gym_park"
                 android:textColor="@color/black"
-                app:chipBackgroundColor="#fe9110"
-                android:focusable="true" />
+                app:chipBackgroundColor="#fe9110" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/otherChip"
@@ -159,11 +159,11 @@
                 android:layout_height="wrap_content"
                 android:checkable="true"
                 android:clickable="true"
-                android:text="@string/other"
+                android:focusable="true"
                 android:hint="@string/OtherId"
+                android:text="@string/other"
                 android:textColor="@color/black"
-                app:chipBackgroundColor="#fe9110"
-                android:focusable="true" />
+                app:chipBackgroundColor="#fe9110" />
 
         </com.google.android.material.chip.ChipGroup>
 
@@ -175,10 +175,9 @@
             android:layout_marginLeft="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
             android:hint="What facilities in there? "
-            android:textColorHint="@color/quantum_grey900"
             android:textColor="@color/black"
+            android:textColorHint="@color/quantum_grey900"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/uploadPhotobBtn"
             app:layout_constraintEnd_toEndOf="parent"
@@ -193,22 +192,35 @@
             android:layout_height="40dp"
             android:background="@drawable/imgupd"
             app:backgroundTint="#fe9110"
-            app:layout_constraintBottom_toTopOf="@+id/SaveBtn"
+            app:layout_constraintBottom_toTopOf="@+id/ImagesUploaded"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/facilities" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ImagesUploaded"
+            android:layout_width="319dp"
+            android:layout_height="74dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/SaveBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/uploadPhotobBtn"
+            app:spanCount="2"
+            tools:itemCount="4" />
 
         <Button
             android:id="@+id/SaveBtn"
             android:layout_width="86dp"
             android:layout_height="37dp"
-            android:layout_marginTop="16dp"
             android:background="@drawable/rounded_select_photo"
             android:text="Save"
             app:backgroundTint="#fe9110"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/uploadPhotobBtn" />
+            app:layout_constraintTop_toBottomOf="@+id/ImagesUploaded" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

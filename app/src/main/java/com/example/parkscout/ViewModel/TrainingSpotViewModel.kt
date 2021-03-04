@@ -13,7 +13,7 @@ class TrainingSpotViewModel: ViewModel() {
     lateinit var parkList: LiveData<List<TrainingSpotWithAll>>
     lateinit var parkById: LiveData<TrainingSpotWithAll>;
     lateinit var parkByName: LiveData<List<TrainingSpotWithAll>>;
-    public lateinit var user: LiveData<User>
+    lateinit var user: LiveData<User>
         private set;
 
     // Constructors

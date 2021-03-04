@@ -130,11 +130,13 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         listPark = LinkedList<TrainingSpotWithAll>();
 
         val parkListener: Observer<List<TrainingSpotWithAll>> = Observer { parks ->
+            if (listPark.size == 0) {
+                viewModelTrainingSpot.getParks()?.let { listPark.addAll(parks) };
+            }
+
             for (park in parks){
                         parkSelectedId = park.trainingSpot.parkId;
-                        if (listPark.size == 0) {
-                            viewModelTrainingSpot.getParks()?.let { listPark.addAll(it) };
-                        }
+
                     }
 
         };

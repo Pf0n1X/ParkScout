@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.parkscout.Adapter.ImagesAdapter
 import com.example.parkscout.R
 import com.example.parkscout.Repository.*
 import com.example.parkscout.ViewModel.TrainingSpotViewModel
@@ -71,6 +72,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
     private  var latLng= defaultLocation;
     var selectedPhotoUri: Uri? = null;
     private lateinit var mImggRecyclerView: RecyclerView
+    private lateinit var mAdapter: ImagesAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,7 +104,12 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         park_location = rootView.findViewById(R.id.locationTXT) as TextView
         mImggRecyclerView = rootView.findViewById(R.id.ImagesUploaded)
         mImggRecyclerView.setHasFixedSize(true)
-        var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(activity?.applicationContext)
+        mAdapter = ImagesAdapter(this.requireContext(), LinkedList<Uri>());
+        mImggRecyclerView.adapter = mAdapter
+        mAdapter.notifyDataSetChanged();
+
+        var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(activity?.applicationContext,LinearLayoutManager.HORIZONTAL, false)
+
         mImggRecyclerView.layoutManager = linearLayoutManager
         searchBtn.setOnClickListener{
             searchLocation(it);
@@ -129,33 +136,57 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
 
                 sportTypesList.add(SportTypes(chip.hint.toString(), chip.text.toString(), "0"))
             }
-            var trainingSpot = TrainingSpot(
-                "0",
-                park_name.text.toString(),
-                parkLocation,
-                "",
-                facilities.text.toString()
-            );
-            var park : TrainingSpotWithAll = TrainingSpotWithAll(
-                (trainingSpot),
-                TrainingSpotsWithComments(trainingSpot, null),
-                TrainingSpotWithRating(trainingSpot, null),
-                TrainingSpotWithSportTypes(trainingSpot, sportTypesList),
-                TrainingSpotWithImages(trainingSpot, null)
-            )
-            trainModel.addPark(park) {
-                Log.d("TAG", "Success when trying to save");
+            var errorMsg = ""
+            if(park_name.text.isEmpty()){
+                errorMsg = "enter park name";
+            }else if( parkLocation == null ){
+                errorMsg = "enter location";
+            }else if(sportTypesList.size == 0){
+                errorMsg ="choose park kind"
             }
+            if(errorMsg != "") {
+                Toast.makeText(
+                    getActivity()?.getApplicationContext(),
+                    "$errorMsg",
+                    Toast.LENGTH_LONG
+                ).show()
+                false;
+            } else {
+                var trainingSpot = TrainingSpot(
+                    "0",
+                    park_name.text.toString(),
+                    parkLocation,
+                    "",
+                    facilities.text.toString()
+                );
+                var images: LinkedList<Images> = LinkedList<Images>();
+                for (uri in mAdapter.imagesURL!!) {
+                    UplaodImage(uri.toString())
+                    images.add(Images("0", uri.toString()));
+                }
 
-            val savedMsg = "Saved"
-            // TODO : initiate successful logged in experience
-            Toast.makeText(
-                getActivity()?.getApplicationContext(),
-                "$savedMsg",
-                Toast.LENGTH_LONG
-            ).show()
+                var park: TrainingSpotWithAll = TrainingSpotWithAll(
+                    (trainingSpot),
+                    TrainingSpotsWithComments(trainingSpot, null),
+                    TrainingSpotWithRating(trainingSpot, null),
+                    TrainingSpotWithSportTypes(trainingSpot, sportTypesList),
+                    TrainingSpotWithImages(trainingSpot, images)
+                )
 
-            true;
+                trainModel.addPark(park) {
+                    Log.d("TAG", "Success when trying to save");
+                }
+
+                val savedMsg = "Saved"
+                // TODO : initiate successful logged in experience
+                Toast.makeText(
+                    getActivity()?.getApplicationContext(),
+                    "$savedMsg",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                true;
+            }
         }
         // *******************************************************************************************
         val mapFragment =
@@ -197,7 +228,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
                 }
             }
     }
-    public fun UplaodImage(uriString: String, name: String) {
+    public fun UplaodImage(uriString: String) {
 
         if (uriString == null) return
         val filename = UUID.randomUUID().toString()
@@ -206,10 +237,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         ref.putFile(myUri)
             .addOnSuccessListener {
                 Log.d("Main", "Successfully uploaded image: ${it.metadata?.path}")
-                ref.downloadUrl.addOnSuccessListener {
-                    Log.d("Main", "File location: $it")
-                    SaveParkInformationToFirebase(it.toString(), name)
-                }
+
             }
             .addOnFailureListener {
                 Toast.makeText(
@@ -220,32 +248,16 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
                     .show()
             }
     }
-    public fun SaveParkInformationToFirebase(profileImageUri: String, name: String) {
-//        val uid = FirebaseAuth.getInstance().uid
-//        var user: User = User(uid.toString(), name, profileImageUri, 5 );
-//
-//        val newUser: MutableMap<String, Any> = HashMap()
-//        newUser["uid"] = uid.toString()
-//        newUser["name"] = name
-//        newUser["profilePic"] = profileImageUri
-//        newUser["distance"] = 5
-//
-//        viewModel.addUser(user, {});
-//        Toast.makeText(getActivity(), "User created successfully", Toast.LENGTH_SHORT).show()
-//        registered()
 
-    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val image = ImageView(context)
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
             selectedPhotoUri = data.data
-            image.setImageURI(selectedPhotoUri)
-            mImggRecyclerView.addView(image);
-//            mImggRecyclerView.adapter =
-//            mImggRecyclerView.addItemDecoration()
-//            ImagesUploaded.addItemDecoration(ImageView())
-//            ImagesUploaded.addItemDecoration() setImageURI(selectedPhotoUri)
+
+            selectedPhotoUri?.let { mAdapter.imagesURL?.add(it) }
+            mAdapter.notifyDataSetChanged();
+            mImggRecyclerView.adapter = mAdapter
         }
     }
     private fun selectPhoto() {

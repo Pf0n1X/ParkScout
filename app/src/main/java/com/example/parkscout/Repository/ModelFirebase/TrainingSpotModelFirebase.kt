@@ -119,7 +119,11 @@ class TrainingSpotModelFirebase {
 
             }
         }
-
+        if (imsges != null){
+            for (img in imsges){
+                img.setParkId(trainingSpot.parkId);
+            }
+        }
         trainingSpotFireBase =
             TrainingSpotFirebase(
                 trainingSpot.getParkId(), trainingSpot.parkName,

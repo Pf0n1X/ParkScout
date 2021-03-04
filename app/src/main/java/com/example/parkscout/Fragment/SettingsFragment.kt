@@ -46,6 +46,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         viewModel = ViewModelProvider(this).get(SettingsFragmentViewModel::class.java);
+//        viewModel =
+//            activity?.let { ViewModelProvider(it).get(SettingsFragmentViewModel::class.java) }!!;
 
         var user: User? = viewModel.user.value;
         viewModel.user.observe(viewLifecycleOwner, Observer { obUser: User? ->

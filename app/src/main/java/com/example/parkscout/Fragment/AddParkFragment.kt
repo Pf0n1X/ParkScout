@@ -215,7 +215,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
          */
         private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
         private val TAG = AddParkFragment::class.java.simpleName
-        private const val DEFAULT_ZOOM = 12
+        private const val DEFAULT_ZOOM = 10
         private const val KEY_CAMERA_POSITION = "camera_position"
         private const val KEY_LOCATION = "location"
         // TODO: Rename and change types and number of parameters
@@ -420,7 +420,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         map?.setOnMapClickListener {
             map!!.clear()
             map!!.addMarker(MarkerOptions().position(it))
-
+            latLng = it;
         }
     }
 

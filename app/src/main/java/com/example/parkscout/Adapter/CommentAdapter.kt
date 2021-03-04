@@ -17,7 +17,7 @@ import java.util.*
 class CommentAdapter(val context: Context): RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
 
     // Data Members
-    private var mComments: List<Comment>;
+    public var mComments: List<Comment>;
     private var mContext: Context;
 
     // Constructors

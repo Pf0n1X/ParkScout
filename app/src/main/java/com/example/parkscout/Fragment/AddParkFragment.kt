@@ -124,7 +124,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
                 latLng.latitude,
                 latLng.longitude
             )
-            val comment : Comment = Comment("", "", "", null)
+            val comment : Comment = Comment("", "", "", 0)
 
             val rating : Rating = Rating("", "", 0, null)
 

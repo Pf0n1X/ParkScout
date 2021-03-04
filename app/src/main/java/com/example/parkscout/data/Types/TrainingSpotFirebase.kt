@@ -29,19 +29,36 @@ data class TrainingSpotFirebase(
         ratings = map["ratings"]  as List<Rating>?;
 
         //types
-        var type : SportTypes = SportTypes("","","");
-        var typesList =LinkedList<SportTypes>();
-        var arr_type:ArrayList<HashMap<String, Object>> =  map["types"]  as ArrayList<HashMap<String, Object>>;
-        arr_type.forEachIndexed { index, hashMap ->
-            type.type_name = hashMap["type_name"] as String;
-            type.type_id = hashMap["type_id"] as String;
-            type.park_Id = hashMap["park_Id"] as String;
+        if(map["types"] != null) {
+            var type: SportTypes = SportTypes("", "", "");
+            var typesList = LinkedList<SportTypes>();
+            var arr_type: ArrayList<HashMap<String, Object>> =
+                map["types"] as ArrayList<HashMap<String, Object>>;
+            arr_type.forEachIndexed { index, hashMap ->
+                type.type_name = hashMap["type_name"] as String;
+                type.type_id = hashMap["type_id"] as String;
+                type.park_Id = hashMap["park_Id"] as String;
 
 
-            typesList?.add(type);
+                typesList?.add(type);
+            }
+            types = typesList.toList();
         }
-        types = typesList.toList();
-        images = map["images"]  as List<Images>?;
+        // images
+        if(map["images"] != null) {
+            var img: Images = Images("", "");
+            var imgList = LinkedList<Images>();
+            var arr_img: ArrayList<HashMap<String, Object>> =
+                map["images"] as ArrayList<HashMap<String, Object>>;
+            arr_img.forEachIndexed { index, hashMap ->
+                img.trainingSpotId = hashMap["trainingSpotId"] as String;
+                img.ImgUrl = hashMap["imgUrl"] as String;
+
+
+                imgList?.add(img);
+            }
+            images = imgList.toList();
+        }
     }
 
     fun toMap(): Map<String, Any? > {

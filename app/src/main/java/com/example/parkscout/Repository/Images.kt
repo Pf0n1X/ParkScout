@@ -1,5 +1,6 @@
 package com.example.parkscout.Repository
 
+import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -11,4 +12,8 @@ data class Images (
     var trainingSpotId : String,
     var ImgUrl: String
 
-)
+){
+    fun setParkId(parkId:String){
+        trainingSpotId = parkId
+    }
+}

@@ -1,5 +1,6 @@
 package com.example.parkscout.ViewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.parkscout.Repository.Model.TrainingSpotModel

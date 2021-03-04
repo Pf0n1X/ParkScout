@@ -117,6 +117,9 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
             viewModelTrainingSpot.user.observe(this,Observer { user: User ->
                 mDistanceFromSetting = user.distance
+                mMap.clear();
+
+                showParksByRadius();
             });
         }
         // Setup the app and the bottom app bar UI.
@@ -131,15 +134,17 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         listPark = LinkedList<TrainingSpotWithAll>();
 
         val parkListener: Observer<List<TrainingSpotWithAll>> = Observer { parks ->
-            if (listPark.size == 0) {
-                viewModelTrainingSpot.getParks()?.let { listPark.addAll(parks) };
-            }
+
 
             for (park in parks){
                         parkSelectedId = park.trainingSpot.parkId;
 
-                    }
+                if (listPark.size == 0) {
+                    viewModelTrainingSpot.getParks()?.let { listPark.addAll(parks) };
+                }
+            }
 
+            showParksByRadius();
         };
         viewModelTrainingSpot.parkList.observe(this, parkListener);
 
@@ -240,7 +245,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                                     ), DEFAULT_ZOOM.toFloat()
                                 )
                             )
-                            showParksByRadius();
+
+//                            showParksByRadius();
                         }
                     } else {
                         mMap?.moveCamera(
@@ -248,6 +254,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                                 .newLatLngZoom(defaultLocation, MainActivity.DEFAULT_ZOOM.toFloat())
                         )
                         mMap?.uiSettings?.isMyLocationButtonEnabled = false
+
                     }
                 }
 
@@ -258,8 +265,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     }
 
     fun showParksByRadius(){
-
         for (park in listPark) {
+
             if (lastKnownLocation != null) {
                 // check point in radius
                 val distance = CalculationByDistance(
@@ -272,7 +279,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                         park.trainingSpot.parkLocation.yscale
                     )
                 )
-//                if (distance <= mDistanceFromSetting) {
+                if (distance <= mDistanceFromSetting) {
                     mMap.addMarker(
                         MarkerOptions().position(
                             LatLng(
@@ -283,7 +290,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                             .title(park.trainingSpot.parkName)
                     )
                 }
-//            }
+            }
         }
     }
 

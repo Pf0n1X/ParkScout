@@ -13,7 +13,7 @@ class TrainingSpotViewModel: ViewModel() {
     lateinit var parkList: LiveData<List<TrainingSpotWithAll>>
     lateinit var parkById: LiveData<TrainingSpotWithAll>;
     lateinit var parkByName: LiveData<List<TrainingSpotWithAll>>;
-    public lateinit var user: LiveData<User>
+    lateinit var user: LiveData<User>
         private set;
 
     // Constructors
@@ -24,15 +24,15 @@ class TrainingSpotViewModel: ViewModel() {
     // Methods
     fun addPark(park: TrainingSpotWithAll, listener: () -> Unit) {
         TrainingSpotModel.instance.addTrainingSpot(park, listener);
-        refreshParks();
+//        refreshParks();
     }
     fun getParks(): List<TrainingSpotWithAll>? {
         return parkList.value;
     }
-    fun refreshParks(){
-        this.parkList = TrainingSpotModel.instance.getAllParks();
-
-    }
+//    fun refreshParks(){
+//        this.parkList = TrainingSpotModel.instance.getAllParks();
+//
+//    }
 
     fun getParkById(parkId:String): LiveData<TrainingSpotWithAll> {
         this.parkById =  TrainingSpotModel.instance.getParkById(parkId);

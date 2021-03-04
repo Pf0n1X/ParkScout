@@ -114,7 +114,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         mUserID = FirebaseAuth.getInstance().currentUser?.uid ?: "";
         if (mUserID != null) {
             viewModelTrainingSpot.getUserByID(mUserID);
-            viewModelTrainingSpot.user.observe(this, { user: User ->
+
+            viewModelTrainingSpot.user.observe(this,Observer { user: User ->
                 mDistanceFromSetting = user.distance
             });
         }
@@ -125,16 +126,18 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         setupNavigation()
         viewModel.selectedItem.observe(this, Observer { item ->
             searchLocation(item)
-
         })
+
         listPark = LinkedList<TrainingSpotWithAll>();
 
         val parkListener: Observer<List<TrainingSpotWithAll>> = Observer { parks ->
+            if (listPark.size == 0) {
+                viewModelTrainingSpot.getParks()?.let { listPark.addAll(parks) };
+            }
+
             for (park in parks){
                         parkSelectedId = park.trainingSpot.parkId;
-                        if (listPark.size == 0) {
-                            viewModelTrainingSpot.getParks()?.let { listPark.addAll(it) };
-                        }
+
                     }
 
         };

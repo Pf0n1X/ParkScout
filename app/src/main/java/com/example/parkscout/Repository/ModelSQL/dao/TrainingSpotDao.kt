@@ -13,6 +13,8 @@ interface TrainingSpotDao {
     @Query("SELECT * FROM training_spot WHERE parkId = :parkId")
     fun getParkById(parkId:String): TrainingSpot
 
+    @Query("SELECT * FROM training_spot WHERE parkId = :parkName")
+    fun getParkByName(parkName:String): List<TrainingSpot>
 
     @Insert( onConflict = OnConflictStrategy.REPLACE)
     fun insert(parks: TrainingSpot) ;

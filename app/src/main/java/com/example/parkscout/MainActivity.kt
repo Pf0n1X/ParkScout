@@ -272,7 +272,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                         park.trainingSpot.parkLocation.yscale
                     )
                 )
-                if (distance <= mDistanceFromSetting) {
+//                if (distance <= mDistanceFromSetting) {
                     mMap.addMarker(
                         MarkerOptions().position(
                             LatLng(
@@ -283,7 +283,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                             .title(park.trainingSpot.parkName)
                     )
                 }
-            }
+//            }
         }
     }
 

@@ -1,11 +1,15 @@
 package com.example.parkscout
 
+
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -13,22 +17,30 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
+import com.example.parkscout.Fragment.AddParkFragment
 import com.example.parkscout.Fragment.ParkDetails
 import com.example.parkscout.Repository.TrainingSpotWithAll
+import com.example.parkscout.Repository.User
 import com.example.parkscout.ViewModel.SearchLoctionViewModel
 import com.example.parkscout.ViewModel.TrainingSpotViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -37,8 +49,10 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
+import java.text.DecimalFormat
 import java.util.*
 
 class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
@@ -53,12 +67,21 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     private lateinit var  listPark: LinkedList<TrainingSpotWithAll>;
     private lateinit var  parkSelectedId: String;
     private lateinit var navController: NavController;
+    private var lastKnownLocation: Location? = null
+    private val defaultLocation = LatLng(-33.8523341, 151.2106085)
+    private var locationPermissionGranted = false
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private var cameraPosition: CameraPosition? = null
+    private lateinit var mUserID: String;
+    private  var mDistanceFromSetting:Int = 0;
+
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Set map
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -67,9 +90,24 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
       var fl :FrameLayout = findViewById(R.id.park_layout)
         fl.setTransitionVisibility(View.INVISIBLE)
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(
+            this
+        )
+        if (savedInstanceState != null) {
+            lastKnownLocation = savedInstanceState.getParcelable(MainActivity.KEY_LOCATION)
+            cameraPosition = savedInstanceState.getParcelable(MainActivity.KEY_CAMERA_POSITION)
+        }
 
         viewModelTrainingSpot = ViewModelProvider(this).get(TrainingSpotViewModel::class.java)
 
+        // get user
+        mUserID = FirebaseAuth.getInstance().currentUser?.uid ?: "";
+        if (mUserID != null) {
+            viewModelTrainingSpot.getUserByID(mUserID);
+            viewModelTrainingSpot.user.observe(this, { user: User ->
+                mDistanceFromSetting = user.distance
+            });
+        }
         // Setup the app and the bottom app bar UI.
         setupBaseDesign()
 
@@ -83,23 +121,158 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
         val parkListener: Observer<List<TrainingSpotWithAll>> = Observer { parks ->
             for (park in parks){
-//                 Add a markers to map
-                mMap.addMarker(MarkerOptions().position(LatLng(
-                park.trainingSpot.parkLocation.xscale,
-                park.trainingSpot.parkLocation.yscale))
-                .title(park.trainingSpot.parkName))
-                parkSelectedId = park.trainingSpot.parkId;
-                if(listPark.size == 0) {
-                    viewModelTrainingSpot.getParks()?.let { listPark.addAll(it) };
-                }
-
-            }
+                        parkSelectedId = park.trainingSpot.parkId;
+                        if (listPark.size == 0) {
+                            viewModelTrainingSpot.getParks()?.let { listPark.addAll(it) };
+                        }
+                    }
 
         };
         viewModelTrainingSpot.parkList.observe(this, parkListener);
 
     }
-    fun searchLocation(location:String) {
+    fun CalculationByDistance(StartP: LatLng, EndP: LatLng): Int {
+        val Radius = 6371 // radius of earth in Km
+        val lat1 = StartP.latitude
+        val lat2 = EndP.latitude
+        val lon1 = StartP.longitude
+        val lon2 = EndP.longitude
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+        val a = (Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + (Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2)))
+        val c = 2 * Math.asin(Math.sqrt(a))
+        val valueResult = Radius * c
+        val km = valueResult / 1
+        val newFormat = DecimalFormat("####")
+        val kmInDec: Int = Integer.valueOf(newFormat.format(km))
+        val meter = valueResult % 1000
+        val meterInDec: Int = Integer.valueOf(newFormat.format(meter))
+        Log.i(
+            "Radius Value", "" + valueResult + "   KM  " + kmInDec
+                    + " Meter   " + meterInDec
+        )
+        return kmInDec;
+//        return Radius * c
+    }
+    override fun onSaveInstanceState(outState: Bundle) {
+        map?.let { map ->
+            outState.putParcelable(KEY_CAMERA_POSITION, mMap.cameraPosition)
+            outState.putParcelable(KEY_LOCATION, lastKnownLocation)
+        }
+        super.onSaveInstanceState(outState)
+    }
+    private fun updateLocationUI() {
+        if (map == null) {
+            return
+        }
+        try {
+            if (locationPermissionGranted) {
+                mMap?.isMyLocationEnabled = true
+                mMap?.uiSettings?.isMyLocationButtonEnabled = true
+            } else {
+                mMap?.isMyLocationEnabled = false
+                mMap?.uiSettings?.isMyLocationButtonEnabled = false
+                lastKnownLocation = null
+                getLocationPermission()
+            }
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message, e)
+        }
+    }
+    private fun getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                MainActivity.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+            )
+        }
+    }
+    private fun getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (locationPermissionGranted) {
+                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(
+                    this
+                )
+                val locationResult = fusedLocationProviderClient.lastLocation
+
+                locationResult.addOnCompleteListener{ task ->
+                    if (task.isSuccessful) {
+                        // Set the map's camera position to the current location of the device.
+                        lastKnownLocation = task.result
+                        if (lastKnownLocation != null) {
+                            mMap?.moveCamera(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    LatLng(
+                                        lastKnownLocation!!.latitude,
+                                        lastKnownLocation!!.longitude
+                                    ), DEFAULT_ZOOM.toFloat()
+                                )
+                            )
+                            showParksByRadius();
+                        }
+                    } else {
+                        mMap?.moveCamera(
+                            CameraUpdateFactory
+                                .newLatLngZoom(defaultLocation, MainActivity.DEFAULT_ZOOM.toFloat())
+                        )
+                        mMap?.uiSettings?.isMyLocationButtonEnabled = false
+                    }
+                }
+
+            }
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message, e)
+        }
+    }
+    fun showParksByRadius(){
+
+        for (park in listPark) {
+            if (lastKnownLocation != null) {
+                // check point in radius
+                val distance = CalculationByDistance(
+                    LatLng(
+                        lastKnownLocation!!.latitude,
+                        lastKnownLocation!!.longitude
+                    ),
+                    LatLng(
+                        park.trainingSpot.parkLocation.xscale,
+                        park.trainingSpot.parkLocation.yscale
+                    )
+                )
+                if (distance <= mDistanceFromSetting) {
+                    mMap.addMarker(
+                        MarkerOptions().position(
+                            LatLng(
+                                park.trainingSpot.parkLocation.xscale,
+                                park.trainingSpot.parkLocation.yscale
+                            )
+                        )
+                            .title(park.trainingSpot.parkName)
+                    )
+                }
+            }
+        }
+    }
+    fun searchLocation(location: String) {
         var addressList: List<Address>? = null
 
         if (location == null || location == "") {
@@ -110,27 +283,48 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
             ).show()
         }
         else{
-            val geoCoder = Geocoder(this)
-            try {
-                addressList = geoCoder.getFromLocationName(location, 1)
+            var parkToShow: List<TrainingSpotWithAll>? = viewModelTrainingSpot.getParkByName(
+                location
+            );
+            val parkListener: Observer<List<TrainingSpotWithAll>> = Observer { parks ->
+                if (parks.size != 0){
+                    for(park in parks){
+                        val latLng = LatLng(
+                            park.trainingSpot.parkLocation.xscale,
+                            park.trainingSpot.parkLocation.yscale
+                        )
+//                        mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
+                        mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
 
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            if (addressList != null) {
-                if(addressList.size > 0) {
-                    val address = addressList!![0]
-                    val latLng = LatLng(address.latitude, address.longitude)
-                    mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
-                    mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
-                    Toast.makeText(
-                        this,
-                        address.latitude.toString() + " " + address.longitude,
-                        Toast.LENGTH_LONG
-                    ).show()
+                    }
+                }else   {
+                    val geoCoder = Geocoder(this)
+                    try {
+                        addressList = geoCoder.getFromLocationName(location, 1)
+
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                    if (addressList != null) {
+                        if(addressList!!.size > 0) {
+                            val address = addressList!![0]
+                            val latLng = LatLng(address.latitude, address.longitude)
+//                            mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
+                            mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+                            Toast.makeText(
+                                this,
+                                address.latitude.toString() + " " + address.longitude,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
                 }
-            }
-        }
+                }
+            viewModelTrainingSpot.parkByName.observe(this, parkListener);
+
+        };
+
+
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -145,7 +339,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         nav.setOnNavigationItemSelectedListener {
 
             when (it.itemId) {
-                R.id.searchFragment-> {
+                R.id.searchFragment -> {
                     navController
                         .navigate(R.id.action_global_searchFragment)
                 }
@@ -173,7 +367,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     }
 
         // Handle FAB navigation
-        fab.setOnClickListener{view ->
+        fab.setOnClickListener{ view ->
             val chatIntent: Intent = Intent(this, ChatActivity::class.java);
             startActivityForResult(chatIntent, Companion.CHAT_ACTIVITY_CODE);
             overridePendingTransition(R.anim.slide_out_bottom, R.anim.nothing);
@@ -212,7 +406,10 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
+        getLocationPermission()
+        updateLocationUI()
+        getDeviceLocation()
+//        googleMap?.animateCamera(CameraUpdateFactory.zoomTo(17F),200, null)
 //        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(israel, 13f))
 
         mMap.setOnMarkerClickListener { marker ->
@@ -228,9 +425,9 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
             fl.setTransitionVisibility(View.VISIBLE)
             getSupportFragmentManager().findFragmentById(R.id.park_layout);
-            bundle.putString("park_name",marker.title)
-            bundle.putInt("star_num",5)
-            bundle.putString("parkId",park_Id)
+            bundle.putString("park_name", marker.title)
+            bundle.putInt("star_num", 5)
+            bundle.putString("parkId", park_Id)
 
             fragment.arguments = bundle
 
@@ -271,5 +468,10 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
     companion object {
         private var CHAT_ACTIVITY_CODE: Int = 1;
+        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+        private val TAG = AddParkFragment::class.java.simpleName
+        private const val DEFAULT_ZOOM = 7
+        private const val KEY_CAMERA_POSITION = "camera_position"
+        private const val KEY_LOCATION = "location"
     }
 }

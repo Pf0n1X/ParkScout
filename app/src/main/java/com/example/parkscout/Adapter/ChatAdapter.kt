@@ -32,9 +32,10 @@ class ChatAdapter(val context: Context, var chats: LinkedList<ChatWithAll>): Rec
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatAdapter.ViewHolder {
         var view: View;
-            view = LayoutInflater.from(mContext).inflate(R.layout.existing_chat, parent, false)
-            return ChatAdapter.ViewHolder(view)
-            }
+        view = LayoutInflater.from(mContext).inflate(R.layout.existing_chat, parent, false);
+
+        return ChatAdapter.ViewHolder(view);
+    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         public var chat_name: TextView

@@ -51,10 +51,10 @@ class MessageAdapter(val context: Context, var chatMessages: List<ChatMessage>, 
     }
 
     override fun getItemCount(): Int {
-        if ( mChatMessages == null) {
-            return 0;
+        return if ( mChatMessages == null) {
+            0;
         } else {
-            return mChatMessages.size;
+            mChatMessages.size;
         }
     }
 

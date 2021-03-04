@@ -13,7 +13,7 @@ class ProfileViewModel: ViewModel() {
 
     // Constructors
     init {
-//        this.user =
+        this.user = UserModel.instance.getUser();
     }
 
     // Methods

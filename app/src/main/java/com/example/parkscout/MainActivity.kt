@@ -53,6 +53,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     private lateinit var  listPark: LinkedList<TrainingSpotWithAll>;
     private lateinit var  parkSelectedId: String;
     private lateinit var navController: NavController;
+    private lateinit var mFrameLayout: FrameLayout;
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,8 +65,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         mapFragment.getMapAsync(this)
         Places.initialize(applicationContext, getString(R.string.map_key))
         placesClient = Places.createClient(this)
-      var fl :FrameLayout = findViewById(R.id.park_layout)
-        fl.setTransitionVisibility(View.INVISIBLE)
+        mFrameLayout = findViewById(R.id.park_layout)
+//        mFrameLayout.visibility = View.INVISIBLE;
 
 
         viewModelTrainingSpot = ViewModelProvider(this).get(TrainingSpotViewModel::class.java)
@@ -84,10 +85,15 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         val parkListener: Observer<List<TrainingSpotWithAll>> = Observer { parks ->
             for (park in parks){
 //                 Add a markers to map
-                mMap.addMarker(MarkerOptions().position(LatLng(
-                park.trainingSpot.parkLocation.xscale,
-                park.trainingSpot.parkLocation.yscale))
-                .title(park.trainingSpot.parkName))
+                mMap.addMarker(
+                    MarkerOptions().position(
+                        LatLng(
+                            park.trainingSpot.parkLocation.xscale,
+                            park.trainingSpot.parkLocation.yscale
+                        )
+                    )
+                        .title(park.trainingSpot.parkName)
+                )
                 parkSelectedId = park.trainingSpot.parkId;
                 if(listPark.size == 0) {
                     viewModelTrainingSpot.getParks()?.let { listPark.addAll(it) };
@@ -99,7 +105,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         viewModelTrainingSpot.parkList.observe(this, parkListener);
 
     }
-    fun searchLocation(location:String) {
+    fun searchLocation(location: String) {
         var addressList: List<Address>? = null
 
         if (location == null || location == "") {
@@ -145,7 +151,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         nav.setOnNavigationItemSelectedListener {
 
             when (it.itemId) {
-                R.id.searchFragment-> {
+                R.id.searchFragment -> {
                     navController
                         .navigate(R.id.action_global_searchFragment)
                 }
@@ -167,13 +173,13 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                 }
             }
 
-            var fl :FrameLayout = findViewById(R.id.park_layout)
-            fl.setTransitionVisibility(View.INVISIBLE)
+//            var fl :FrameLayout = findViewById(R.id.park_layout)
+//            fl.visibility = View.INVISIBLE
         true
     }
 
         // Handle FAB navigation
-        fab.setOnClickListener{view ->
+        fab.setOnClickListener{ view ->
             val chatIntent: Intent = Intent(this, ChatActivity::class.java);
             startActivityForResult(chatIntent, Companion.CHAT_ACTIVITY_CODE);
             overridePendingTransition(R.anim.slide_out_bottom, R.anim.nothing);
@@ -205,9 +211,6 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
             .setBottomRightCorner(CornerFamily.ROUNDED, radius)
             .setBottomLeftCorner(CornerFamily.ROUNDED, radius)
             .build()
-
-
-
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -229,13 +232,14 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
             fl.setTransitionVisibility(View.VISIBLE)
             getSupportFragmentManager().findFragmentById(R.id.park_layout);
-            bundle.putString("park_name",marker.title)
-            bundle.putInt("star_num",5)
-            bundle.putString("parkId",park_Id)
+            bundle.putString("park_name", marker.title)
+            bundle.putInt("star_num", 5)
+            bundle.putString("parkId", park_Id)
 
             fragment.arguments = bundle
 
-            setFragment(fragment)
+//            setFragment(fragment)
+            showSelectedParkDetails(marker.title, 5, park_Id);
 
             true
         }
@@ -246,11 +250,22 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
         return true
     }
+
+    private fun showSelectedParkDetails(title: String, star_num: Int, park_Id: String) {
+        var fragment: Fragment? = getSupportFragmentManager().findFragmentById(R.id.fragment2);
+
+        if (fragment != null) {
+            var detailsFrag: ParkDetails = fragment as ParkDetails;
+            detailsFrag.setDetails(title, star_num, park_Id);
+        }
+    }
+
     protected fun setFragment(fragment: Fragment?) {
         val fragmentManager: FragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         if (fragment != null) {
-            fragmentTransaction.add(R.id.fragment2, fragment)
+//            var prevFrag: Fragment = fragment.findF
+            fragmentTransaction.replace(R.id.fragment2, fragment)
             fragmentTransaction.commit()
         }
     }

@@ -75,7 +75,6 @@ class ChatAdapter(val context: Context, var chats: LinkedList<ChatWithAll>): Rec
 
         // If it is a personal chat show details about the other user.
         if (chat.chat.training_spot_id == "") {
-            // TODO: Find the other user and put his picture and name in the view.
             var otherUser: User? = chat.chatWithUsers.Users.find { user: User -> user.uId != FirebaseAuth.getInstance().currentUser?.uid }
             if (otherUser != null) {
                 holder.chat_name.text = otherUser?.name;

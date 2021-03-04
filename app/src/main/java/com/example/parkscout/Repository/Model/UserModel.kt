@@ -66,7 +66,10 @@ class UserModel {
             super.onActive();
 
             executor.execute{
-                postValue(modelSQL.getUser());
+                var sqlUser = modelSQL.getUser();
+
+                if (sqlUser != null)
+                    postValue(sqlUser);
             };
 
             var listener = { user: User ->

@@ -79,11 +79,7 @@ class Existing_chats : Fragment() {
         filteredList = filteredList.filter { it: ChatWithAll ->
             var foundUser: User? = it.chatWithUsers.Users.find { user: User -> user.name.toLowerCase().contains(searchQuery) }
 
-            if (foundUser != null) {
-                true;
-            } else {
-                false;
-            }
+            foundUser != null
         }
 
         mAdapter.chats.clear();

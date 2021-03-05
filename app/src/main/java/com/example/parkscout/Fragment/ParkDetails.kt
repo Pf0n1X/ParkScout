@@ -1,6 +1,5 @@
 package com.example.parkscout.Fragment
 
-import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -17,18 +16,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.parkscout.Adapter.CommentAdapter
 import com.example.parkscout.Adapter.ImagesAdapter
 import com.example.parkscout.R
-import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.Repository.Comment
 import com.example.parkscout.Repository.TrainingSpotWithAll
-import com.example.parkscout.ViewModel.ExistingChatsFragmentViewModel
 import com.example.parkscout.ViewModel.ParkDetailsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.fragment_park_details.*
 import java.util.*
 
@@ -36,8 +31,6 @@ private const val PARK_NAME = "park name"
 private const val  STAR_RATE = 1
 
 class ParkDetails : Fragment()   {
-
-
 
     // Data Members
     private lateinit var mBtnExpand: Button;
@@ -70,7 +63,7 @@ class ParkDetails : Fragment()   {
         mImggRecyclerView = rootView.findViewById(R.id.parkImages)
 
         setupCommentsRecyclerView();
-        mContainer.isVisible = false;
+        setIsVisible(false);
         var bottomSheetBehavior: BottomSheetBehavior<LinearLayout> = BottomSheetBehavior.from(mContainer);
         viewModel = ViewModelProvider(this).get(ParkDetailsViewModel::class.java);
 
@@ -114,7 +107,8 @@ class ParkDetails : Fragment()   {
     fun setDetails(title: String, starNum: Int, parkId: String) {
         this.mParkId = parkId;
         park_details_park_name.text = title;
-        mContainer.isVisible = true;
+        park_details_rating.numStars = starNum;
+        setIsVisible(true);
 
         var listener = { spot: TrainingSpotWithAll? ->
             var commentArr = spot?.trainingSpotsWithComments?.comments;
@@ -174,5 +168,9 @@ class ParkDetails : Fragment()   {
         mCommentsRecyclerView.layoutManager = linearLayoutManager
         this.mCommentAdapter = CommentAdapter(requireContext());
         mCommentsRecyclerView.adapter = mCommentAdapter;
+    }
+
+    public fun setIsVisible(isVisible: Boolean) {
+        mContainer.isVisible = isVisible;
     }
 }

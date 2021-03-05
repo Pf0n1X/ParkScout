@@ -31,15 +31,16 @@ data class TrainingSpotFirebase(
         facilities = map["facilities"] as String;
         // comment
         if (map["comment"] != null ){
-            var comment_item : Comment = Comment("","","", null);
             val commentList = LinkedList<Comment>();
-            var arr_comment: ArrayList<HashMap<String, Object>> =
-                map["comment"] as ArrayList<HashMap<String, Object>>;
+            var arr_comment: ArrayList<HashMap<String?, Any?>> =
+                map["comment"] as ArrayList<HashMap<String?, Any?>>;
             arr_comment.forEachIndexed { index, hashMap ->
-                comment_item.trainingSpotId = hashMap["trainingId"] as String;
-                comment_item.userId = hashMap["userId"] as String;
-                comment_item.c_text = hashMap["c_text"] as String;
-                comment_item.c_dateTime = hashMap["c_dateTime"] as DateTimeFormatter;
+//                comment_item.trainingSpotId = hashMap["trainingId"] as String;
+//                comment_item.userId = hashMap["userId"] as String;
+//                comment_item.c_text = hashMap["c_text"] as String;
+//                comment_item.c_dateTime = hashMap["c_dateTime"] as DateTimeFormatter;
+                var comment_item : Comment = Comment("","","", 0);
+                comment_item.fromMap(hashMap);
 
                 commentList?.add(comment_item);
             }

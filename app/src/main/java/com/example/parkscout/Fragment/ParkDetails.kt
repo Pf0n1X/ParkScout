@@ -65,8 +65,15 @@ class ParkDetails : Fragment()   {
 
 
         var listener = { spot: TrainingSpotWithAll? ->
-            mCommentAdapter.mComments = spot?.getComments()!!;
-            mCommentAdapter.notifyDataSetChanged();
+            var commentArr = spot?.getComments();
+            if (commentArr != null) {
+                mCommentAdapter.mComments = commentArr;
+                mCommentAdapter.notifyDataSetChanged();
+            } else {
+                mCommentAdapter.mComments = LinkedList<Comment>();
+                (mCommentAdapter.mComments as LinkedList<Comment>).add(Comment("1", "Tomer", "Message", 12345678));
+                mCommentAdapter.notifyDataSetChanged();
+            }
         }
 
         if (viewModel.trainingSpot.value != null) {

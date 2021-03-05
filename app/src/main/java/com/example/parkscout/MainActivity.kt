@@ -137,6 +137,10 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
             for (park in parks){
                         parkSelectedId = park.trainingSpot.parkId;
+                mMap.addMarker(MarkerOptions().position(LatLng(
+                    park.trainingSpot.parkLocation.xscale,
+                    park.trainingSpot.parkLocation.yscale))
+                    .title(park.trainingSpot.parkName))
 
                     }
 

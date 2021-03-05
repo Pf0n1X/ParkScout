@@ -96,7 +96,7 @@ class ParkDetails : Fragment()   {
         mContainer.isVisible = true;
 
         var listener = { spot: TrainingSpotWithAll? ->
-            var commentArr = spot?.getComments();
+            var commentArr = spot?.trainingSpotsWithComments?.comments;
             if (commentArr != null) {
                 mCommentAdapter.mComments = commentArr;
                 mCommentAdapter.notifyDataSetChanged();

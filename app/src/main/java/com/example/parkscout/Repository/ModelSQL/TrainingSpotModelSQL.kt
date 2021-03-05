@@ -95,22 +95,19 @@ class TrainingSpotModelSQL {
                     AppLocalDb.getInstance().trainingSpotDao()
                         .insertKinds(trainingSpotWithAll.getSportTypes());
                 }
-                if(trainingSpotWithAll.getComments() != null) {
-                    var commentMapArr: ArrayList<HashMap<String?, Any?>> = trainingSpotWithAll.getComments() as ArrayList<HashMap<String?, Any?>>;
-                    var commentArr: LinkedList<Comment> = LinkedList<Comment>();
 
-                    for (commentMap in commentMapArr) {
-                        var cmt: Comment = Comment("", "", "", 0);
-                        cmt.fromMap(commentMap);
-                        commentArr.add(cmt);
-                    }
+                var commentList = trainingSpotWithAll.getComments();
+                if(commentList != null) {
+
                     AppLocalDb.getInstance().trainingSpotDao()
-                        .insertComments(commentArr)
+                        .insertComments(commentList)
                 }
+
                 if(trainingSpotWithAll.getRating() != null) {
                     AppLocalDb.getInstance().trainingSpotDao()
                         .insertRatings(trainingSpotWithAll.getRating())
                 }
+                
                 if (trainingSpotWithAll.getImages() != null) {
                     AppLocalDb.getInstance().trainingSpotDao()
                         .insertImages(trainingSpotWithAll.getImages())
@@ -131,6 +128,4 @@ class TrainingSpotModelSQL {
         var task: MyAsyncTask = MyAsyncTask();
         task.execute();
     }
-
-
 }

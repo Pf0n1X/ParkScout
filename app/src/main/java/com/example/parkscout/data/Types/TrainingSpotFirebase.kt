@@ -46,7 +46,7 @@ data class TrainingSpotFirebase(
             }
             comment = commentList.toList();
         }
-        comment = map["comment"]  as List<Comment>?;
+//        comment = map["comment"]  as List<Comment>?;
         ratings = map["ratings"]  as List<Rating>?;
 
         //types

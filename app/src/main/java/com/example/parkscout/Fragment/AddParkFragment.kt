@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parkscout.Adapter.ImagesAdapter
@@ -90,8 +91,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
     ): View? {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_add_park, container, false)
-        trainModel =TrainingSpotViewModel()
-
+        trainModel =  ViewModelProvider(this).get(TrainingSpotViewModel::class.java)
         var selectPhotoBtn =
             rootView.findViewById(R.id.uploadPhotobBtn) as Button
 

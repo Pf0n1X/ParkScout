@@ -34,9 +34,9 @@ class CommentAdapter(val context: Context): RecyclerView.Adapter<CommentAdapter.
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var comment = mComments.get(position)
         holder.mTVCommentText.text = comment.c_text;
-        var curDate: Date = Timestamp(comment.time, 0).toDate();
-        var dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm")
-        holder.mTVTime.text = dateFormat.format(curDate);
+//        var curDate: Date = Timestamp(comment.time, 0).toDate();
+//        var dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm")
+//        holder.mTVTime.text = dateFormat.format(curDate);
 
         // TODO: Add the user to the comment object and get the data.
         // TODO: Show the user name and image.
@@ -55,13 +55,13 @@ class CommentAdapter(val context: Context): RecyclerView.Adapter<CommentAdapter.
         public var mTVCommentText: TextView;
         public var mIVProfileImage: ImageView;
         public var mTVUserName: TextView;
-        public var mTVTime: TextView;
+//        public var mTVTime: TextView;
 
         init {
             mTVCommentText = itemView.findViewById(R.id.comment_msg_content);
             mIVProfileImage = itemView.findViewById(R.id.comment_profile_image);
             mTVUserName = itemView.findViewById(R.id.comment_name);
-            mTVTime = itemView.findViewById(R.id.comment_time);
+//            mTVTime = itemView.findViewById(R.id.comment_time);
         }
     }
 }

@@ -117,6 +117,10 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
             viewModelTrainingSpot.user.observe(this,Observer { user: User ->
                 mDistanceFromSetting = user.distance
+                if (mMap != null){
+                    mMap.clear();
+                    showParksByRadius();
+                }
             });
         }
         // Setup the app and the bottom app bar UI.
@@ -130,22 +134,13 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
         listPark = LinkedList<TrainingSpotWithAll>();
 
-        val parkListener: Observer<List<TrainingSpotWithAll>> = Observer { parks ->
-            if (listPark.size == 0) {
-                viewModelTrainingSpot.getParks()?.let { listPark.addAll(parks) };
-            }
+//        viewModelTrainingSpot.getParks()?.let { listPark.addAll(it) };
+        viewModelTrainingSpot.parkList.observe(this, Observer {
+            listPark.clear();
+            viewModelTrainingSpot.getParks()?.let { listPark.addAll(it) };
 
-            for (park in parks){
-                        parkSelectedId = park.trainingSpot.parkId;
-                mMap.addMarker(MarkerOptions().position(LatLng(
-                    park.trainingSpot.parkLocation.xscale,
-                    park.trainingSpot.parkLocation.yscale))
-                    .title(park.trainingSpot.parkName))
-
-                    }
-
-        };
-        viewModelTrainingSpot.parkList.observe(this, parkListener);
+            showParksByRadius()
+        });
 
     }
     fun CalculationByDistance(StartP: LatLng, EndP: LatLng): Int {
@@ -244,7 +239,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                                     ), DEFAULT_ZOOM.toFloat()
                                 )
                             )
-                            showParksByRadius();
+
+//                            showParksByRadius();
                         }
                     } else {
                         mMap?.moveCamera(
@@ -252,6 +248,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                                 .newLatLngZoom(defaultLocation, MainActivity.DEFAULT_ZOOM.toFloat())
                         )
                         mMap?.uiSettings?.isMyLocationButtonEnabled = false
+
                     }
                 }
 
@@ -262,8 +259,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     }
 
     fun showParksByRadius(){
-
         for (park in listPark) {
+
             if (lastKnownLocation != null) {
                 // check point in radius
                 val distance = CalculationByDistance(
@@ -276,7 +273,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                         park.trainingSpot.parkLocation.yscale
                     )
                 )
-//                if (distance <= mDistanceFromSetting) {
+                if (distance <= mDistanceFromSetting) {
                     mMap.addMarker(
                         MarkerOptions().position(
                             LatLng(
@@ -284,10 +281,10 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                                 park.trainingSpot.parkLocation.yscale
                             )
                         )
-                            .title(park.trainingSpot.parkName)
+                            .title(park.trainingSpot.parkId)
                     )
                 }
-//            }
+            }
         }
     }
 
@@ -426,30 +423,32 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         getLocationPermission()
         updateLocationUI()
         getDeviceLocation()
-//        googleMap?.animateCamera(CameraUpdateFactory.zoomTo(17F),200, null)
-//        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(israel, 13f))
 
         mMap.setOnMarkerClickListener { marker ->
-            if (marker.isInfoWindowShown) {
-                marker.hideInfoWindow()
-            } else {
-                marker.showInfoWindow()
-            }
-            var park_Id = parkSelectedId;
-
+            marker.hideInfoWindow();
+            var park_Id = marker.title;
             var fl :FrameLayout = findViewById(R.id.park_layout)
             val fragment = ParkDetails()
 
             fl.setTransitionVisibility(View.VISIBLE)
             getSupportFragmentManager().findFragmentById(R.id.park_layout);
-            bundle.putString("park_name", marker.title)
-            bundle.putInt("star_num", 5)
+//            bundle.putString("park_name", marker.title)
+//            bundle.putInt("star_num", 5)
             bundle.putString("parkId", park_Id)
 
             fragment.arguments = bundle
+            var parkToShow: TrainingSpotWithAll? =
+                park_Id?.let { viewModelTrainingSpot.getParkById(it).value }
+            val parkListener: Observer<TrainingSpotWithAll> = Observer { parkById ->
+                showSelectedParkDetails(parkById.trainingSpot.parkName, 5, parkById.trainingSpot.parkId);
+
+            };
+
+            viewModelTrainingSpot.parkById.observe(this, parkListener);
+
+
 
 //            setFragment(fragment)
-            showSelectedParkDetails(marker.title, 5, park_Id);
 
             true
         }

@@ -30,5 +30,4 @@ data class Comment(
 
         return result
     }
-
 }

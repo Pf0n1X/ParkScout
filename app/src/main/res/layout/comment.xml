@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:gravity="center"
-    android:background="@color/white">
+    android:background="@android:color/transparent">
 
 
     <androidx.cardview.widget.CardView
@@ -39,48 +39,49 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/msgRight.cvProfPic"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/comment.name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/comment.name"
             android:text="Name" />
 
 
         <TextView
+            android:id="@+id/comment.msg_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/comment.msg_content"
             android:text="Wow I love this park." />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+<!--    <LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/linearLayout"-->
+<!--        app:layout_constraintTop_toTopOf="parent">-->
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/comment.time"
-            android:text="10:31 AM" />
+<!--        <TextView-->
+<!--            android:id="@+id/comment.time"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="10:31 AM" />-->
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
+<!--        <ImageView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
 
 

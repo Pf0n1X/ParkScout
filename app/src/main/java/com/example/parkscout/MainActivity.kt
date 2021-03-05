@@ -137,7 +137,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
 
             for (park in parks){
-                        parkSelectedId = park.trainingSpot.parkId;
+//                        parkSelectedId = park.trainingSpot.parkId;
 
                 if (listPark.size == 0) {
                     viewModelTrainingSpot.getParks()?.let { listPark.addAll(parks) };
@@ -287,7 +287,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                                 park.trainingSpot.parkLocation.yscale
                             )
                         )
-                            .title(park.trainingSpot.parkName)
+                            .title(park.trainingSpot.parkId)
                     )
                 }
             }
@@ -429,30 +429,32 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         getLocationPermission()
         updateLocationUI()
         getDeviceLocation()
-//        googleMap?.animateCamera(CameraUpdateFactory.zoomTo(17F),200, null)
-//        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(israel, 13f))
 
         mMap.setOnMarkerClickListener { marker ->
-            if (marker.isInfoWindowShown) {
-                marker.hideInfoWindow()
-            } else {
-                marker.showInfoWindow()
-            }
-            var park_Id = parkSelectedId;
-
+            marker.hideInfoWindow();
+            var park_Id = marker.title;
             var fl :FrameLayout = findViewById(R.id.park_layout)
             val fragment = ParkDetails()
 
             fl.setTransitionVisibility(View.VISIBLE)
             getSupportFragmentManager().findFragmentById(R.id.park_layout);
-            bundle.putString("park_name", marker.title)
-            bundle.putInt("star_num", 5)
+//            bundle.putString("park_name", marker.title)
+//            bundle.putInt("star_num", 5)
             bundle.putString("parkId", park_Id)
 
             fragment.arguments = bundle
+            var parkToShow: TrainingSpotWithAll? =
+                park_Id?.let { viewModelTrainingSpot.getParkById(it).value }
+            val parkListener: Observer<TrainingSpotWithAll> = Observer { parkById ->
+                showSelectedParkDetails(parkById.trainingSpot.parkName, 5, parkById.trainingSpot.parkId);
+
+            };
+
+            viewModelTrainingSpot.parkById.observe(this, parkListener);
+
+
 
 //            setFragment(fragment)
-            showSelectedParkDetails(marker.title, 5, park_Id);
 
             true
         }

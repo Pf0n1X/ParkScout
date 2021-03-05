@@ -4,12 +4,10 @@ import android.util.Log
 import com.example.parkscout.Repository.*
 import com.example.parkscout.data.Types.TrainingSpotFirebase
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.*
 import java.lang.Exception
 import java.util.*
+import kotlin.collections.HashMap
 
 class TrainingSpotModelFirebase {
 
@@ -71,6 +69,82 @@ class TrainingSpotModelFirebase {
                 }
             });
 
+            query.addSnapshotListener{ value: QuerySnapshot?, error: FirebaseFirestoreException? ->
+                Log.d("TAG", "Test");
+                var map: HashMap<String?, Any?>? =
+                    value?.documents?.get(0)?.data as HashMap<String?, Any?>?;
+                if (map != null) {
+                    var park: TrainingSpotFirebase = TrainingSpotFirebase(
+                        "",
+                        "",
+                        com.example.parkscout.data.Types.Location(0.0, 0.0),
+                        "",
+                        "",
+                        null,
+                        null,
+                        null,
+                        null
+                    );
+
+                    park.fromMap(map)
+
+                    trainingSpot = TrainingSpot(
+                        park.parkId,
+                        park.parkName,
+                        park.parkLocation,
+                        park.chatId,
+                        park.facilities
+                    )
+
+                    parkWithAll = TrainingSpotWithAll(
+                        trainingSpot,
+                        TrainingSpotsWithComments(trainingSpot, park.comment),
+                        TrainingSpotWithRating(trainingSpot, park.ratings),
+                        TrainingSpotWithSportTypes(trainingSpot, park.types),
+                        TrainingSpotWithImages(trainingSpot, park.images)
+                    )
+
+                    listener(parkWithAll);
+                }
+//                if (value.documents != null) {
+//                    val document = it.result
+//                    for (doc in it.result!!) {
+//                        var park: TrainingSpotFirebase = TrainingSpotFirebase(
+//                            "",
+//                            "",
+//                            com.example.parkscout.data.Types.Location(0.0, 0.0),
+//                            "",
+//                            "",
+//                            null,
+//                            null,
+//                            null,
+//                            null
+//                        );
+//
+//                        park.fromMap(doc.data)
+//
+//                        trainingSpot = TrainingSpot(
+//                            park.parkId,
+//                            park.parkName,
+//                            park.parkLocation,
+//                            park.chatId,
+//                            park.facilities
+//                        )
+//
+//                        parkWithAll = TrainingSpotWithAll(
+//                            trainingSpot,
+//                            TrainingSpotsWithComments(trainingSpot, park.comment),
+//                            TrainingSpotWithRating(trainingSpot, park.ratings),
+//                            TrainingSpotWithSportTypes(trainingSpot, park.types),
+//                            TrainingSpotWithImages(trainingSpot, park.images)
+//                        )
+//
+//
+//                    }
+//                    listener(parkWithAll);
+//
+//                }
+            }
     }
     public fun getTrainingSpotByName(park_name:String, listener: (LinkedList<TrainingSpotWithAll>) -> Unit) {
         var db: FirebaseFirestore = FirebaseFirestore.getInstance();

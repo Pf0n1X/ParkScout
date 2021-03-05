@@ -148,9 +148,17 @@ class TrainingSpotModel {
                 postValue(parkById)
             }
 
-            modelFirebase.getTrainingSpotById(parkId,{ park: TrainingSpotWithAll? ->
-            value = park;
-            });
+            var addParkListener = { park: TrainingSpotWithAll? ->
+
+                if (park != null)
+                    modelSQL.addPark(park, {
+                        value = park;
+                    });
+
+                value = park;
+            };
+
+            modelFirebase.getTrainingSpotById(parkId, addParkListener);
         }
     }
 

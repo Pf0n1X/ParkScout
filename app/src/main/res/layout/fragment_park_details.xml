@@ -112,6 +112,7 @@
                     android:id="@+id/park_details.rv_comments"
                     android:layout_width="match_parent"
                     android:layout_height="fill_parent"
+                    android:nestedScrollingEnabled="false"
                     android:layout_above="@id/park_details.send_msg_container"/>
 
                 <RelativeLayout

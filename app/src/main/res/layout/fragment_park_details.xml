@@ -43,6 +43,7 @@
                     <RatingBar
                         android:id="@+id/park_details.rating"
                         style="?android:attr/ratingBarStyleIndicator"
+                        android:isIndicator="false"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -96,8 +97,11 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/parkImages"
                     android:layout_width="match_parent"
-                    android:layout_height="110dp" />
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="false"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
 
             </LinearLayout>
 

@@ -1,5 +1,7 @@
 package com.example.parkscout.Fragment
 
+import android.app.Activity
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,7 +17,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.parkscout.Adapter.CommentAdapter
+import com.example.parkscout.Adapter.ImagesAdapter
 import com.example.parkscout.R
 import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.Repository.Comment
@@ -44,6 +48,8 @@ class ParkDetails : Fragment()   {
     private lateinit var mBtnSendComment: ImageButton;
     private lateinit var mTVCommentText: TextView;
     private lateinit var mParkId: String
+    private lateinit var mImggRecyclerView: RecyclerView
+    private lateinit var mAdapter: ImagesAdapter
 
     // Methods
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +67,8 @@ class ParkDetails : Fragment()   {
         mCommentsRecyclerView = rootView.findViewById(R.id.park_details_rv_comments);
         mTVCommentText = rootView.findViewById(R.id.park_details_comment_input);
         mBtnSendComment = rootView.findViewById(R.id.park_details_btnSendComment);
+        mImggRecyclerView = rootView.findViewById(R.id.parkImages)
+
         setupCommentsRecyclerView();
         mContainer.isVisible = false;
         var bottomSheetBehavior: BottomSheetBehavior<LinearLayout> = BottomSheetBehavior.from(mContainer);
@@ -85,6 +93,20 @@ class ParkDetails : Fragment()   {
             mTVCommentText.setText("");
         };
 
+        // set up park images
+        mImggRecyclerView.setHasFixedSize(true)
+        mAdapter = ImagesAdapter(this.requireContext(), LinkedList<Uri>());
+        mImggRecyclerView.adapter = mAdapter
+        mAdapter.notifyDataSetChanged();
+
+        var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(
+            activity?.applicationContext,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+
+        mImggRecyclerView.layoutManager = linearLayoutManager
+
         // Inflate the layout for this fragment
         return rootView
     }
@@ -92,7 +114,6 @@ class ParkDetails : Fragment()   {
     fun setDetails(title: String, starNum: Int, parkId: String) {
         this.mParkId = parkId;
         park_details_park_name.text = title;
-        park_details_rating.numStars = starNum;
         mContainer.isVisible = true;
 
         var listener = { spot: TrainingSpotWithAll? ->
@@ -104,6 +125,39 @@ class ParkDetails : Fragment()   {
                 mCommentAdapter.mComments = LinkedList<Comment>();
                 (mCommentAdapter.mComments as LinkedList<Comment>).add(Comment("1", "Tomer", "Message", 12345678));
                 mCommentAdapter.notifyDataSetChanged();
+            }
+
+            var images = spot?.trainingSpotWithImages?.getImages();
+            if(mAdapter.imagesURL!= null){
+                if(mAdapter.imagesURL!!.size != 0){
+                    mAdapter.imagesURL!!.clear();
+                }
+            }
+            if(images != null){
+
+                for (img in images){
+                    var imgUri:Uri = Uri.parse(img.ImgUrl);
+                    mAdapter.imagesURL?.add(imgUri)
+                    mAdapter.notifyDataSetChanged();
+                    mImggRecyclerView.adapter = mAdapter
+                }
+
+            }
+
+            var rating = spot?.trainingSpotWithRating?.sport_rating;
+
+            if(rating != null){
+
+                var avgRating : Float;
+                var sumRating : Float = 0.0F;
+
+                for (rate in rating){
+                    sumRating += rate.rate;
+                }
+
+                avgRating = sumRating/rating.size;
+                park_details_rating.rating = avgRating;
+
             }
         }
 

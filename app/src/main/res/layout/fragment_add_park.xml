@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_height="match_parent"
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/buttonshape"
@@ -12,8 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ParkName"
@@ -23,10 +22,21 @@
             android:textColor="@color/black"
             android:textColorHint="@color/quantum_grey900"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/fragLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <RatingBar
+            android:id="@+id/addParkRating"
+            style="?android:attr/ratingBarStyleIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:isIndicator="false"
+            app:layout_constraintBottom_toTopOf="@+id/fragLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ParkName" />
 
         <FrameLayout
             android:id="@+id/fragLayout"
@@ -35,7 +45,7 @@
             app:layout_constraintBottom_toTopOf="@+id/locationTXT"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ParkName">
+            app:layout_constraintTop_toBottomOf="@+id/park_details.rating">
 
             <fragment
                 android:id="@+id/mapFrag"
@@ -189,6 +199,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/park_kind"
             tools:ignore="MissingConstraints" />
+        zz
 
         <Button
             android:id="@+id/uploadPhotobBtn"

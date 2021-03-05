@@ -7,19 +7,19 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parkscout.Adapter.ImagesAdapter
@@ -40,8 +40,10 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import java.io.IOException
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -74,7 +76,8 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
     var selectedPhotoUri: Uri? = null;
     private lateinit var mImggRecyclerView: RecyclerView
     private lateinit var mAdapter: ImagesAdapter
-
+    private lateinit var mUserID: String;
+    private lateinit var viewModelTrainingSpot: TrainingSpotViewModel;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +88,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -92,6 +96,26 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_add_park, container, false)
         trainModel =  ViewModelProvider(this).get(TrainingSpotViewModel::class.java)
+
+        val ratingBar : RatingBar=  rootView.findViewById(R.id.addParkRating) as RatingBar;
+
+        ratingBar.setOnRatingBarChangeListener(object : RatingBar.OnRatingBarChangeListener {
+            override fun onRatingChanged(ratingBar: RatingBar?, rating: Float, fromUser: Boolean) {
+//                ratingValue.setText(rating.toString())
+//                ratingBar.setrating(rating);
+            }
+        })
+        viewModelTrainingSpot = ViewModelProvider(this).get(TrainingSpotViewModel::class.java)
+
+        // get user
+        mUserID = FirebaseAuth.getInstance().currentUser?.uid ?: "";
+        if (mUserID != null) {
+            viewModelTrainingSpot.getUserByID(mUserID);
+
+            viewModelTrainingSpot.user.observe(viewLifecycleOwner,  { user: User ->
+                mUserID = user.uId;
+            })
+        }
         var selectPhotoBtn =
             rootView.findViewById(R.id.uploadPhotobBtn) as Button
 
@@ -108,7 +132,11 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         mImggRecyclerView.adapter = mAdapter
         mAdapter.notifyDataSetChanged();
 
-        var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(activity?.applicationContext,LinearLayoutManager.HORIZONTAL, false)
+        var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(
+            activity?.applicationContext,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
 
         mImggRecyclerView.layoutManager = linearLayoutManager
         searchBtn.setOnClickListener{
@@ -120,13 +148,14 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
             val park_name = rootView.findViewById(R.id.ParkName) as TextView
             val parkKind =  rootView.findViewById(R.id.park_kind) as ChipGroup
             val facilities = rootView.findViewById(R.id.facilities) as TextView
+            val Parkrating = rootView.findViewById(R.id.addParkRating) as RatingBar
             val parkLocation = com.example.parkscout.data.Types.Location(
                 latLng.latitude,
                 latLng.longitude
             )
             val comment : Comment = Comment("", "", "", 0)
 
-            val rating : Rating = Rating("", "", 0, null)
+            val rating : Rating = Rating(mUserID, "0", Parkrating.rating.toInt(), DateTimeFormatter.ISO_DATE_TIME)
 
             val sportTypesList : MutableList<SportTypes>  =  mutableListOf();
 

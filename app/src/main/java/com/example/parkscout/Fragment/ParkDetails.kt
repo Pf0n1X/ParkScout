@@ -7,10 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +20,7 @@ import com.example.parkscout.Adapter.ImagesAdapter
 import com.example.parkscout.R
 import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.Repository.Comment
+import com.example.parkscout.Repository.Rating
 import com.example.parkscout.Repository.TrainingSpotWithAll
 import com.example.parkscout.ViewModel.ExistingChatsFragmentViewModel
 import com.example.parkscout.ViewModel.ParkDetailsViewModel
@@ -73,7 +71,30 @@ class ParkDetails : Fragment()   {
         mContainer.isVisible = false;
         var bottomSheetBehavior: BottomSheetBehavior<LinearLayout> = BottomSheetBehavior.from(mContainer);
         viewModel = ViewModelProvider(this).get(ParkDetailsViewModel::class.java);
+if(park_details_rating != null) {
+    park_details_rating.setOnRatingBarChangeListener(object : RatingBar.OnRatingBarChangeListener {
+        override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {
+            var uid: String? = FirebaseAuth.getInstance().currentUser?.uid;
+            if (uid != null) {
+                var ratingToAdd: Rating? = p0?.rating?.let {
+                    Rating(
+                        uid,
+                        mParkId,
+                        it,
+                        System.currentTimeMillis()
+                    )
 
+                };
+                if (ratingToAdd != null) {
+                    viewModel.addRating(mParkId, ratingToAdd, {
+                        Log.d("TAG", "Success when trying to save rating");
+                    })
+                };
+
+            }
+        }
+    })
+}
         // Setup the comment send button
         mBtnSendComment.setOnClickListener{event  ->
             var uid: String ? = FirebaseAuth.getInstance().currentUser?.uid;
@@ -147,16 +168,7 @@ class ParkDetails : Fragment()   {
             var rating = spot?.trainingSpotWithRating?.sport_rating;
 
             if(rating != null){
-
-                var avgRating : Float;
-                var sumRating : Float = 0.0F;
-
-                for (rate in rating){
-                    sumRating += rate.rate;
-                }
-
-                avgRating = sumRating/rating.size;
-                park_details_rating.rating = avgRating;
+                calcAvgRating(rating);
 
             }
         }
@@ -167,6 +179,17 @@ class ParkDetails : Fragment()   {
 
         viewModel.getTrainingSpotByID(parkId).observe(viewLifecycleOwner, listener);
     }
+        fun calcAvgRating(rating : List<Rating>){
+            var avgRating : Float;
+            var sumRating : Float = 0.0F;
+
+            for (rate in rating){
+                sumRating += rate.rate;
+            }
+
+            avgRating = sumRating/rating.size;
+            park_details_rating.rating = avgRating;
+        }
 
     fun setupCommentsRecyclerView() {
         mCommentsRecyclerView.setHasFixedSize(true)

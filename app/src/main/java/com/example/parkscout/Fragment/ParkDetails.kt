@@ -62,7 +62,7 @@ class ParkDetails : Fragment()   {
         mTVCommentText = rootView.findViewById(R.id.park_details_comment_input);
         mBtnSendComment = rootView.findViewById(R.id.park_details_btnSendComment);
         setupCommentsRecyclerView();
-        mContainer.isVisible = false;
+        setIsVisible(false);
         var bottomSheetBehavior: BottomSheetBehavior<LinearLayout> = BottomSheetBehavior.from(mContainer);
         viewModel = ViewModelProvider(this).get(ParkDetailsViewModel::class.java);
 
@@ -93,7 +93,7 @@ class ParkDetails : Fragment()   {
         this.mParkId = parkId;
         park_details_park_name.text = title;
         park_details_rating.numStars = starNum;
-        mContainer.isVisible = true;
+        setIsVisible(true);
 
         var listener = { spot: TrainingSpotWithAll? ->
             var commentArr = spot?.trainingSpotsWithComments?.comments;
@@ -120,5 +120,9 @@ class ParkDetails : Fragment()   {
         mCommentsRecyclerView.layoutManager = linearLayoutManager
         this.mCommentAdapter = CommentAdapter(requireContext());
         mCommentsRecyclerView.adapter = mCommentAdapter;
+    }
+
+    public fun setIsVisible(isVisible: Boolean) {
+        mContainer.isVisible = isVisible;
     }
 }

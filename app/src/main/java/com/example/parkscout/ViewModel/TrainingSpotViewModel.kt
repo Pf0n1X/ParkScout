@@ -3,6 +3,8 @@ package com.example.parkscout.ViewModel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.example.parkscout.Repository.Chat
+import com.example.parkscout.Repository.Model.ChatModel
 import com.example.parkscout.Repository.Model.TrainingSpotModel
 import com.example.parkscout.Repository.Model.UserModel
 import com.example.parkscout.Repository.TrainingSpotWithAll
@@ -15,6 +17,8 @@ class TrainingSpotViewModel: ViewModel() {
     lateinit var parkById: LiveData<TrainingSpotWithAll>;
     lateinit var parkByName: LiveData<List<TrainingSpotWithAll>>;
     lateinit var user: LiveData<User>
+    lateinit var parkChat: LiveData<Chat>
+
         private set;
 
     // Constructors
@@ -42,4 +46,9 @@ class TrainingSpotViewModel: ViewModel() {
     public fun getUserByID(uid: String) {
         this.user = UserModel.instance.getUserByID(uid);
     }
+
+    fun addChat(chat: Chat,user: User, listener: () -> Unit){
+        ChatModel.instance.addChat(chat,user,listener)
+    }
+
 }

@@ -96,6 +96,15 @@ class TrainingSpotModel {
         });
     }
 
+    fun addRating(parkId: String, rating: Rating, listener: () -> Int) {
+        modelFirebase.addRating(parkId, rating, {
+            // TODO: Update the local DB.
+
+            listener();
+        });
+    }
+
+
     inner class ParkLiveData: MutableLiveData<List<TrainingSpotWithAll>>() {
 
         // Constructors

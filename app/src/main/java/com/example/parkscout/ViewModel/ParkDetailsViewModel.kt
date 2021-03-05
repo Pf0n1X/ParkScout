@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.parkscout.Repository.Comment
 import com.example.parkscout.Repository.Model.ChatModel
 import com.example.parkscout.Repository.Model.TrainingSpotModel
+import com.example.parkscout.Repository.Rating
 import com.example.parkscout.Repository.TrainingSpotWithAll
 
 class ParkDetailsViewModel: ViewModel() {
@@ -27,5 +28,9 @@ class ParkDetailsViewModel: ViewModel() {
 
     fun addComment(parkId: String, comment: Comment, listener: () -> Int) {
         TrainingSpotModel.instance.addComment(parkId, comment, listener);
+    }
+
+    fun addRating(parkId: String, rating: Rating, listener: () -> Int) {
+        TrainingSpotModel.instance.addRating(parkId, rating, listener);
     }
 }

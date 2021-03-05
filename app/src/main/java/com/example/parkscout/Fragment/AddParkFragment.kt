@@ -78,6 +78,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
     private lateinit var mImggRecyclerView: RecyclerView
     private lateinit var mAdapter: ImagesAdapter
     private lateinit var mUserID: String;
+    private lateinit var mUser: User;
     private lateinit var viewModelTrainingSpot: TrainingSpotViewModel;
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -115,6 +116,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
 
             viewModelTrainingSpot.user.observe(viewLifecycleOwner,  { user: User ->
                 mUserID = user.uId;
+                mUser = user;
             })
         }
         var selectPhotoBtn =
@@ -204,8 +206,15 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
                     TrainingSpotWithImages(trainingSpot, images)
                 )
 
+
                 trainModel.addPark(park) {
                     Log.d("TAG", "Success when trying to save");
+                    val chat = Chat("0",park.trainingSpot.parkId)
+                    val user:User = mUser;
+                    trainModel.addChat(chat,user){
+                        Log.d("TAG", "chat created");
+
+                    }
                 }
 
                 val savedMsg = "Saved"

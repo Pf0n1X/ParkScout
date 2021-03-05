@@ -261,4 +261,17 @@ class TrainingSpotModelFirebase {
                 Log.d("TAG", "ERROR: " + exception.toString())
             };
     }
+    fun addRating(parkId: String, rating: Rating, listener: () -> Int) {
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+        db.collection(COLLECTION_NAME)
+            .document(parkId)
+            .update("ratings", FieldValue.arrayUnion(rating.toMap()))
+            .addOnSuccessListener { listener(); }
+            .addOnFailureListener { exception: Exception ->
+                Log.d("TAG", "ERROR: " + exception.toString())
+            };
+    }
+
+
+
 }

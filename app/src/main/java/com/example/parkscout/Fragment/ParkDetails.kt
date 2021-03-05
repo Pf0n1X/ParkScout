@@ -1,11 +1,14 @@
 package com.example.parkscout.Fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -14,11 +17,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parkscout.Adapter.CommentAdapter
 import com.example.parkscout.R
+import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.Repository.Comment
 import com.example.parkscout.Repository.TrainingSpotWithAll
 import com.example.parkscout.ViewModel.ExistingChatsFragmentViewModel
 import com.example.parkscout.ViewModel.ParkDetailsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.fragment_park_details.*
 import java.util.*
 
@@ -27,12 +33,17 @@ private const val  STAR_RATE = 1
 
 class ParkDetails : Fragment()   {
 
+
+
     // Data Members
     private lateinit var mBtnExpand: Button;
     private lateinit var mContainer: LinearLayout;
     private lateinit var mCommentsRecyclerView: RecyclerView;
     private lateinit var viewModel: ParkDetailsViewModel;
     private lateinit var mCommentAdapter: CommentAdapter
+    private lateinit var mBtnSendComment: ImageButton;
+    private lateinit var mTVCommentText: TextView;
+    private lateinit var mParkId: String
 
     // Methods
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,21 +59,41 @@ class ParkDetails : Fragment()   {
 
         mContainer = rootView.findViewById(R.id.park_details_container);
         mCommentsRecyclerView = rootView.findViewById(R.id.park_details_rv_comments);
+        mTVCommentText = rootView.findViewById(R.id.park_details_comment_input);
+        mBtnSendComment = rootView.findViewById(R.id.park_details_btnSendComment);
         setupCommentsRecyclerView();
         mContainer.isVisible = false;
         var bottomSheetBehavior: BottomSheetBehavior<LinearLayout> = BottomSheetBehavior.from(mContainer);
         viewModel = ViewModelProvider(this).get(ParkDetailsViewModel::class.java);
+
+        // Setup the comment send button
+        mBtnSendComment.setOnClickListener{event  ->
+            var uid: String ? = FirebaseAuth.getInstance().currentUser?.uid;
+
+            if (uid != null) {
+                var comment: Comment = Comment(
+                    mParkId,
+                    uid,
+                    mTVCommentText.text.toString(),
+                    System.currentTimeMillis()
+                );
+                viewModel.addComment(mParkId, comment, {
+                    Log.d("TAG", "Success when trying to save");
+                });
+            }
+
+            mTVCommentText.setText("");
+        };
 
         // Inflate the layout for this fragment
         return rootView
     }
 
     fun setDetails(title: String, starNum: Int, parkId: String) {
+        this.mParkId = parkId;
         park_details_park_name.text = title;
         park_details_rating.numStars = starNum;
         mContainer.isVisible = true;
-
-
 
         var listener = { spot: TrainingSpotWithAll? ->
             var commentArr = spot?.getComments();

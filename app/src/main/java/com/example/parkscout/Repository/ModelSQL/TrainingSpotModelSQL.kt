@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.parkscout.Repository.*
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class TrainingSpotModelSQL {
@@ -95,8 +96,16 @@ class TrainingSpotModelSQL {
                         .insertKinds(trainingSpotWithAll.getSportTypes());
                 }
                 if(trainingSpotWithAll.getComments() != null) {
+                    var commentMapArr: ArrayList<HashMap<String?, Any?>> = trainingSpotWithAll.getComments() as ArrayList<HashMap<String?, Any?>>;
+                    var commentArr: LinkedList<Comment> = LinkedList<Comment>();
+
+                    for (commentMap in commentMapArr) {
+                        var cmt: Comment = Comment("", "", "", 0);
+                        cmt.fromMap(commentMap);
+                        commentArr.add(cmt);
+                    }
                     AppLocalDb.getInstance().trainingSpotDao()
-                        .insertComments(trainingSpotWithAll.getComments())
+                        .insertComments(commentArr)
                 }
                 if(trainingSpotWithAll.getRating() != null) {
                     AppLocalDb.getInstance().trainingSpotDao()

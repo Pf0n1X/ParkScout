@@ -87,6 +87,15 @@ class TrainingSpotModel {
         });
 
     }
+
+    fun addComment(parkId: String, comment: Comment, listener: () -> Int) {
+        modelFirebase.addComment(parkId, comment, {
+            // TODO: Update the local DB.
+
+            listener();
+        });
+    }
+
     inner class ParkLiveData: MutableLiveData<List<TrainingSpotWithAll>>() {
 
         // Constructors

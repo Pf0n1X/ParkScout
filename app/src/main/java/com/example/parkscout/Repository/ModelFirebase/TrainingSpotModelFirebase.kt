@@ -1,11 +1,14 @@
 package com.example.parkscout.Repository.ModelFirebase
 
+import android.util.Log
 import com.example.parkscout.Repository.*
 import com.example.parkscout.data.Types.TrainingSpotFirebase
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import java.lang.Exception
 import java.util.*
 
 class TrainingSpotModelFirebase {
@@ -167,5 +170,16 @@ class TrainingSpotModelFirebase {
         doc.set(trainingSpotFireBase.toMap())
             .addOnSuccessListener { listener(); }
             .addOnFailureListener { listener(); }
+    }
+
+    fun addComment(parkId: String, comment: Comment, listener: () -> Int) {
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+        db.collection(COLLECTION_NAME)
+            .document(parkId)
+            .update("comment", FieldValue.arrayUnion(comment.toMap()))
+            .addOnSuccessListener { listener(); }
+            .addOnFailureListener { exception: Exception ->
+                Log.d("TAG", "ERROR: " + exception.toString())
+            };
     }
 }

@@ -107,7 +107,7 @@ class TrainingSpotModelSQL {
                     AppLocalDb.getInstance().trainingSpotDao()
                         .insertRatings(trainingSpotWithAll.getRating())
                 }
-                
+
                 if (trainingSpotWithAll.getImages() != null) {
                     AppLocalDb.getInstance().trainingSpotDao()
                         .insertImages(trainingSpotWithAll.getImages())

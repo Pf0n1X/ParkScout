@@ -40,6 +40,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import java.io.IOException
@@ -155,10 +156,11 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
             )
             val comment : Comment = Comment("", "", "", 0)
 
-            val rating : Rating = Rating(mUserID, "0", Parkrating.rating.toInt(), DateTimeFormatter.ISO_DATE_TIME)
-
+            val rating : Rating = Rating(mUserID, "0", Parkrating.rating,  System.currentTimeMillis())
+            val ratingList :  MutableList<Rating> =  mutableListOf();
             val sportTypesList : MutableList<SportTypes>  =  mutableListOf();
 
+            ratingList.add(rating);
             val ids: List<Int> = parkKind.getCheckedChipIds()
             for (id in ids) {
                 val chip: Chip = parkKind.findViewById(id)
@@ -197,7 +199,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
                 var park: TrainingSpotWithAll = TrainingSpotWithAll(
                     (trainingSpot),
                     TrainingSpotsWithComments(trainingSpot, null),
-                    TrainingSpotWithRating(trainingSpot, null),
+                    TrainingSpotWithRating(trainingSpot, ratingList),
                     TrainingSpotWithSportTypes(trainingSpot, sportTypesList),
                     TrainingSpotWithImages(trainingSpot, images)
                 )

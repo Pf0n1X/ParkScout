@@ -4,6 +4,7 @@ package com.example.parkscout.data.Types
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.parkscout.Repository.*
+import com.google.firebase.Timestamp
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
@@ -20,7 +21,6 @@ data class TrainingSpotFirebase(
     var types: List<SportTypes>?,
     var images: List<Images>?
 ){
-    @RequiresApi(Build.VERSION_CODES.O)
     fun fromMap(map: Map<String?, Any?>) {
 
         parkId = (map["parkId"] as String?)!!;
@@ -47,8 +47,21 @@ data class TrainingSpotFirebase(
             comment = commentList.toList();
         }
         comment = map["comment"]  as List<Comment>?;
-        ratings = map["ratings"]  as List<Rating>?;
 
+//rating
+        if (map["ratings"] != null ) {
+            val ratingList = LinkedList<Rating>();
+            var arr_rating: ArrayList<HashMap<String?, Any?>> =
+                map["ratings"] as ArrayList<HashMap<String?, Any?>>;
+            arr_rating.forEachIndexed { index, hashMap ->
+
+                var rating_item: Rating = Rating("", "", 0.0F, 0);
+                rating_item.fromMap(hashMap);
+                ratingList?.add(rating_item);
+            }
+            ratings = ratingList.toList();
+
+        }
         //types
         if(map["types"] != null) {
             var type: SportTypes = SportTypes("", "", "");

@@ -117,9 +117,10 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
             viewModelTrainingSpot.user.observe(this,Observer { user: User ->
                 mDistanceFromSetting = user.distance
-                mMap.clear();
-
-                showParksByRadius();
+                if (mMap != null){
+                    mMap.clear();
+                    showParksByRadius();
+                }
             });
         }
         // Setup the app and the bottom app bar UI.
@@ -134,15 +135,9 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         listPark = LinkedList<TrainingSpotWithAll>();
 
         val parkListener: Observer<List<TrainingSpotWithAll>> = Observer { parks ->
-
-
-            for (park in parks){
-//                        parkSelectedId = park.trainingSpot.parkId;
-
                 if (listPark.size == 0) {
                     viewModelTrainingSpot.getParks()?.let { listPark.addAll(parks) };
                 }
-            }
 
             showParksByRadius();
         };

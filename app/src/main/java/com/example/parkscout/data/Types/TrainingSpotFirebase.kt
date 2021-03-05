@@ -1,7 +1,10 @@
 package com.example.parkscout.data.Types
 
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.parkscout.Repository.*
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -17,6 +20,7 @@ data class TrainingSpotFirebase(
     var types: List<SportTypes>?,
     var images: List<Images>?
 ){
+    @RequiresApi(Build.VERSION_CODES.O)
     fun fromMap(map: Map<String?, Any?>) {
 
         parkId = (map["parkId"] as String?)!!;
@@ -25,6 +29,22 @@ data class TrainingSpotFirebase(
         parkLocation = Location(location["xscale"] as Double, location["yscale"] as Double)
         chatId = map["chatId"] as String;
         facilities = map["facilities"] as String;
+        // comment
+        if (map["comment"] != null ){
+            var comment_item : Comment = Comment("","","", null);
+            val commentList = LinkedList<Comment>();
+            var arr_comment: ArrayList<HashMap<String, Object>> =
+                map["comment"] as ArrayList<HashMap<String, Object>>;
+            arr_comment.forEachIndexed { index, hashMap ->
+                comment_item.trainingSpotId = hashMap["trainingId"] as String;
+                comment_item.userId = hashMap["userId"] as String;
+                comment_item.c_text = hashMap["c_text"] as String;
+                comment_item.c_dateTime = hashMap["c_dateTime"] as DateTimeFormatter;
+
+                commentList?.add(comment_item);
+            }
+            comment = commentList.toList();
+        }
         comment = map["comment"]  as List<Comment>?;
         ratings = map["ratings"]  as List<Rating>?;
 

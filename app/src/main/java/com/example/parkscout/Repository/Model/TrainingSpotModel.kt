@@ -32,18 +32,22 @@ class TrainingSpotModel {
         this.modelFirebase = TrainingSpotModelFirebase();
         this.modelSQL = TrainingSpotModelSQL();
         this.executor = Executors.newSingleThreadExecutor();
+        this.parksList = ParkLiveData();
         }
 
-    public fun getAllParks(): MutableLiveData<List<TrainingSpotWithAll>> {
-        this.parksList = ParkLiveData();
+    public fun getAllParks(): ParkLiveData {
+//    public fun getAllParks(): MutableLiveData<List<TrainingSpotWithAll>> {
 
-//        this.parksList.value = modelSQL.getAllParks()
+//        this.parksList = ParkLiveData();
+////        this.parksList.value = modelSQL.getAllParks()
+//
+//        var park : MutableList<TrainingSpotWithAll> = arrayListOf();
+//        modelFirebase.getAllTrainingSpot({ parks: MutableList<TrainingSpotWithAll> -> park = parks;
+//
+//        });
+//        this.parksList.value = park;
+//
 
-        var park : MutableList<TrainingSpotWithAll> = arrayListOf();
-        modelFirebase.getAllTrainingSpot({ parks: MutableList<TrainingSpotWithAll> -> park = parks;
-
-        });
-        this.parksList.value = park;
         return this.parksList;
     }
 
@@ -65,15 +69,22 @@ class TrainingSpotModel {
     }
 
     public fun addTrainingSpot(park: TrainingSpotWithAll, listener: () -> Unit) {
-        var refreshListener: () -> Unit = {
-            listener();
-        };
-
-        var addListener: () -> Unit = {
-            modelSQL.addPark(park,refreshListener)
-        };
-
-        modelFirebase.addPark(park,addListener);
+//        var refreshListener: () -> Unit = {
+//            listener();
+//        };
+//
+//        var addListener: () -> Unit = {
+//            modelSQL.addPark(park,refreshListener)
+//        };
+//
+//        modelFirebase.addPark(park,addListener);
+        val list: MutableList<TrainingSpotWithAll> = this.parksList.value!!.toMutableList();
+        list.add(park);
+        this.parksList.value = list.toList();
+        modelFirebase.addPark(park, {
+            modelSQL.addPark(park,listener)
+//            this.getAllParks();
+        });
 
     }
     inner class ParkLiveData: MutableLiveData<List<TrainingSpotWithAll>>() {

@@ -134,14 +134,13 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
         listPark = LinkedList<TrainingSpotWithAll>();
 
-        val parkListener: Observer<List<TrainingSpotWithAll>> = Observer { parks ->
-                if (listPark.size == 0) {
-                    viewModelTrainingSpot.getParks()?.let { listPark.addAll(parks) };
-                }
+//        viewModelTrainingSpot.getParks()?.let { listPark.addAll(it) };
+        viewModelTrainingSpot.parkList.observe(this, Observer {
+            listPark.clear();
+            viewModelTrainingSpot.getParks()?.let { listPark.addAll(it) };
 
-            showParksByRadius();
-        };
-        viewModelTrainingSpot.parkList.observe(this, parkListener);
+            showParksByRadius()
+        });
 
     }
     fun CalculationByDistance(StartP: LatLng, EndP: LatLng): Int {

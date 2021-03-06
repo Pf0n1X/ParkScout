@@ -23,6 +23,7 @@ import com.example.parkscout.Repository.Comment
 import com.example.parkscout.Repository.TrainingSpotWithAll
 import com.example.parkscout.ViewModel.ParkDetailsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_park_details.*
 import java.util.*
@@ -40,9 +41,10 @@ class ParkDetails : Fragment()   {
     private lateinit var mCommentAdapter: CommentAdapter
     private lateinit var mBtnSendComment: ImageButton;
     private lateinit var mTVCommentText: TextView;
-    private lateinit var mParkId: String
-    private lateinit var mImggRecyclerView: RecyclerView
-    private lateinit var mAdapter: ImagesAdapter
+    private lateinit var mParkId: String;
+    private lateinit var mImggRecyclerView: RecyclerView;
+    private lateinit var mAdapter: ImagesAdapter;
+    private lateinit var mBtnChat: MaterialButton;
 
     // Methods
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +62,8 @@ class ParkDetails : Fragment()   {
         mCommentsRecyclerView = rootView.findViewById(R.id.park_details_rv_comments);
         mTVCommentText = rootView.findViewById(R.id.park_details_comment_input);
         mBtnSendComment = rootView.findViewById(R.id.park_details_btnSendComment);
-        mImggRecyclerView = rootView.findViewById(R.id.parkImages)
+        mImggRecyclerView = rootView.findViewById(R.id.parkImages);
+        mBtnChat = rootView.findViewById(R.id.park_details_chat_button);
 
         setupCommentsRecyclerView();
         setIsVisible(false);
@@ -86,6 +89,13 @@ class ParkDetails : Fragment()   {
             mTVCommentText.setText("");
         };
 
+        // Setup the chat join button.
+        mBtnChat.setOnClickListener{event ->
+            viewModel.joinChat{ spot: TrainingSpotWithAll? ->
+
+            };
+        };
+
         // set up park images
         mImggRecyclerView.setHasFixedSize(true)
         mAdapter = ImagesAdapter(this.requireContext(), LinkedList<Uri>());
@@ -106,18 +116,17 @@ class ParkDetails : Fragment()   {
 
     fun setDetails(title: String, starNum: Int, parkId: String) {
         this.mParkId = parkId;
+
+        // Change the views according to the parameters.
         park_details_park_name.text = title;
         park_details_rating.numStars = starNum;
         setIsVisible(true);
 
+        // Setup the comments data listener.
         var listener = { spot: TrainingSpotWithAll? ->
             var commentArr = spot?.trainingSpotsWithComments?.comments;
             if (commentArr != null) {
                 mCommentAdapter.mComments = commentArr;
-                mCommentAdapter.notifyDataSetChanged();
-            } else {
-                mCommentAdapter.mComments = LinkedList<Comment>();
-                (mCommentAdapter.mComments as LinkedList<Comment>).add(Comment("1", "Tomer", "Message", 12345678));
                 mCommentAdapter.notifyDataSetChanged();
             }
 
@@ -127,6 +136,7 @@ class ParkDetails : Fragment()   {
                     mAdapter.imagesURL!!.clear();
                 }
             }
+
             if(images != null){
 
                 for (img in images){
@@ -140,7 +150,7 @@ class ParkDetails : Fragment()   {
 
             var rating = spot?.trainingSpotWithRating?.sport_rating;
 
-            if(rating != null){
+            if(rating != null) {
 
                 var avgRating : Float;
                 var sumRating : Float = 0.0F;

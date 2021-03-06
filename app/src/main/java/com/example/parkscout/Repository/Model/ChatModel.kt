@@ -104,6 +104,12 @@ class ChatModel {
         });
     }
 
+    fun addUserToChat(chatId: String, uid: String) {
+        modelFirebase.addUserToChat(chatId, uid, { chat: ChatWithAll ->
+
+        });
+    }
+
     inner class ChatLiveData: MutableLiveData<List<ChatWithAll>>() {
 
         // Constructors

@@ -68,7 +68,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
     private var locationPermissionGranted = false
     private var map: GoogleMap? = null
     private var lastKnownLocation: Location? = null
-    private val defaultLocation = LatLng(-33.8523341, 151.2106085)
+    private val defaultLocation = LatLng(0.0, 0.0)
     private var cameraPosition: CameraPosition? = null
     private lateinit var placesClient: PlacesClient
     private lateinit var park_location: TextView
@@ -172,10 +172,12 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
             var errorMsg = ""
             if(park_name.text.isEmpty()){
                 errorMsg = "enter park name";
-            }else if( parkLocation == null ){
+            }else if( parkLocation.xscale == 0.0 && parkLocation.yscale == 0.0 ){
                 errorMsg = "enter location";
             }else if(sportTypesList.size == 0){
                 errorMsg ="choose park kind"
+            }else if(Parkrating.rating.equals(0.0F)){
+                errorMsg ="choose rating"
             }
             if(errorMsg != "") {
                 Toast.makeText(
@@ -189,7 +191,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
                     "0",
                     park_name.text.toString(),
                     parkLocation,
-                    "",
+                    UUID.randomUUID().toString(),
                     facilities.text.toString()
                 );
                 var images: LinkedList<Images> = LinkedList<Images>();
@@ -209,7 +211,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
 
                 trainModel.addPark(park) {
                     Log.d("TAG", "Success when trying to save");
-                    val chat = Chat("0",park.trainingSpot.parkId)
+                    val chat = Chat(park.trainingSpot.chatId,park.trainingSpot.parkId)
                     val user:User = mUser;
                     trainModel.addChat(chat,user){
                         Log.d("TAG", "chat created");

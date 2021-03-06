@@ -61,17 +61,4 @@ class ChatMessageModelFirebase {
             .addOnSuccessListener { listener(); }
             .addOnFailureListener { listener(); }
     }
-
-    fun addUserToChat(chatId: String, uid: String, function: (ChatWithAll) -> Unit) {
-        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
-        db.collection(COLLECTION_NAME)
-            .document(chatId)
-            .update("users", FieldValue.arrayUnion(db.collection("users").document(uid)))
-            .addOnSuccessListener {
-                Log.d("Tag", "Success");
-            }
-            .addOnFailureListener {
-                Log.d("TAG", "Error");
-            };
-    }
 }

@@ -4,12 +4,10 @@ import android.util.Log
 import com.example.parkscout.Repository.*
 import com.example.parkscout.data.Types.TrainingSpotFirebase
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.*
 import java.lang.Exception
 import java.util.*
+import kotlin.collections.HashMap
 
 class TrainingSpotModelFirebase {
 
@@ -18,17 +16,20 @@ class TrainingSpotModelFirebase {
     }
     public fun getTrainingSpotById(park_id:String, listener: (TrainingSpotWithAll?) -> Unit) {
         var db: FirebaseFirestore = FirebaseFirestore.getInstance();
-        var trainingSpot =  TrainingSpot("","", com.example.parkscout.data.Types.Location(0.0,0.0),"","");
-        var parkWithAll : TrainingSpotWithAll = TrainingSpotWithAll(trainingSpot,
-            TrainingSpotsWithComments(trainingSpot,null),
-        TrainingSpotWithRating
-        (trainingSpot,null), TrainingSpotWithSportTypes
-        (trainingSpot,null),TrainingSpotWithImages
-        (trainingSpot,null));
+        var trainingSpot =
+            TrainingSpot("", "", com.example.parkscout.data.Types.Location(0.0, 0.0), "", "");
+        var parkWithAll: TrainingSpotWithAll = TrainingSpotWithAll(
+            trainingSpot,
+            TrainingSpotsWithComments(trainingSpot, null),
+            TrainingSpotWithRating
+                (trainingSpot, null), TrainingSpotWithSportTypes
+                (trainingSpot, null), TrainingSpotWithImages
+                (trainingSpot, null)
+        );
 //        var parkWithAll : TrainingSpotWithAll =TrainingSpotWithAll(trainingSpot,null,null,null,null) ;
 
-        var query: Query = db.collection(TrainingSpotModelFirebase.COLLECTION_NAME).
-        whereEqualTo("parkId",park_id);
+        var query: Query = db.collection(TrainingSpotModelFirebase.COLLECTION_NAME)
+            .whereEqualTo("parkId", park_id);
         query.get()
             .addOnCompleteListener(OnCompleteListener {
                 if (it.isSuccessful) {
@@ -71,7 +72,50 @@ class TrainingSpotModelFirebase {
                 }
             });
 
+        query.addSnapshotListener { value: QuerySnapshot?, error: FirebaseFirestoreException? ->
+            Log.d("TAG", "Test");
+            if (value != null) {
+                if (value.documents.size != 0) {
+                    var map: HashMap<String?, Any?>? =
+                        value?.documents?.get(0)?.data as HashMap<String?, Any?>?;
+                    if (map != null) {
+                        var park: TrainingSpotFirebase = TrainingSpotFirebase(
+                            "",
+                            "",
+                            com.example.parkscout.data.Types.Location(0.0, 0.0),
+                            "",
+                            "",
+                            null,
+                            null,
+                            null,
+                            null
+                        );
+
+                        park.fromMap(map)
+
+                        trainingSpot = TrainingSpot(
+                            park.parkId,
+                            park.parkName,
+                            park.parkLocation,
+                            park.chatId,
+                            park.facilities
+                        )
+
+                        parkWithAll = TrainingSpotWithAll(
+                            trainingSpot,
+                            TrainingSpotsWithComments(trainingSpot, park.comment),
+                            TrainingSpotWithRating(trainingSpot, park.ratings),
+                            TrainingSpotWithSportTypes(trainingSpot, park.types),
+                            TrainingSpotWithImages(trainingSpot, park.images)
+                        )
+
+                        listener(parkWithAll);
+                    }
+                }
+            }
+        }
     }
+
     public fun getTrainingSpotByName(park_name:String, listener: (LinkedList<TrainingSpotWithAll>) -> Unit) {
         var db: FirebaseFirestore = FirebaseFirestore.getInstance();
         var trainingSpotWithAlllist: LinkedList<TrainingSpotWithAll> = LinkedList<TrainingSpotWithAll>();
@@ -182,6 +226,27 @@ class TrainingSpotModelFirebase {
         db.collection(COLLECTION_NAME)
             .document(parkId)
             .update("comment", FieldValue.arrayUnion(comment.toMap()))
+            .addOnSuccessListener { listener(); }
+            .addOnFailureListener { exception: Exception ->
+                Log.d("TAG", "ERROR: " + exception.toString())
+            };
+    }
+    fun addRating(parkId: String, rating: Rating, listener: () -> Int) {
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+        db.collection(COLLECTION_NAME)
+            .document(parkId)
+            .update("ratings", FieldValue.arrayUnion(rating.toMap()))
+            .addOnSuccessListener { listener(); }
+            .addOnFailureListener { exception: Exception ->
+                Log.d("TAG", "ERROR: " + exception.toString())
+            };
+    }
+
+    fun updateParkChat(park:String,chatId:String, listener: () -> Unit){
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+        db.collection(COLLECTION_NAME)
+            .document(park)
+            .update("chatId", chatId)
             .addOnSuccessListener { listener(); }
             .addOnFailureListener { exception: Exception ->
                 Log.d("TAG", "ERROR: " + exception.toString())

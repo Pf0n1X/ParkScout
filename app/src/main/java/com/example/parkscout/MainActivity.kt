@@ -66,7 +66,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         private const val KEY_LOCATION = "location"
     }
 
-    private lateinit var mMap: GoogleMap
+
 
     private var park_fragment: Fragment? = null
     var marker: Marker? = null
@@ -74,6 +74,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     private lateinit var placesClient: PlacesClient
     private val viewModel: SearchLoctionViewModel by viewModels()
     private lateinit var viewModelTrainingSpot: TrainingSpotViewModel;
+    private lateinit var mDetailsFrag: ParkDetails
+    private lateinit var mMap: GoogleMap
     private lateinit var  listPark: LinkedList<TrainingSpotWithAll>;
     private lateinit var  parkSelectedId: String;
     private lateinit var navController: NavController;
@@ -90,6 +92,9 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Initialization.
+        mDetailsFrag = getSupportFragmentManager().findFragmentById(R.id.fragment2) as ParkDetails;
 
         // Set map
         val mapFragment = supportFragmentManager
@@ -377,8 +382,9 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                 }
             }
 
-//            var fl :FrameLayout = findViewById(R.id.park_layout)
-//            fl.visibility = View.INVISIBLE
+            // Hide the park details fragment.
+            mDetailsFrag.setIsVisible(false);
+
         true
     }
 
@@ -440,8 +446,13 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
             var parkToShow: TrainingSpotWithAll? =
                 park_Id?.let { viewModelTrainingSpot.getParkById(it).value }
             val parkListener: Observer<TrainingSpotWithAll> = Observer { parkById ->
-                showSelectedParkDetails(parkById.trainingSpot.parkName, 5, parkById.trainingSpot.parkId);
-
+                if(parkById.trainingSpot.parkId != "") {
+                    showSelectedParkDetails(
+                        parkById.trainingSpot.parkName,
+                        5,
+                        parkById.trainingSpot.parkId
+                    );
+                }
             };
 
             viewModelTrainingSpot.parkById.observe(this, parkListener);
@@ -463,8 +474,8 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         var fragment: Fragment? = getSupportFragmentManager().findFragmentById(R.id.fragment2);
 
         if (fragment != null) {
-            var detailsFrag: ParkDetails = fragment as ParkDetails;
-            detailsFrag.setDetails(title, star_num, park_Id);
+            this.mDetailsFrag = fragment as ParkDetails;
+            this.mDetailsFrag.setDetails(title, star_num, park_Id);
         }
     }
 

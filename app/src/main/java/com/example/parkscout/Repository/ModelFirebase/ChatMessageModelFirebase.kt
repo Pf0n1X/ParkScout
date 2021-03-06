@@ -1,9 +1,10 @@
 package com.example.parkscout.Repository.ModelFirebase
 
+import android.util.Log
 import com.example.parkscout.Repository.ChatMessage
+import com.example.parkscout.Repository.ChatWithAll
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.*
-import io.perfmark.Link
 import java.sql.Timestamp
 import java.util.*
 
@@ -58,5 +59,18 @@ class ChatMessageModelFirebase {
         doc.set(msg.toMap())
             .addOnSuccessListener { listener(); }
             .addOnFailureListener { listener(); }
+    }
+
+    fun addUserToChat(chatId: String, uid: String, function: (ChatWithAll) -> Unit) {
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+        db.collection(COLLECTION_NAME)
+            .document(chatId)
+            .update("users", FieldValue.arrayUnion(db.collection("users").document(uid)))
+            .addOnSuccessListener {
+                Log.d("Tag", "Success");
+            }
+            .addOnFailureListener {
+                Log.d("TAG", "Error");
+            };
     }
 }

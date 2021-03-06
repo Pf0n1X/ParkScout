@@ -9,6 +9,8 @@ import com.example.parkscout.Repository.*
 import com.example.parkscout.Repository.ModelFirebase.TrainingSpotModelFirebase
 import com.example.parkscout.Repository.ModelSQL.TrainingSpotModelSQL
 import com.example.parkscout.data.Types.Location
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -36,17 +38,6 @@ class TrainingSpotModel {
         }
 
     public fun getAllParks(): ParkLiveData {
-//    public fun getAllParks(): MutableLiveData<List<TrainingSpotWithAll>> {
-
-//        this.parksList = ParkLiveData();
-////        this.parksList.value = modelSQL.getAllParks()
-//
-//        var park : MutableList<TrainingSpotWithAll> = arrayListOf();
-//        modelFirebase.getAllTrainingSpot({ parks: MutableList<TrainingSpotWithAll> -> park = parks;
-//
-//        });
-//        this.parksList.value = park;
-//
 
         return this.parksList;
     }
@@ -68,26 +59,25 @@ class TrainingSpotModel {
         return this.parkByNameSearch;
     }
 
-    public fun addTrainingSpot(park: TrainingSpotWithAll, listener: () -> Unit) {
-//        var refreshListener: () -> Unit = {
-//            listener();
-//        };
-//
-//        var addListener: () -> Unit = {
-//            modelSQL.addPark(park,refreshListener)
-//        };
-//
-//        modelFirebase.addPark(park,addListener);
+    public fun addTrainingSpot(park: TrainingSpotWithAll,user: User, listener: () -> Unit) {
+
         val list: MutableList<TrainingSpotWithAll> = this.parksList.value!!.toMutableList();
         list.add(park);
         this.parksList.value = list.toList();
+
         modelFirebase.addPark(park, {
             modelSQL.addPark(park,listener)
-//            this.getAllParks();
+            val chat:Chat = Chat("0",park.trainingSpot.parkId)
+            ChatModel.instance.addChat(chat,user,listener)
         });
 
     }
+    fun updateTrainingSpot(park:String,chatId:String,listener: () -> Unit) {
+        modelFirebase.updateParkChat(park, chatId,{
+            listener();
+        });
 
+    }
     fun addComment(parkId: String, comment: Comment, listener: () -> Int) {
         modelFirebase.addComment(parkId, comment, {
             // TODO: Update the local DB.
@@ -95,6 +85,15 @@ class TrainingSpotModel {
             listener();
         });
     }
+
+    fun addRating(parkId: String, rating: Rating, listener: () -> Int) {
+        modelFirebase.addRating(parkId, rating, {
+            // TODO: Update the local DB.
+
+            listener();
+        });
+    }
+
 
     inner class ParkLiveData: MutableLiveData<List<TrainingSpotWithAll>>() {
 
@@ -148,9 +147,17 @@ class TrainingSpotModel {
                 postValue(parkById)
             }
 
-            modelFirebase.getTrainingSpotById(parkId,{ park: TrainingSpotWithAll? ->
-            value = park;
-            });
+            var addParkListener = { park: TrainingSpotWithAll? ->
+
+                if (park != null)
+                    modelSQL.addPark(park, {
+                        value = park;
+                    });
+
+                value = park;
+            };
+
+            modelFirebase.getTrainingSpotById(parkId, addParkListener);
         }
     }
 

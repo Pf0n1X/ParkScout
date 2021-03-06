@@ -22,7 +22,9 @@ data class Rating (
         user_Id = map["user_Id"] as String;
         var rateDpuble = map["rate"] as Double;
         rate = rateDpuble.toFloat();
-        rate_dateTime = map["rate_dateTime"] as Long;
+        if(map["rate_dateTime"] != null) {
+            rate_dateTime = map["rate_dateTime"] as Long;
+        }
     }
 
     fun toMap(): Map<String, Any> {
@@ -30,7 +32,7 @@ data class Rating (
         result["trainingSpotId"] = trainingSpotId;
         result["user_Id"] = user_Id;
         result["rate"] = rate
-        result["rate_dateTime"] = Timestamp.now()
+        result["rate_dateTime"]  = rate_dateTime;
 
         return result
     }

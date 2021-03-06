@@ -91,6 +91,23 @@ class ChatModel {
         modelFirebase.getAllMessages(lastUpdated, listener);
     }
 
+    fun addChat(chat: Chat,user: User,listener: () -> Unit){
+        val userList:MutableList<User> = mutableListOf();
+        userList.add(user);
+        val chatWithAll : ChatWithAll;
+        val msgList : MutableList<ChatMessage> = mutableListOf();
+        chatWithAll = ChatWithAll(chat,ChatWithChatMessages(chat,msgList),
+            ChatWithUsers(chat,userList));
+        modelChatFirebase.addChat(chatWithAll, {
+            modelChatSQL.addChat(chat,{})
+
+            // TODO: Update the local DB.
+
+            listener();
+        });
+    }
+
+
     public fun addMessage(chatId: String, msg: ChatMessage, listener: () -> Unit) {
 //        var refreshListener: () -> Unit = {
 //            listener();
@@ -108,7 +125,13 @@ class ChatModel {
         });
     }
 
-    inner class ChatLiveData : MutableLiveData<List<ChatWithAll>>() {
+    fun addUserToChat(chatId: String, uid: String) {
+        modelChatFirebase.addUserToChat(chatId, uid, { chat: ChatWithAll ->
+
+        });
+    }
+
+    inner class ChatLiveData: MutableLiveData<List<ChatWithAll>>() {
 
         // Constructors
         init {

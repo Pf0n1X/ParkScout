@@ -83,7 +83,18 @@ class ChatAdapter(val context: Context, var chats: LinkedList<ChatWithAll>): Rec
                 Glide.with(holder.itemView).load(otherUser.profilePic).into(holder.profile_image);
             }
         } else {
-            // TODO: Find the training spot name and picture and put them in the view.
+            var images = chat.chatAndTrainingSpot.trainingSpotWithAll?.trainingSpotWithImages?.images;
+            if (images != null && !(images.isEmpty())) {
+                var imgURL =
+                    images.get(0)?.ImgUrl;
+
+                if (imgURL != null) {
+                    Glide.with(holder.itemView).load(imgURL).into(holder.profile_image);
+                }
+            }
+
+            var parkName = chat.chatAndTrainingSpot.trainingSpotWithAll?.trainingSpot?.parkName;
+            holder.chat_name.text = parkName;
         }
 
         holder.chat_id = chat.chatWithChatMessages.Chat.chatId;

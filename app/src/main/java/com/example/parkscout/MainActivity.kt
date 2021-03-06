@@ -278,7 +278,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                         park.trainingSpot.parkLocation.yscale
                     )
                 )
-                if (distance <= mDistanceFromSetting) {
+                if (distance <= mDistanceFromSetting && park.trainingSpot.parkId != "" && park.trainingSpot.parkId != "0") {
                     mMap.addMarker(
                         MarkerOptions().position(
                             LatLng(

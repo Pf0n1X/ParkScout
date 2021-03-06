@@ -176,7 +176,7 @@ class ParkDetails : Fragment()   {
             listener(viewModel.trainingSpot.value);
         }
 
-        viewModel.getTrainingSpotByID(parkId).observe(viewLifecycleOwner, listener);
+        viewModel.getTrainingSpotByID(parkId).observe(viewLifecycleOwner, androidx.lifecycle.Observer {  } );
     }
         fun calcAvgRating(rating : List<Rating>){
           val filteredRate =   rating.sortedWith(compareByDescending<Rating> { it.user_Id }

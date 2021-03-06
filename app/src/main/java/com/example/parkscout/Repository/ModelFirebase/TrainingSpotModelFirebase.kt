@@ -285,7 +285,7 @@ class TrainingSpotModelFirebase {
         var db: FirebaseFirestore = FirebaseFirestore.getInstance();
         db.collection(COLLECTION_NAME)
             .document(park)
-            .update("chatId", FieldValue.arrayUnion(chatId))
+            .update("chatId", chatId)
             .addOnSuccessListener { listener(); }
             .addOnFailureListener { exception: Exception ->
                 Log.d("TAG", "ERROR: " + exception.toString())

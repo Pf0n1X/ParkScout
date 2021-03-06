@@ -16,17 +16,20 @@ class TrainingSpotModelFirebase {
     }
     public fun getTrainingSpotById(park_id:String, listener: (TrainingSpotWithAll?) -> Unit) {
         var db: FirebaseFirestore = FirebaseFirestore.getInstance();
-        var trainingSpot =  TrainingSpot("","", com.example.parkscout.data.Types.Location(0.0,0.0),"","");
-        var parkWithAll : TrainingSpotWithAll = TrainingSpotWithAll(trainingSpot,
-            TrainingSpotsWithComments(trainingSpot,null),
-        TrainingSpotWithRating
-        (trainingSpot,null), TrainingSpotWithSportTypes
-        (trainingSpot,null),TrainingSpotWithImages
-        (trainingSpot,null));
+        var trainingSpot =
+            TrainingSpot("", "", com.example.parkscout.data.Types.Location(0.0, 0.0), "", "");
+        var parkWithAll: TrainingSpotWithAll = TrainingSpotWithAll(
+            trainingSpot,
+            TrainingSpotsWithComments(trainingSpot, null),
+            TrainingSpotWithRating
+                (trainingSpot, null), TrainingSpotWithSportTypes
+                (trainingSpot, null), TrainingSpotWithImages
+                (trainingSpot, null)
+        );
 //        var parkWithAll : TrainingSpotWithAll =TrainingSpotWithAll(trainingSpot,null,null,null,null) ;
 
-        var query: Query = db.collection(TrainingSpotModelFirebase.COLLECTION_NAME).
-        whereEqualTo("parkId",park_id);
+        var query: Query = db.collection(TrainingSpotModelFirebase.COLLECTION_NAME)
+            .whereEqualTo("parkId", park_id);
         query.get()
             .addOnCompleteListener(OnCompleteListener {
                 if (it.isSuccessful) {
@@ -69,87 +72,49 @@ class TrainingSpotModelFirebase {
                 }
             });
 
-            query.addSnapshotListener{ value: QuerySnapshot?, error: FirebaseFirestoreException? ->
-                Log.d("TAG", "Test");
-                var isEmpty = value?.documents?.isEmpty();
-                if (isEmpty != null && !isEmpty) {
+        query.addSnapshotListener { value: QuerySnapshot?, error: FirebaseFirestoreException? ->
+            Log.d("TAG", "Test");
+            if (value != null) {
+                if (value.documents.size != 0) {
+                    var map: HashMap<String?, Any?>? =
+                        value?.documents?.get(0)?.data as HashMap<String?, Any?>?;
+                    if (map != null) {
+                        var park: TrainingSpotFirebase = TrainingSpotFirebase(
+                            "",
+                            "",
+                            com.example.parkscout.data.Types.Location(0.0, 0.0),
+                            "",
+                            "",
+                            null,
+                            null,
+                            null,
+                            null
+                        );
 
+                        park.fromMap(map)
 
-                var map: HashMap<String?, Any?>? =
-                    value?.documents?.get(0)?.data as HashMap<String?, Any?>?;
-                if (map != null) {
-                    var park: TrainingSpotFirebase = TrainingSpotFirebase(
-                        "",
-                        "",
-                        com.example.parkscout.data.Types.Location(0.0, 0.0),
-                        "",
-                        "",
-                        null,
-                        null,
-                        null,
-                        null
-                    );
+                        trainingSpot = TrainingSpot(
+                            park.parkId,
+                            park.parkName,
+                            park.parkLocation,
+                            park.chatId,
+                            park.facilities
+                        )
 
-                    park.fromMap(map)
+                        parkWithAll = TrainingSpotWithAll(
+                            trainingSpot,
+                            TrainingSpotsWithComments(trainingSpot, park.comment),
+                            TrainingSpotWithRating(trainingSpot, park.ratings),
+                            TrainingSpotWithSportTypes(trainingSpot, park.types),
+                            TrainingSpotWithImages(trainingSpot, park.images)
+                        )
 
-                    trainingSpot = TrainingSpot(
-                        park.parkId,
-                        park.parkName,
-                        park.parkLocation,
-                        park.chatId,
-                        park.facilities
-                    )
-
-                    parkWithAll = TrainingSpotWithAll(
-                        trainingSpot,
-                        TrainingSpotsWithComments(trainingSpot, park.comment),
-                        TrainingSpotWithRating(trainingSpot, park.ratings),
-                        TrainingSpotWithSportTypes(trainingSpot, park.types),
-                        TrainingSpotWithImages(trainingSpot, park.images)
-                    )
-
-                    listener(parkWithAll);
+                        listener(parkWithAll);
+                    }
                 }
-                }
-//                if (value.documents != null) {
-//                    val document = it.result
-//                    for (doc in it.result!!) {
-//                        var park: TrainingSpotFirebase = TrainingSpotFirebase(
-//                            "",
-//                            "",
-//                            com.example.parkscout.data.Types.Location(0.0, 0.0),
-//                            "",
-//                            "",
-//                            null,
-//                            null,
-//                            null,
-//                            null
-//                        );
-//
-//                        park.fromMap(doc.data)
-//
-//                        trainingSpot = TrainingSpot(
-//                            park.parkId,
-//                            park.parkName,
-//                            park.parkLocation,
-//                            park.chatId,
-//                            park.facilities
-//                        )
-//
-//                        parkWithAll = TrainingSpotWithAll(
-//                            trainingSpot,
-//                            TrainingSpotsWithComments(trainingSpot, park.comment),
-//                            TrainingSpotWithRating(trainingSpot, park.ratings),
-//                            TrainingSpotWithSportTypes(trainingSpot, park.types),
-//                            TrainingSpotWithImages(trainingSpot, park.images)
-//                        )
-//
-//
-//                    }
-//                    listener(parkWithAll);
-//
-//                }
             }
+        }
+
     }
     public fun getTrainingSpotByName(park_name:String, listener: (LinkedList<TrainingSpotWithAll>) -> Unit) {
         var db: FirebaseFirestore = FirebaseFirestore.getInstance();
@@ -277,6 +242,14 @@ class TrainingSpotModelFirebase {
             };
     }
 
-
-
+    fun updateParkChat(park:String,chatId:String, listener: () -> Unit){
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+        db.collection(COLLECTION_NAME)
+            .document(park)
+            .update("chatId", chatId)
+            .addOnSuccessListener { listener(); }
+            .addOnFailureListener { exception: Exception ->
+                Log.d("TAG", "ERROR: " + exception.toString())
+            };
+    }
 }

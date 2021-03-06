@@ -1,11 +1,8 @@
 package com.example.parkscout.Repository.ModelFirebase
 
-import android.util.Log
 import com.example.parkscout.Repository.ChatMessage
-import com.example.parkscout.Repository.ChatWithAll
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.*
-import io.perfmark.Link
 import java.sql.Timestamp
 import java.util.*
 
@@ -61,4 +58,7 @@ class ChatMessageModelFirebase {
             .addOnSuccessListener { listener(); }
             .addOnFailureListener { listener(); }
     }
+
+
+
 }

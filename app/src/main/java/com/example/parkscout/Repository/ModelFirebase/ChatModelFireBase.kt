@@ -2,13 +2,16 @@ package com.example.parkscout.Repository.ModelFirebase
 
 import com.example.parkscout.Repository.*
 import com.example.parkscout.Repository.ModelSQL.ChatModelSQL
+import com.example.parkscout.data.Types.Location
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ChatModelFireBase {
     private var modelChatSQL: ChatModelSQL = ChatModelSQL();
+    private var trainingSpotModelFirebase = TrainingSpotModelFirebase();
     var isFirstListener: AtomicBoolean = AtomicBoolean(true)
 
     companion object {
@@ -23,8 +26,12 @@ class ChatModelFireBase {
         var chats: LinkedList<Chat> = LinkedList<Chat>();
         var chatmessages: LinkedList<ChatMessage> = LinkedList<ChatMessage>();
         var users: LinkedList<User> = LinkedList<User>();
+        var currUserRef =
+            FirebaseAuth.getInstance().currentUser?.uid?.let {
+                db.collection("users").document(it)
+            }!!;
         var query: Query = db.collection(ChatModelFireBase.COLLECTION_NAME)
-//            .whereArrayContains("users",FirebaseAuth.getInstance().currentUser?.uid);
+//            .whereArrayContains("users",currUserRef);
         query.get()
             .addOnCompleteListener(OnCompleteListener {
 
@@ -49,7 +56,7 @@ class ChatModelFireBase {
                             chatMessages = chatmessages
                         );
                         var userRef: DocumentReference;
-                        var user: User = User("", "", "", 0,"");
+                        var user: User = User("", "", "", 0, "");
                         for (chatUsers in doc.data["users"] as ArrayList<*>) {
                             userRef = chatUsers as DocumentReference;
                             userRef.get().addOnSuccessListener {
@@ -69,8 +76,44 @@ class ChatModelFireBase {
                             Users = users
                         );
 
+                        var training_spot_id = doc.data["training_spot_id"] as String;
+                        var trainingSpot = TrainingSpot(
+                            "",
+                            "",
+                            com.example.parkscout.data.Types.Location(0.0, 0.0),
+                            "",
+                            ""
+                        );
+
+                        var trainingSpotWithAll: TrainingSpotWithAll = TrainingSpotWithAll(
+                            trainingSpot,
+                            TrainingSpotsWithComments(trainingSpot, null),
+                            TrainingSpotWithRating
+                                (trainingSpot, null), TrainingSpotWithSportTypes
+                                (trainingSpot, null), TrainingSpotWithImages
+                                (trainingSpot, null)
+                        );
+
+                        trainingSpotModelFirebase.getTrainingSpotById(training_spot_id) { park: TrainingSpotWithAll? ->
+                            if (park != null) {
+                                trainingSpotWithAll = park
+                                listener(ChatWithAlllist)
+                            }
+                        }
+
+                        var chatAndTrainingSpotWithAll: ChatAndTrainingSpotWithAll =
+                            ChatAndTrainingSpotWithAll(
+                                chat = chat,
+                                trainingSpotWithAll = trainingSpotWithAll
+                            )
+
                         var chatWithAll: ChatWithAll =
-                            ChatWithAll(chat, chatwithchatmessages, chatWithUsers);
+                            ChatWithAll(
+                                chat,
+                                chatwithchatmessages,
+                                chatWithUsers,
+                                chatAndTrainingSpotWithAll
+                            );
                         ChatWithAlllist.add(chatWithAll);
 
                     }
@@ -120,8 +163,45 @@ class ChatModelFireBase {
                         Users = users
                     );
 
+                    var training_spot_id =
+                        (dc.data as Map<String?, Any?>)["training_spot_id"] as String;
+                    var trainingSpot = TrainingSpot(
+                        "",
+                        "",
+                        com.example.parkscout.data.Types.Location(0.0, 0.0),
+                        "",
+                        ""
+                    );
+
+                    var trainingSpotWithAll: TrainingSpotWithAll = TrainingSpotWithAll(
+                        trainingSpot,
+                        TrainingSpotsWithComments(trainingSpot, null),
+                        TrainingSpotWithRating
+                            (trainingSpot, null), TrainingSpotWithSportTypes
+                            (trainingSpot, null), TrainingSpotWithImages
+                            (trainingSpot, null)
+                    );
+
+                    trainingSpotModelFirebase.getTrainingSpotById(training_spot_id) { park: TrainingSpotWithAll? ->
+                        if (park != null) {
+                            trainingSpotWithAll = park
+                            listener(ChatWithAlllist)
+                        }
+                    }
+
+                    var chatAndTrainingSpotWithAll: ChatAndTrainingSpotWithAll =
+                        ChatAndTrainingSpotWithAll(
+                            chat = chat,
+                            trainingSpotWithAll = trainingSpotWithAll
+                        )
+
                     var chatWithAll: ChatWithAll =
-                        ChatWithAll(chat, chatwithchatmessages, chatWithUsers);
+                        ChatWithAll(
+                            chat,
+                            chatwithchatmessages,
+                            chatWithUsers,
+                            chatAndTrainingSpotWithAll
+                        );
                     ChatWithAlllist.add(chatWithAll);
                 }
 

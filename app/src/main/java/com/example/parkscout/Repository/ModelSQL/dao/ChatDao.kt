@@ -19,6 +19,10 @@ interface ChatDao {
     @Query("SELECT * FROM chat")
     fun getAllChatsWithUsers(): List<ChatWithUsers>;
 
+    @Transaction
+    @Query("SELECT * FROM chat")
+    fun getAllChatsAndTrainingSpots(): List<ChatAndTrainingSpot>;
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(Chats: List<Chat>);
 

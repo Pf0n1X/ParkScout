@@ -65,22 +65,9 @@ class ChatFragment : Fragment() {
         // TODO: Remove parameters.
         readMessages("Tom", "Eden", "https://mymodernmet.com/wp/wp-content/uploads/2019/09/100k-ai-faces-5.jpg")
 
-        // TODO: Handle user profile navigation.
         fragmentView.findViewById<ImageButton>(R.id.chat_ibUserImage)
                 .setOnClickListener{ view ->
-//            val navController = Navigation
-//                    .findNavController(activity as Activity, R.id.chat_navhost_frag)
-//
-//            NavigationUI.setupWithNavController((activity as Activity)
-//                    .findViewById<BottomNavigationView>(R.id.bottomNavigationView), navController)
-//
-//            navController.navigate(R.id.action_global_profileFragment)
-//                    var intent: Intent = Intent(context, MainActivity::class.java);
-//                    startActivity(intent)
-
                     if (activity != null) {
-//                        (activity as Activity).onBackPressed();
-//                        (activity as Activity).onBackPressed();
                         var resultIntent: Intent = Intent();
                         var otherUserUID: String? = mChat?.chatWithUsers?.Users?.find{user: User -> user.uId != FirebaseAuth.getInstance().currentUser?.uid}?.uId
 
@@ -139,6 +126,13 @@ class ChatFragment : Fragment() {
                 }
             } else {
                 // TODO: Show the park image or a generic image and the park's name.
+                var spotImage = mChat?.chatAndTrainingSpot?.trainingSpotWithAll?.trainingSpotWithImages?.images?.get(0)?.ImgUrl;
+
+                if (spotImage != null) {
+                    Glide.with(requireContext()).load(spotImage).into(mIBUserImage);
+                }
+
+                mTVUserName.text = mChat?.chatAndTrainingSpot?.trainingSpotWithAll?.trainingSpot?.parkName;
             }
             mAdapter.mChat = mChat;
             mAdapter.mChatMessages = mChatMessages;

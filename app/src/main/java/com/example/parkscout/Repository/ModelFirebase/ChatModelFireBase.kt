@@ -41,9 +41,11 @@ class ChatModelFireBase {
                     ChatWithAlllist.clear();
                     chats.clear();
                     for (doc in it.result!!) {
+                        chat = Chat("", "");
                         chat.fromMap(doc.data)
                         chats.add(chat);
                         modelChatSQL.addChat(chat, {});
+                        chatmessages = LinkedList<ChatMessage>();
                         chatmessages.clear();
 
                         for (chatm in doc.data["chat_messages"] as ArrayList<*>) {
@@ -133,6 +135,7 @@ class ChatModelFireBase {
                 ChatWithAlllist.clear();
                 chats.clear();
                 for (dc in value!!.documents) {
+                    chat = Chat("", "");
                     chat.fromMap(dc.data as Map<String?, Any?>)
                     chats.add(chat);
                     modelChatSQL.addChat(chat, {});

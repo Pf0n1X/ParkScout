@@ -64,30 +64,7 @@ class ParkDetails : Fragment()   {
         setIsVisible(false);
         var bottomSheetBehavior: BottomSheetBehavior<LinearLayout> = BottomSheetBehavior.from(mContainer);
         viewModel = ViewModelProvider(this).get(ParkDetailsViewModel::class.java);
-if(park_details_rating != null) {
-    park_details_rating.setOnRatingBarChangeListener(object : RatingBar.OnRatingBarChangeListener {
-        override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {
-            var uid: String? = FirebaseAuth.getInstance().currentUser?.uid;
-            if (uid != null) {
-                var ratingToAdd: Rating? = p0?.rating?.let {
-                    Rating(
-                        uid,
-                        mParkId,
-                        it,
-                        System.currentTimeMillis()
-                    )
 
-                };
-                if (ratingToAdd != null) {
-                    viewModel.addRating(mParkId, ratingToAdd, {
-                        Log.d("TAG", "Success when trying to save rating");
-                    })
-                };
-
-            }
-        }
-    })
-}
         // Setup the comment send button
         mBtnSendComment.setOnClickListener{event  ->
             var uid: String ? = FirebaseAuth.getInstance().currentUser?.uid;
@@ -131,6 +108,34 @@ if(park_details_rating != null) {
         park_details_rating.numStars = starNum;
         setIsVisible(true);
 
+        if(park_details_rating != null) {
+
+            park_details_rating.setOnRatingBarChangeListener(object : RatingBar.OnRatingBarChangeListener {
+                override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {
+                    if (p2) {
+                        var uid: String? = FirebaseAuth.getInstance().currentUser?.uid;
+                        if (uid != null) {
+                            var ratingToAdd: Rating? = p0?.rating?.let {
+                                Rating(
+                                    uid,
+                                    mParkId,
+                                    it,
+                                    System.currentTimeMillis()
+                                )
+
+                            };
+                            if (ratingToAdd != null) {
+                                viewModel.addRating(mParkId, ratingToAdd, {
+                                    Log.d("TAG", "Success when trying to save rating");
+                                })
+                            };
+
+                        }
+                    }
+                }
+            })
+        }
+
         var listener = { spot: TrainingSpotWithAll? ->
             var commentArr = spot?.trainingSpotsWithComments?.comments;
             if (commentArr != null) {
@@ -161,10 +166,10 @@ if(park_details_rating != null) {
 
             var rating = spot?.trainingSpotWithRating?.sport_rating;
 
-            if(rating != null){
+            if (rating != null) {
                 calcAvgRating(rating);
+            };
 
-            }
         }
 
         if (viewModel.trainingSpot.value != null) {
@@ -174,14 +179,26 @@ if(park_details_rating != null) {
         viewModel.getTrainingSpotByID(parkId).observe(viewLifecycleOwner, listener);
     }
         fun calcAvgRating(rating : List<Rating>){
+          val filteredRate =   rating.sortedWith(compareByDescending<Rating> { it.user_Id }
+                .thenByDescending { it.rate_dateTime })
+
             var avgRating : Float;
             var sumRating : Float = 0.0F;
-
-            for (rate in rating){
-                sumRating += rate.rate;
+            var latUser : String = "";
+            var size  = 0;
+            for (rate in filteredRate){
+                if(latUser == ""){
+                    latUser = rate.user_Id;
+                    sumRating += rate.rate;
+                    size = 1;
+                }else if(latUser != rate.user_Id){
+                    sumRating += rate.rate;
+                    size ++;
+                }
+                latUser = rate.user_Id;
             }
 
-            avgRating = sumRating/rating.size;
+            avgRating = sumRating/size;
             park_details_rating.rating = avgRating;
         }
 

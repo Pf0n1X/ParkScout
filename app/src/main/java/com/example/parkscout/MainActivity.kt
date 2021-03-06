@@ -440,8 +440,13 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
             var parkToShow: TrainingSpotWithAll? =
                 park_Id?.let { viewModelTrainingSpot.getParkById(it).value }
             val parkListener: Observer<TrainingSpotWithAll> = Observer { parkById ->
-                showSelectedParkDetails(parkById.trainingSpot.parkName, 5, parkById.trainingSpot.parkId);
-
+                if(parkById.trainingSpot.parkId != "") {
+                    showSelectedParkDetails(
+                        parkById.trainingSpot.parkName,
+                        5,
+                        parkById.trainingSpot.parkId
+                    );
+                }
             };
 
             viewModelTrainingSpot.parkById.observe(this, parkListener);

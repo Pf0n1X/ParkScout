@@ -95,9 +95,10 @@ class ChatModel {
         val userList:MutableList<User> = mutableListOf();
         userList.add(user);
         val chatWithAll : ChatWithAll;
+        val chatAndTrainingSpotWithAll: ChatAndTrainingSpotWithAll = ChatAndTrainingSpotWithAll(chat,null);
         val msgList : MutableList<ChatMessage> = mutableListOf();
         chatWithAll = ChatWithAll(chat,ChatWithChatMessages(chat,msgList),
-            ChatWithUsers(chat,userList));
+            ChatWithUsers(chat,userList),chatAndTrainingSpotWithAll);
         modelChatFirebase.addChat(chatWithAll, {
             modelChatSQL.addChat(chat,{})
 

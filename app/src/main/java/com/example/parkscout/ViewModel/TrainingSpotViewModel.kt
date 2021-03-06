@@ -27,8 +27,8 @@ class TrainingSpotViewModel: ViewModel() {
     }
 
     // Methods
-    fun addPark(park: TrainingSpotWithAll, listener: () -> Unit) {
-        TrainingSpotModel.instance.addTrainingSpot(park, listener);
+    fun addPark(park: TrainingSpotWithAll,user: User, listener: () -> Unit) {
+        TrainingSpotModel.instance.addTrainingSpot(park,user, listener);
     }
     fun getParks(): List<TrainingSpotWithAll>? {
         return parkList.value;

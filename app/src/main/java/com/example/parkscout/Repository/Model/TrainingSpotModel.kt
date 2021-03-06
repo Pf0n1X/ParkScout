@@ -143,8 +143,9 @@ class TrainingSpotModel {
 
             executor.execute {
                 val parkById = modelSQL.getParkById(parkId)
-
-                postValue(parkById)
+                if(parkById != null) {
+                    postValue(parkById)
+                }
             }
 
             var addParkListener = { park: TrainingSpotWithAll? ->

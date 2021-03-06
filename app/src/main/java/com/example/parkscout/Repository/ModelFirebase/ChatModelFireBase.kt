@@ -33,7 +33,7 @@ class ChatModelFireBase {
                 db.collection("users").document(it)
             }!!;
         var query: Query = db.collection(ChatModelFireBase.COLLECTION_NAME)
-//            .whereArrayContains("users",currUserRef);
+            .whereArrayContains("users",currUserRef);
         query.get()
             .addOnCompleteListener(OnCompleteListener {
 
@@ -97,19 +97,23 @@ class ChatModelFireBase {
                                 (trainingSpot, null), TrainingSpotWithImages
                                 (trainingSpot, null)
                         );
-
-                        trainingSpotModelFirebase.getTrainingSpotById(training_spot_id) { park: TrainingSpotWithAll? ->
-                            if (park != null) {
-                                trainingSpotWithAll = park
-                                listener(ChatWithAlllist)
-                            }
-                        }
-
                         var chatAndTrainingSpotWithAll: ChatAndTrainingSpotWithAll =
                             ChatAndTrainingSpotWithAll(
                                 chat = chat,
                                 trainingSpotWithAll = trainingSpotWithAll
                             )
+
+
+                        trainingSpotModelFirebase.getTrainingSpotById(training_spot_id) { park: TrainingSpotWithAll? ->
+                            if (park != null) {
+                                trainingSpotWithAll.trainingSpot = park.trainingSpot;
+                                trainingSpotWithAll.trainingSpotWithImages = park.trainingSpotWithImages;
+                                trainingSpotWithAll.trainingSpotWithRating = park.trainingSpotWithRating;
+                                trainingSpotWithAll.trainingSpotsWithComments = park.trainingSpotsWithComments;
+                                trainingSpotWithAll.trainingSpotWithSportTypes = park.trainingSpotWithSportTypes;
+                                listener(ChatWithAlllist)
+                            }
+                        }
 
                         var chatWithAll: ChatWithAll =
                             ChatWithAll(
@@ -190,7 +194,7 @@ class ChatModelFireBase {
                     trainingSpotModelFirebase.getTrainingSpotById(training_spot_id) { park: TrainingSpotWithAll? ->
                         if (park != null) {
                             trainingSpotWithAll = park
-                            listener(ChatWithAlllist)
+//                            listener(ChatWithAlllist)
                         }
                     }
 

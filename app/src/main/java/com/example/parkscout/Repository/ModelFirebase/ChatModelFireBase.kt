@@ -33,7 +33,7 @@ class ChatModelFireBase {
                 db.collection("users").document(it)
             }!!;
         var query: Query = db.collection(ChatModelFireBase.COLLECTION_NAME)
-//            .whereArrayContains("users",currUserRef);
+            .whereArrayContains("users",currUserRef);
         query.get()
             .addOnCompleteListener(OnCompleteListener {
 

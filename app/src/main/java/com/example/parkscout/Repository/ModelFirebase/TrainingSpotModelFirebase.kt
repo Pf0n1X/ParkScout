@@ -72,46 +72,6 @@ class TrainingSpotModelFirebase {
                 }
             });
 
-<<<<<<< HEAD
-            query.addSnapshotListener{ value: QuerySnapshot?, error: FirebaseFirestoreException? ->
-                Log.d("TAG", "Test");
-                var isEmpty = value?.documents?.isEmpty();
-                if (isEmpty != null && !isEmpty) {
-
-
-                var map: HashMap<String?, Any?>? =
-                    value?.documents?.get(0)?.data as HashMap<String?, Any?>?;
-                if (map != null) {
-                    var park: TrainingSpotFirebase = TrainingSpotFirebase(
-                        "",
-                        "",
-                        com.example.parkscout.data.Types.Location(0.0, 0.0),
-                        "",
-                        "",
-                        null,
-                        null,
-                        null,
-                        null
-                    );
-
-                    park.fromMap(map)
-
-                    trainingSpot = TrainingSpot(
-                        park.parkId,
-                        park.parkName,
-                        park.parkLocation,
-                        park.chatId,
-                        park.facilities
-                    )
-
-                    parkWithAll = TrainingSpotWithAll(
-                        trainingSpot,
-                        TrainingSpotsWithComments(trainingSpot, park.comment),
-                        TrainingSpotWithRating(trainingSpot, park.ratings),
-                        TrainingSpotWithSportTypes(trainingSpot, park.types),
-                        TrainingSpotWithImages(trainingSpot, park.images)
-                    )
-=======
         query.addSnapshotListener { value: QuerySnapshot?, error: FirebaseFirestoreException? ->
             Log.d("TAG", "Test");
             if (value != null) {
@@ -151,93 +111,11 @@ class TrainingSpotModelFirebase {
 
                         listener(parkWithAll);
                     }
-                    //                if (value.documents != null) {
-                    //                    val document = it.result
-                    //                    for (doc in it.result!!) {
-                    //                        var park: TrainingSpotFirebase = TrainingSpotFirebase(
-                    //                            "",
-                    //                            "",
-                    //                            com.example.parkscout.data.Types.Location(0.0, 0.0),
-                    //                            "",
-                    //                            "",
-                    //                            null,
-                    //                            null,
-                    //                            null,
-                    //                            null
-                    //                        );
-                    //
-                    //                        park.fromMap(doc.data)
-                    //
-                    //                        trainingSpot = TrainingSpot(
-                    //                            park.parkId,
-                    //                            park.parkName,
-                    //                            park.parkLocation,
-                    //                            park.chatId,
-                    //                            park.facilities
-                    //                        )
-                    //
-                    //                        parkWithAll = TrainingSpotWithAll(
-                    //                            trainingSpot,
-                    //                            TrainingSpotsWithComments(trainingSpot, park.comment),
-                    //                            TrainingSpotWithRating(trainingSpot, park.ratings),
-                    //                            TrainingSpotWithSportTypes(trainingSpot, park.types),
-                    //                            TrainingSpotWithImages(trainingSpot, park.images)
-                    //                        )
-                    //
-                    //
-                    //                    }
-                    //                    listener(parkWithAll);
-                    //
-                    //                }
->>>>>>> 833bc17cad0376daa99d05e8d5835ebf5ee679ae
-
                 }
-<<<<<<< HEAD
-                }
-//                if (value.documents != null) {
-//                    val document = it.result
-//                    for (doc in it.result!!) {
-//                        var park: TrainingSpotFirebase = TrainingSpotFirebase(
-//                            "",
-//                            "",
-//                            com.example.parkscout.data.Types.Location(0.0, 0.0),
-//                            "",
-//                            "",
-//                            null,
-//                            null,
-//                            null,
-//                            null
-//                        );
-//
-//                        park.fromMap(doc.data)
-//
-//                        trainingSpot = TrainingSpot(
-//                            park.parkId,
-//                            park.parkName,
-//                            park.parkLocation,
-//                            park.chatId,
-//                            park.facilities
-//                        )
-//
-//                        parkWithAll = TrainingSpotWithAll(
-//                            trainingSpot,
-//                            TrainingSpotsWithComments(trainingSpot, park.comment),
-//                            TrainingSpotWithRating(trainingSpot, park.ratings),
-//                            TrainingSpotWithSportTypes(trainingSpot, park.types),
-//                            TrainingSpotWithImages(trainingSpot, park.images)
-//                        )
-//
-//
-//                    }
-//                    listener(parkWithAll);
-//
-//                }
-=======
->>>>>>> 833bc17cad0376daa99d05e8d5835ebf5ee679ae
             }
         }
-
     }
+
     public fun getTrainingSpotByName(park_name:String, listener: (LinkedList<TrainingSpotWithAll>) -> Unit) {
         var db: FirebaseFirestore = FirebaseFirestore.getInstance();
         var trainingSpotWithAlllist: LinkedList<TrainingSpotWithAll> = LinkedList<TrainingSpotWithAll>();
@@ -374,8 +252,4 @@ class TrainingSpotModelFirebase {
                 Log.d("TAG", "ERROR: " + exception.toString())
             };
     }
-
-
-
-
 }

@@ -1,5 +1,6 @@
 package com.example.parkscout.Repository.ModelFirebase
 
+import android.util.Log
 import com.example.parkscout.Repository.*
 import com.example.parkscout.Repository.Model.TrainingSpotModel
 import com.example.parkscout.Repository.ModelSQL.ChatModelSQL
@@ -138,10 +139,12 @@ class ChatModelFireBase {
         var doc: DocumentReference = db.collection(ChatModelFireBase.COLLECTION_NAME)
             .document();
 
-        var users: LinkedList<String> = LinkedList<String>();
+        var users: LinkedList<DocumentReference> = LinkedList<DocumentReference>();
 
         for (user in chatWithAll.chatWithUsers.Users) {
-            users.add("/users/" + user.uId);
+//            users.add("/users/" + user.uId);
+            var ref = db.collection("users").document(user.uId);
+            users.add(ref);
         }
 
         var chatCollectionFireStore = chatCollectionFireStore(
@@ -166,13 +169,26 @@ class ChatModelFireBase {
             .update("chat_messages", FieldValue.arrayUnion(message.toMap()))
             .addOnSuccessListener { listener(); };
     }
+
+    fun addUserToChat(chatId: String, uid: String, function: (ChatWithAll) -> Unit) {
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+        db.collection("chat")
+            .document(chatId)
+            .update("users", FieldValue.arrayUnion(db.collection("users").document(uid)))
+            .addOnSuccessListener {
+                Log.d("Tag", "Success");
+            }
+            .addOnFailureListener {
+                Log.d("TAG", "Error");
+            };
+    }
 }
 
 data class chatCollectionFireStore(
     val id: String,
     val training_spot_id: String,
     val chat_messages: List<ChatMessage>,
-    val users: List<String>
+    val users: List<DocumentReference>
 ) {
     fun toMap(): Map<String, Any> {
         val result: HashMap<String, Any> = HashMap()

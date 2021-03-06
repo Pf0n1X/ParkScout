@@ -291,6 +291,11 @@ class RegisterFragment : Fragment() {
 
     private fun moveToMainActivity() {
         val intent = Intent(getActivity(), MainActivity::class.java)
+        intent.addFlags(
+            Intent.FLAG_ACTIVITY_NO_HISTORY or
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+        )
         getActivity()?.startActivity(intent)
     }
 

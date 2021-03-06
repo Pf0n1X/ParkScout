@@ -71,6 +71,10 @@ class TrainingSpotModelFirebase {
 
             query.addSnapshotListener{ value: QuerySnapshot?, error: FirebaseFirestoreException? ->
                 Log.d("TAG", "Test");
+                var isEmpty = value?.documents?.isEmpty();
+                if (isEmpty != null && !isEmpty) {
+
+
                 var map: HashMap<String?, Any?>? =
                     value?.documents?.get(0)?.data as HashMap<String?, Any?>?;
                 if (map != null) {
@@ -105,6 +109,7 @@ class TrainingSpotModelFirebase {
                     )
 
                     listener(parkWithAll);
+                }
                 }
 //                if (value.documents != null) {
 //                    val document = it.result
@@ -261,4 +266,17 @@ class TrainingSpotModelFirebase {
                 Log.d("TAG", "ERROR: " + exception.toString())
             };
     }
+    fun addRating(parkId: String, rating: Rating, listener: () -> Int) {
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+        db.collection(COLLECTION_NAME)
+            .document(parkId)
+            .update("ratings", FieldValue.arrayUnion(rating.toMap()))
+            .addOnSuccessListener { listener(); }
+            .addOnFailureListener { exception: Exception ->
+                Log.d("TAG", "ERROR: " + exception.toString())
+            };
+    }
+
+
+
 }

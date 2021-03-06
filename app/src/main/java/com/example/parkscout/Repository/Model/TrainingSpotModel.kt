@@ -9,6 +9,8 @@ import com.example.parkscout.Repository.*
 import com.example.parkscout.Repository.ModelFirebase.TrainingSpotModelFirebase
 import com.example.parkscout.Repository.ModelSQL.TrainingSpotModelSQL
 import com.example.parkscout.data.Types.Location
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -57,17 +59,25 @@ class TrainingSpotModel {
         return this.parkByNameSearch;
     }
 
-    public fun addTrainingSpot(park: TrainingSpotWithAll, listener: () -> Unit) {
+    public fun addTrainingSpot(park: TrainingSpotWithAll,user: User, listener: () -> Unit) {
 
         val list: MutableList<TrainingSpotWithAll> = this.parksList.value!!.toMutableList();
         list.add(park);
         this.parksList.value = list.toList();
+
         modelFirebase.addPark(park, {
             modelSQL.addPark(park,listener)
+            val chat:Chat = Chat("0",park.trainingSpot.parkId)
+            ChatModel.instance.addChat(chat,user,listener)
         });
 
     }
+    fun updateTrainingSpot(park:String,chatId:String,listener: () -> Unit) {
+        modelFirebase.updateParkChat(park, chatId,{
+            listener();
+        });
 
+    }
     fun addComment(parkId: String, comment: Comment, listener: () -> Int) {
         modelFirebase.addComment(parkId, comment, {
             // TODO: Update the local DB.

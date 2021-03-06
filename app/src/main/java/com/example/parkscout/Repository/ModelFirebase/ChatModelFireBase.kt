@@ -1,6 +1,7 @@
 package com.example.parkscout.Repository.ModelFirebase
 
 import com.example.parkscout.Repository.*
+import com.example.parkscout.Repository.Model.TrainingSpotModel
 import com.example.parkscout.Repository.ModelSQL.ChatModelSQL
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.*
@@ -136,6 +137,7 @@ class ChatModelFireBase {
         var db: FirebaseFirestore = FirebaseFirestore.getInstance();
         var doc: DocumentReference = db.collection(ChatModelFireBase.COLLECTION_NAME)
             .document();
+
         var users: LinkedList<String> = LinkedList<String>();
 
         for (user in chatWithAll.chatWithUsers.Users) {
@@ -149,8 +151,11 @@ class ChatModelFireBase {
             users
         )
 
-        doc.set(chatCollectionFireStore.toMap())
-            .addOnSuccessListener { listener(); }
+        FirebaseFirestore.getInstance().collection(COLLECTION_NAME).document(doc.id).set(chatCollectionFireStore.toMap())
+            .addOnSuccessListener { listener();
+                TrainingSpotModel.instance.updateTrainingSpot(chatWithAll.chat.training_spot_id,doc.id,{});
+
+            }
             .addOnFailureListener { listener(); }
     }
 

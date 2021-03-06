@@ -91,6 +91,7 @@ class TrainingSpotModelSQL {
         class MyAsyncTask: AsyncTask<TrainingSpotWithAll, Void, TrainingSpotWithAll>() {
             override fun doInBackground(vararg params: TrainingSpotWithAll?): TrainingSpotWithAll {
                   AppLocalDb.getInstance().trainingSpotDao().insert(trainingSpotWithAll.getTariningSpot());
+
                 if(trainingSpotWithAll.getSportTypes() != null) {
                     AppLocalDb.getInstance().trainingSpotDao()
                         .insertKinds(trainingSpotWithAll.getSportTypes());

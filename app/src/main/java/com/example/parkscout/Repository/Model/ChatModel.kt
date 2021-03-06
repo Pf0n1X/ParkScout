@@ -92,8 +92,6 @@ class ChatModel {
         userList.add(user);
         val chatWithAll : ChatWithAll;
         val msgList : MutableList<ChatMessage> = mutableListOf();
-        val chatMessages:ChatMessage = ChatMessage("","","","",0);
-        msgList.add(chatMessages);
         chatWithAll = ChatWithAll(chat,ChatWithChatMessages(chat,msgList),
             ChatWithUsers(chat,userList));
         modelChatFirebase.addChat(chatWithAll, {

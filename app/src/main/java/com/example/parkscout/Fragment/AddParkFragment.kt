@@ -191,7 +191,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
                     "0",
                     park_name.text.toString(),
                     parkLocation,
-                    UUID.randomUUID().toString(),
+                    "0",
                     facilities.text.toString()
                 );
                 var images: LinkedList<Images> = LinkedList<Images>();
@@ -207,25 +207,22 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
                     TrainingSpotWithSportTypes(trainingSpot, sportTypesList),
                     TrainingSpotWithImages(trainingSpot, images)
                 )
-
-
-                trainModel.addPark(park) {
+//                val chat = Chat(trainingSpot.chatId,park.trainingSpot.parkId)
+                val user:User = mUser;
+                trainModel.addPark(park,user) {
                     Log.d("TAG", "Success when trying to save");
-                    val chat = Chat(park.trainingSpot.chatId,park.trainingSpot.parkId)
-                    val user:User = mUser;
-                    trainModel.addChat(chat,user){
-                        Log.d("TAG", "chat created");
 
-                    }
+//                    trainModel.addChat(chat,user){
+                        Log.d("TAG", "chat created");
+                        val savedMsg = "Saved"
+                        // TODO : initiate successful logged in experience
+                        Toast.makeText(
+                            getActivity()?.getApplicationContext(),
+                            "$savedMsg",
+                            Toast.LENGTH_LONG
+                        ).show()
                 }
 
-                val savedMsg = "Saved"
-                // TODO : initiate successful logged in experience
-                Toast.makeText(
-                    getActivity()?.getApplicationContext(),
-                    "$savedMsg",
-                    Toast.LENGTH_LONG
-                ).show()
 
                 true;
             }

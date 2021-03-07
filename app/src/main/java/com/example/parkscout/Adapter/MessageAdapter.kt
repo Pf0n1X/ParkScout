@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.daimajia.swipe.SwipeLayout
 import com.example.parkscout.Repository.ChatMessage
 import com.example.parkscout.R
 import com.example.parkscout.Repository.ChatWithAll
@@ -17,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import java.util.*
 
-class MessageAdapter(val context: Context, var chatMessages: List<ChatMessage>, val imageURL: String, var chat: ChatWithAll?): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+class MessageAdapter(val context: Context, var chatMessages: List<ChatMessage>, val imageURL: String, var chat: ChatWithAll?, var onMessageDelete: (ChatMessage) -> Unit): RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     // Data Members
     private var mContext: Context
@@ -25,6 +26,7 @@ class MessageAdapter(val context: Context, var chatMessages: List<ChatMessage>, 
     public var mChat: ChatWithAll?;
     private var mImageURL: String
     private lateinit var mFBUser: FirebaseUser
+    public var mOnMessageDelete: (ChatMessage) -> Unit;
 
     companion object {
         private const val MSG_TYPE_LEFT = 0
@@ -36,6 +38,7 @@ class MessageAdapter(val context: Context, var chatMessages: List<ChatMessage>, 
         mChatMessages = chatMessages
         mImageURL = imageURL
         mChat = chat;
+        mOnMessageDelete = onMessageDelete;
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -43,10 +46,19 @@ class MessageAdapter(val context: Context, var chatMessages: List<ChatMessage>, 
 
         if (viewType == MSG_TYPE_RIGHT) {
             view = LayoutInflater.from(mContext).inflate(R.layout.chat_msg_right, parent, false)
-            return MessageAdapter.ViewHolder(view)
+            var swipelayout: SwipeLayout = view.findViewById(R.id.msg_swipelayout);
+            swipelayout.setShowMode(SwipeLayout.ShowMode.PullOut)
+            var holder = MessageAdapter.ViewHolder(view);
+            holder.isRight = true;
+
+            return holder;
         } else {
             view = LayoutInflater.from(mContext).inflate(R.layout.chat_msg_left, parent, false)
-            return MessageAdapter.ViewHolder(view)
+
+            var holder =  MessageAdapter.ViewHolder(view)
+            holder.isRight = false;
+
+            return holder;
         }
     }
 
@@ -72,6 +84,12 @@ class MessageAdapter(val context: Context, var chatMessages: List<ChatMessage>, 
                 holder.profile_image.setImageResource(R.drawable.profile_icon)
             }
         }
+
+        if (holder.isRight) {
+            holder.setupDeleteButton{
+                onMessageDelete(msg);
+            }
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -86,12 +104,22 @@ class MessageAdapter(val context: Context, var chatMessages: List<ChatMessage>, 
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        public var show_message: TextView
-        public var profile_image: ImageView
+        public var show_message: TextView;
+        public var profile_image: ImageView;
+        private var delete_image: ImageView? = null;
+        public var isRight: Boolean = false;
 
         init {
             show_message = itemView.findViewById(R.id.msg_show_message)
             profile_image = itemView.findViewById(R.id.msg_profile_image)
+        }
+
+        public fun setupDeleteButton(onMessageDelete: () -> Unit) {
+            delete_image = itemView.findViewById(R.id.msgRight_iv_delete);
+
+            delete_image?.setOnClickListener {
+                onMessageDelete();
+            }
         }
     }
 }

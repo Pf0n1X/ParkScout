@@ -45,6 +45,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:22.0.1'
     implementation 'com.google.firebase:firebase-storage:19.2.1'
 
+    // Sliding layout.
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
 
     // Plugins
     apply plugin: 'com.android.application'

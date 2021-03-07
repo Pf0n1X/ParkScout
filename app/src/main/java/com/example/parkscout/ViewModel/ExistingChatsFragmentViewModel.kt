@@ -21,4 +21,8 @@ class ExistingChatsFragmentViewModel: ViewModel() {
     fun addMessage(chatId: String, msg: ChatMessage, listener: () -> Unit) {
         ChatModel.instance.addMessage(chatId, msg, listener);
     }
+
+    fun deleteMessage(chat: ChatWithAll, chatMsg: ChatMessage, listener: (ChatMessage) -> Unit) {
+        ChatModel.instance.deleteMessage(chat, chatMsg, listener);
+    }
 }

@@ -7,6 +7,7 @@ import com.example.parkscout.Repository.ModelSQL.ChatModelSQL
 import com.example.parkscout.data.Types.Location
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import java.util.*
@@ -309,6 +310,34 @@ class ChatModelFireBase {
                 };
 
         // Set the chat data.
+    }
+
+    fun deleteMessage(chat: ChatWithAll, chatMsg: ChatMessage, listener: (ChatMessage) -> Unit) {
+
+        // Get the database.
+        var db = FirebaseFirestore.getInstance();
+
+        // Get the message data.
+        var msgList = chat.chatWithChatMessages.chatMessages as LinkedList<ChatMessage>;
+        msgList.remove(chatMsg);
+        var mapList = msgList.map{ og: ChatMessage ->
+            var map: HashMap<String, Any> = og.toMap() as HashMap<String, Any>;
+            map["last_updated"] = Timestamp(og.last_updated, 0);
+
+            map;
+        }
+
+        // Since there is no delete operation for inner arrays using indexes,
+        // An update operation is needed win which the whole array will be re inserted.
+        db.collection(COLLECTION_NAME)
+            .document(chatMsg.chatId)
+            .update("chat_messages", mapList)
+            .addOnSuccessListener {
+                listener(chatMsg);
+            }
+            .addOnFailureListener { exception ->
+                Log.d("TAG", "ERROR");
+            };
     }
 }
 

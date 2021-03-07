@@ -295,7 +295,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val image = ImageView(context)
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == 3 && resultCode == Activity.RESULT_OK && data != null) {
             selectedPhotoUri = data.data
 
             selectedPhotoUri?.let { mAdapter.imagesURL?.add(it) }

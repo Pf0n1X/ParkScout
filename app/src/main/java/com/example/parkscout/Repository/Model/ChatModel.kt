@@ -12,6 +12,7 @@ import com.example.parkscout.Repository.ModelFirebase.ChatModelFireBase
 import com.example.parkscout.Repository.ModelSQL.ChatMessageModelSQL
 import com.example.parkscout.Repository.ModelSQL.ChatModelSQL
 import com.example.parkscout.Repository.ModelSQL.TrainingSpotModelSQL
+import com.google.firebase.auth.FirebaseAuth
 import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -168,6 +169,9 @@ class ChatModel {
                                 Users = it
                             )
                         }!!
+                    if (chatWithUsers.Users.find { it.uId == FirebaseAuth.getInstance().uid } == null) {
+                        continue;
+                    }
                     var chatAndTrainingSpot =
                         chatsAndTrainingSpots.find { it.chat == chat }?.trainingSpot?.let {
                             ChatAndTrainingSpot(

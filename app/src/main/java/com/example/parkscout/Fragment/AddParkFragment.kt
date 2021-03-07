@@ -9,6 +9,7 @@ import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -40,11 +41,9 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import java.io.IOException
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -114,7 +113,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
         if (mUserID != null) {
             viewModelTrainingSpot.getUserByID(mUserID);
 
-            viewModelTrainingSpot.user.observe(viewLifecycleOwner,  { user: User ->
+            viewModelTrainingSpot.user.observe(viewLifecycleOwner, { user: User ->
                 mUserID = user.uId;
                 mUser = user;
             })
@@ -158,7 +157,12 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
             )
             val comment : Comment = Comment("", "", "", 0)
 
-            val rating : Rating = Rating(mUserID, "0", Parkrating.rating,  System.currentTimeMillis())
+            val rating : Rating = Rating(
+                mUserID,
+                "0",
+                Parkrating.rating,
+                System.currentTimeMillis()
+            )
             val ratingList :  MutableList<Rating> =  mutableListOf();
             val sportTypesList : MutableList<SportTypes>  =  mutableListOf();
 
@@ -209,7 +213,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
                 )
 //                val chat = Chat(trainingSpot.chatId,park.trainingSpot.parkId)
                 val user:User = mUser;
-                trainModel.addPark(park,user) {
+                trainModel.addPark(park, user) {
                     Log.d("TAG", "Success when trying to save");
 
 //                    trainModel.addChat(chat,user){
@@ -301,6 +305,8 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
     }
     private fun selectPhoto() {
         val intent = Intent(Intent.ACTION_PICK)
+//        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
         intent.type = "image/*"
         startActivityForResult(intent, 3)
     }

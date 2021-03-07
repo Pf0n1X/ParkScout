@@ -16,6 +16,9 @@ interface TrainingSpotDao {
     @Query("SELECT * FROM training_spot WHERE parkId = :parkName")
     fun getParkByName(parkName:String): List<TrainingSpot>
 
+    @Query("SELECT * FROM training_spot INNER JOIN comments ON  comments.trainingId = training_spot.parkId WHERE  comments.userId = :userId")
+    fun getParksByUser(userId:String): List<TrainingSpot>
+
     @Insert( onConflict = OnConflictStrategy.REPLACE)
     fun insert(parks: TrainingSpot) ;
 

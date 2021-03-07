@@ -11,6 +11,7 @@ import com.example.parkscout.Repository.ModelFirebase.ChatMessageModelFirebase
 import com.example.parkscout.Repository.ModelFirebase.ChatModelFireBase
 import com.example.parkscout.Repository.ModelSQL.ChatMessageModelSQL
 import com.example.parkscout.Repository.ModelSQL.ChatModelSQL
+import com.example.parkscout.Repository.ModelSQL.TrainingSpotModelSQL
 import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -27,6 +28,7 @@ class ChatModel {
     var modelFirebase: ChatMessageModelFirebase;
     private var modelSQL: ChatMessageModelSQL;
     private var modelChatSQL: ChatModelSQL;
+    private var trainingSpotModelSQL: TrainingSpotModelSQL;
     private var messageList: ChatMessageLiveData;
     private var chatList: ChatLiveData;
     var modelChatFirebase: ChatModelFireBase;
@@ -37,6 +39,7 @@ class ChatModel {
         this.modelFirebase = ChatMessageModelFirebase();
         this.modelSQL = ChatMessageModelSQL();
         this.modelChatSQL = ChatModelSQL();
+        this.trainingSpotModelSQL = TrainingSpotModelSQL();
         this.messageList = ChatMessageLiveData();
         this.chatList = ChatLiveData();
         this.modelChatFirebase = ChatModelFireBase();
@@ -55,7 +58,8 @@ class ChatModel {
     public fun refreshAllMessages(refListener: (() -> Unit)?) {
 
         // Get the last local update date.
-        val sp: SharedPreferences = ParkScoutApplication.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
+        val sp: SharedPreferences =
+            ParkScoutApplication.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
         var lastUpdated: Long = sp.getLong("lastUpdated", 0);
 
         // Get all the updated record from firebase, since the last retrieval.
@@ -91,9 +95,10 @@ class ChatModel {
         val userList:MutableList<User> = mutableListOf();
         userList.add(user);
         val chatWithAll : ChatWithAll;
+        val chatAndTrainingSpotWithAll: ChatAndTrainingSpotWithAll = ChatAndTrainingSpotWithAll(chat,null);
         val msgList : MutableList<ChatMessage> = mutableListOf();
         chatWithAll = ChatWithAll(chat,ChatWithChatMessages(chat,msgList),
-            ChatWithUsers(chat,userList));
+            ChatWithUsers(chat,userList),chatAndTrainingSpotWithAll);
         modelChatFirebase.addChat(chatWithAll, {
             modelChatSQL.addChat(chat,{})
 
@@ -121,6 +126,16 @@ class ChatModel {
         });
     }
 
+    fun addUserToChat(chatId: String, uid: String) {
+        modelChatFirebase.addUserToChat(chatId, uid, { chat: ChatWithAll ->
+
+        });
+    }
+
+    fun createChatBetweenTwoUsers(firstUserUID: String, secondUserUID: String, listener: (chat: Chat) -> Unit) {
+        modelChatFirebase.createChatBetweenTwoUsers(firstUserUID, secondUserUID, listener);
+    }
+
     inner class ChatLiveData: MutableLiveData<List<ChatWithAll>>() {
 
         // Constructors
@@ -132,14 +147,15 @@ class ChatModel {
         override fun onActive() {
             super.onActive();
 
-            val sp: SharedPreferences = ParkScoutApplication.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
+            val sp: SharedPreferences =
+                ParkScoutApplication.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
 
             // Select
-            executor.execute{
-                val chats = modelChatSQL.getAllChats() ;
+            executor.execute {
+                val chats = modelChatSQL.getAllChats();
                 val chatsWithChatMessages = modelChatSQL.getAllChatsWithChatMessages();
                 val chatsWithUsers = modelChatSQL.getAllChatsWithUsers();
-
+                val chatsAndTrainingSpots = modelChatSQL.getAllChatsAndTrainingSpots();
                 val chatWithAllList: LinkedList<ChatWithAll> = LinkedList();
                 for (chat in chats) {
                     var chatwithchatmessages: ChatWithChatMessages =
@@ -156,8 +172,52 @@ class ChatModel {
                                 Users = it
                             )
                         }!!
-                    var chatWithAll = ChatWithAll(chat, chatwithchatmessages, chatWithUsers);
-                    chatWithAllList.add(chatWithAll);
+                    var chatAndTrainingSpot =
+                        chatsAndTrainingSpots.find { it.chat == chat }?.trainingSpot?.let {
+                            ChatAndTrainingSpot(
+                                chat = chat,
+                                trainingSpot = it
+                            )
+                        };
+                    var trainingSpot = TrainingSpot(
+                        "",
+                        "",
+                        com.example.parkscout.data.Types.Location(0.0, 0.0),
+                        "",
+                        ""
+                    );
+
+                    var trainingSpotWithAll: TrainingSpotWithAll = TrainingSpotWithAll(
+                        trainingSpot,
+                        TrainingSpotsWithComments(trainingSpot, null),
+                        TrainingSpotWithRating
+                            (trainingSpot, null), TrainingSpotWithSportTypes
+                            (trainingSpot, null), TrainingSpotWithImages
+                            (trainingSpot, null)
+                    );
+                    if (chatAndTrainingSpot != null) {
+                        trainingSpotWithAll =
+                            chatAndTrainingSpot.trainingSpot?.parkId?.let {
+                                trainingSpotModelSQL.getParkById(
+                                    it
+                                )
+                            }!!
+                    };
+
+                    var ChatAndTrainingSpotWithAll = ChatAndTrainingSpotWithAll(
+                        chat = chat,
+                        trainingSpotWithAll = trainingSpotWithAll
+                    )
+
+                    var chatWithAll = chatAndTrainingSpot?.let {
+                        ChatWithAll(
+                            chat, chatwithchatmessages, chatWithUsers,
+                            ChatAndTrainingSpotWithAll
+                        )
+                    };
+                    if (chatWithAll != null) {
+                        chatWithAllList.add(chatWithAll)
+                    };
                 }
                 postValue(chatWithAllList);
             }
@@ -167,12 +227,13 @@ class ChatModel {
                 value = chats;
             });
         }
+
         override fun onInactive() {
             super.onInactive();
         }
     }
 
-    inner class ChatMessageLiveData: MutableLiveData<List<ChatMessage>>() {
+    inner class ChatMessageLiveData : MutableLiveData<List<ChatMessage>>() {
 
         // Constructors
         init {
@@ -183,7 +244,8 @@ class ChatModel {
         override fun onActive() {
             super.onActive();
 
-            val sp: SharedPreferences = ParkScoutApplication.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
+            val sp: SharedPreferences =
+                ParkScoutApplication.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
             var lastUpdated: Long = sp.getLong("lastUpdated", 0);
 
             modelFirebase.getAllMessages(lastUpdated) { messages: List<ChatMessage> ->

@@ -43,7 +43,7 @@ class ChatFragment : Fragment() {
         }
 
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-     }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,41 +58,34 @@ class ChatFragment : Fragment() {
         mTVUserName = fragmentView.findViewById<TextView>(R.id.chat_tvName);
         mIBUserImage = fragmentView.findViewById<ImageButton>(R.id.chat_ibUserImage);
         mMsgRecyclerView.setHasFixedSize(true)
-        var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(activity?.applicationContext)
+        var linearLayoutManager: LinearLayoutManager =
+            LinearLayoutManager(activity?.applicationContext)
         mMsgRecyclerView.layoutManager = linearLayoutManager
         viewModel = ViewModelProvider(this).get(ExistingChatsFragmentViewModel::class.java);
 
         // TODO: Remove parameters.
-        readMessages("Tom", "Eden", "https://mymodernmet.com/wp/wp-content/uploads/2019/09/100k-ai-faces-5.jpg")
+        readMessages(
+            "Tom",
+            "Eden",
+            "https://mymodernmet.com/wp/wp-content/uploads/2019/09/100k-ai-faces-5.jpg"
+        )
 
-        // TODO: Handle user profile navigation.
         fragmentView.findViewById<ImageButton>(R.id.chat_ibUserImage)
-                .setOnClickListener{ view ->
-//            val navController = Navigation
-//                    .findNavController(activity as Activity, R.id.chat_navhost_frag)
-//
-//            NavigationUI.setupWithNavController((activity as Activity)
-//                    .findViewById<BottomNavigationView>(R.id.bottomNavigationView), navController)
-//
-//            navController.navigate(R.id.action_global_profileFragment)
-//                    var intent: Intent = Intent(context, MainActivity::class.java);
-//                    startActivity(intent)
+            .setOnClickListener { view ->
+                if (activity != null) {
+                    var resultIntent: Intent = Intent();
+                    var otherUserUID: String? =
+                        mChat?.chatWithUsers?.Users?.find { user: User -> user.uId != FirebaseAuth.getInstance().currentUser?.uid }?.uId
 
-                    if (activity != null) {
-//                        (activity as Activity).onBackPressed();
-//                        (activity as Activity).onBackPressed();
-                        var resultIntent: Intent = Intent();
-                        var otherUserUID: String? = mChat?.chatWithUsers?.Users?.find{user: User -> user.uId != FirebaseAuth.getInstance().currentUser?.uid}?.uId
-
-                        if (otherUserUID != null) {
-                            resultIntent.putExtra("user_id", otherUserUID);
-                            (activity as Activity).setResult(Activity.RESULT_OK, resultIntent);
-                        }
-
-                        (activity as Activity).finish();
+                    if (otherUserUID != null) {
+                        resultIntent.putExtra("user_id", otherUserUID);
+                        (activity as Activity).setResult(Activity.RESULT_OK, resultIntent);
                     }
 
-        }
+                    (activity as Activity).finish();
+                }
+
+            }
 
         return fragmentView
     }
@@ -100,8 +93,8 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Setup the "Send" button operation.
-        chat_btnSendMessage.setOnClickListener{event  ->
-            var uid: String ? = FirebaseAuth.getInstance().currentUser?.uid;
+        chat_btnSendMessage.setOnClickListener { event ->
+            var uid: String? = FirebaseAuth.getInstance().currentUser?.uid;
 
             if (uid != null) {
                 var msg: ChatMessage = ChatMessage(
@@ -121,13 +114,14 @@ class ChatFragment : Fragment() {
     }
 
     fun readMessages(myId: String, userId: String, imageURL: String) {
-        viewModel.chatList.observe(viewLifecycleOwner, { chats: List<ChatWithAll> ->
+        viewModel.chatList.observe(viewLifecycleOwner) { chats: List<ChatWithAll> ->
             mChatMessages = chats[chatIndex].chatWithChatMessages.chatMessages;
             mChat = chats[chatIndex];
 
             if (mChat!!.chat.training_spot_id == "") {
                 // TODO: Show the other user's image and name.
-                var otherUser: User? = mChat!!.chatWithUsers.Users.find { user: User -> user.uId != FirebaseAuth.getInstance().currentUser?.uid };
+                var otherUser: User? =
+                    mChat!!.chatWithUsers.Users.find { user: User -> user.uId != FirebaseAuth.getInstance().currentUser?.uid };
                 var otherUserName: String? = otherUser?.name;
 
                 if (otherUserName != null) {
@@ -139,16 +133,28 @@ class ChatFragment : Fragment() {
                 }
             } else {
                 // TODO: Show the park image or a generic image and the park's name.
+                if (!mChat!!.chatAndTrainingSpot.trainingSpotWithAll?.trainingSpotWithImages?.images?.isEmpty()!!) {
+                    var spotImage =
+                        mChat?.chatAndTrainingSpot?.trainingSpotWithAll?.trainingSpotWithImages?.images?.get(
+                            0
+                        )?.ImgUrl;
+
+                    if (spotImage != null) {
+                        Glide.with(requireContext()).load(spotImage).into(mIBUserImage);
+                    }
+                }
+                mTVUserName.text =
+                    mChat?.chatAndTrainingSpot?.trainingSpotWithAll?.trainingSpot?.parkName;
             }
             mAdapter.mChat = mChat;
             mAdapter.mChatMessages = mChatMessages;
             mAdapter.notifyDataSetChanged();
             mMsgRecyclerView.scrollToPosition(mChatMessages.size - 1);
-        })
+        }
 
         // TODO: Att a valueEventListener to the db reference
         // TODO: Remove imageURL parameter.
-         mAdapter = MessageAdapter(this.requireContext(), mChatMessages, imageURL, mChat);
+        mAdapter = MessageAdapter(this.requireContext(), mChatMessages, imageURL, mChat);
         mMsgRecyclerView.adapter = mAdapter
     }
 }

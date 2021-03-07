@@ -76,20 +76,41 @@ class ChatAdapter(val context: Context, var chats: LinkedList<ChatWithAll>): Rec
 
         // If it is a personal chat show details about the other user.
         if (chat.chat.training_spot_id == "") {
-            var otherUser: User? = chat.chatWithUsers.Users.find { user: User -> user.uId != FirebaseAuth.getInstance().currentUser?.uid }
+            var otherUser: User? =
+                chat.chatWithUsers.Users.find { user: User -> user.uId != FirebaseAuth.getInstance().currentUser?.uid }
             if (otherUser != null) {
                 holder.chat_name.text = otherUser?.name;
                 Glide.with(holder.itemView).load(otherUser.profilePic).into(holder.profile_image);
             }
         } else {
-            // TODO: Find the training spot name and picture and put them in the view.
+            var images = chat.chatAndTrainingSpot.trainingSpotWithAll?.trainingSpotWithImages?.images;
+            if (images != null && !(images.isEmpty())) {
+                var imgURL =
+                    images.get(0)?.ImgUrl;
+
+                if (imgURL != null) {
+                    Glide.with(holder.itemView).load(imgURL).into(holder.profile_image);
+                }
+            }
+
+            var parkName = chat.chatAndTrainingSpot.trainingSpotWithAll?.trainingSpot?.parkName;
+            holder.chat_name.text = parkName;
         }
 
         holder.chat_id = chat.chatWithChatMessages.Chat.chatId;
         holder.chat_index = position;
-        var curDate: Date = Timestamp(chat.chatWithChatMessages.chatMessages[chat.chatWithChatMessages.chatMessages.size - 1].last_updated, 0).toDate();
-        var dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm")
-        holder.time_last_message.text = dateFormat.format(curDate);
-        holder.last_message.text = chat.chatWithChatMessages.chatMessages[chat.chatWithChatMessages.chatMessages.lastIndex]?.message;
+        if (chat.chatWithChatMessages.chatMessages.size != 0) {
+            var curDate: Date = Timestamp(
+                chat.chatWithChatMessages.chatMessages[chat.chatWithChatMessages.chatMessages.size - 1].last_updated,
+                0
+            ).toDate();
+            var dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm")
+            holder.time_last_message.text = dateFormat.format(curDate);
+            holder.last_message.text =
+                chat.chatWithChatMessages.chatMessages[chat.chatWithChatMessages.chatMessages.lastIndex]?.message;
+        } else {
+            holder.last_message.text = "No messages yet.";
+            holder.time_last_message.text = "";
+        }
     }
 }

@@ -14,6 +14,11 @@ class ChatModelSQL {
     fun getAllChatsWithUsers(): List<ChatWithUsers> {
         return  AppLocalDb.getInstance().chatDao().getAllChatsWithUsers();
     }
+
+    fun getAllChatsAndTrainingSpots(): List<ChatAndTrainingSpot> {
+        return AppLocalDb.getInstance().chatDao().getAllChatsAndTrainingSpots();
+    }
+
     public fun addChat(chat: Chat, listener: (() -> Unit)?) {
         class MyAsyncTask: AsyncTask<Chat, Void, Chat>() {
             override fun doInBackground(vararg params: Chat?): Chat {

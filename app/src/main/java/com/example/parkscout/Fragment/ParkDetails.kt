@@ -23,6 +23,7 @@ import com.example.parkscout.Repository.TrainingSpotWithAll
 import com.example.parkscout.ViewModel.ParkDetailsViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_park_details.*
 import java.util.*
@@ -41,9 +42,12 @@ class ParkDetails : Fragment()   {
     private lateinit var mCommentAdapter: CommentAdapter
     private lateinit var mBtnSendComment: ImageButton;
     private lateinit var mTVCommentText: TextView;
-    private lateinit var mParkId: String
-    private lateinit var mImggRecyclerView: RecyclerView
-    private lateinit var mAdapter: ImagesAdapter
+    private lateinit var mParkId: String;
+    private lateinit var mImggRecyclerView: RecyclerView;
+    private lateinit var mAdapter: ImagesAdapter;
+    private lateinit var mBtnChat: MaterialButton;
+    private lateinit var mTVEquippedWith: TextView;
+    private lateinit var mTVFits: TextView;
 
     // Methods
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +65,10 @@ class ParkDetails : Fragment()   {
         mCommentsRecyclerView = rootView.findViewById(R.id.park_details_rv_comments);
         mTVCommentText = rootView.findViewById(R.id.park_details_comment_input);
         mBtnSendComment = rootView.findViewById(R.id.park_details_btnSendComment);
-        mImggRecyclerView = rootView.findViewById(R.id.parkImages)
+        mImggRecyclerView = rootView.findViewById(R.id.parkImages);
+        mBtnChat = rootView.findViewById(R.id.park_details_chat_button);
+        mTVEquippedWith = rootView.findViewById(R.id.park_details_equipped_with);
+        mTVFits = rootView.findViewById(R.id.park_details_fits);
 
         setupCommentsRecyclerView();
         setIsVisible(false);
@@ -89,6 +96,13 @@ class ParkDetails : Fragment()   {
             mTVCommentText.setText("");
         };
 
+        // Setup the chat join button.
+        mBtnChat.setOnClickListener{event ->
+            viewModel.joinChat{ spot: TrainingSpotWithAll? ->
+
+            };
+        };
+
         // set up park images
         mImggRecyclerView.setHasFixedSize(true)
         mAdapter = ImagesAdapter(this.requireContext(), LinkedList<Uri>());
@@ -109,10 +123,13 @@ class ParkDetails : Fragment()   {
 
     fun setDetails(title: String, starNum: Int, parkId: String) {
         this.mParkId = parkId;
+
+        // Change the views according to the parameters.
         park_details_park_name.text = title;
         park_details_rating.numStars = starNum;
         setIsVisible(true);
 
+        // Setup the comments data listener.
         if(park_details_rating != null) {
 
             park_details_rating.setOnRatingBarChangeListener(object :
@@ -141,24 +158,13 @@ class ParkDetails : Fragment()   {
                 }
             })
         }
-
         var listener = { spot: TrainingSpotWithAll? ->
             var commentArr = spot?.trainingSpotsWithComments?.comments;
             if (commentArr != null) {
                 mCommentAdapter.mComments = commentArr;
                 mCommentAdapter.notifyDataSetChanged();
-            } else {
-                mCommentAdapter.mComments = LinkedList<Comment>();
-                (mCommentAdapter.mComments as LinkedList<Comment>).add(
-                    Comment(
-                        "1",
-                        "Tomer",
-                        "Message",
-                        12345678
-                    )
-                );
-                mCommentAdapter.notifyDataSetChanged();
-            }
+
+            } 
 
             var images = spot?.trainingSpotWithImages?.getImages();
             if(mAdapter.imagesURL!= null){
@@ -166,6 +172,7 @@ class ParkDetails : Fragment()   {
                     mAdapter.imagesURL!!.clear();
                 }
             }
+
             if(images != null){
 
                 for (img in images){
@@ -206,6 +213,19 @@ class ParkDetails : Fragment()   {
                 park_details_address.text = "";
             }
 
+            var facilities = spot?.trainingSpot?.facilities;
+
+            if (facilities != null) {
+                mTVEquippedWith.text = facilities;
+            }
+
+            var sportTypes = spot?.trainingSpotWithSportTypes?.sport_types;
+
+            if (sportTypes != null) {
+                mTVFits.text = sportTypes.map{ type ->
+                    type.type_name
+                }.joinToString(", ");
+            }
         }
 
         if (viewModel.trainingSpot.value != null) {

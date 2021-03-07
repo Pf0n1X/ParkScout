@@ -137,6 +137,14 @@ class ChatModel {
         modelChatFirebase.createChatBetweenTwoUsers(firstUserUID, secondUserUID, listener);
     }
 
+    fun deleteMessage(chat: ChatWithAll, chatMsg: ChatMessage, listener: (ChatMessage) -> Unit) {
+        modelChatFirebase.deleteMessage(chat, chatMsg, {
+            modelSQL.deleteMessage(chatMsg);
+            listener(it);
+        });
+
+    }
+
     inner class ChatLiveData: MutableLiveData<List<ChatWithAll>>() {
 
         // Constructors

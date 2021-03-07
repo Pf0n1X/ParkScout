@@ -34,4 +34,22 @@ class ChatMessageModelSQL {
         var task: MyAsyncTask = MyAsyncTask();
         task.execute();
     }
+
+    fun deleteMessage(chatMsg: ChatMessage) {
+        class MyAsyncTask: AsyncTask<ChatMessage, Void, ChatMessage>() {
+            override fun doInBackground(vararg params: ChatMessage?): ChatMessage {
+                AppLocalDb.getInstance().chatMessageDao().delete(chatMsg);
+
+                return chatMsg;
+            }
+
+            override fun onPostExecute(result: ChatMessage?) {
+                super.onPostExecute(result);
+
+            }
+        }
+
+        var task: MyAsyncTask = MyAsyncTask();
+        task.execute();
+    }
 }

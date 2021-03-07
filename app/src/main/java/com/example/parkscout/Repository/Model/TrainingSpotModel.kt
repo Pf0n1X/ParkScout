@@ -28,6 +28,7 @@ class TrainingSpotModel {
     private lateinit var parksList: TrainingSpotModel.ParkLiveData;
     private lateinit var parkToShow: TrainingSpotModel.ParkSelectedLiveData;
     private lateinit var parkByNameSearch: TrainingSpotModel.ParkLiveDataByName;
+    private lateinit var parkByUser: TrainingSpotModel.ParkLiveDataByUser;
     private lateinit var executor:Executor;
     // Constructors
     init {
@@ -40,6 +41,12 @@ class TrainingSpotModel {
     public fun getAllParks(): ParkLiveData {
 
         return this.parksList;
+    }
+
+    fun getUserParks(uId:String):MutableLiveData<List<TrainingSpotWithAll>>{
+        this.parkByUser = ParkLiveDataByUser();
+        this.parkByUser.GetParksByUser(uId);
+        return  this.parkByUser;
     }
 
     public fun getParkById(parkId:String): LiveData<TrainingSpotWithAll> {
@@ -162,6 +169,30 @@ class TrainingSpotModel {
         }
     }
 
+    inner class ParkLiveDataByUser: MutableLiveData<List<TrainingSpotWithAll>>() {
+
+        // Constructors
+        init {
+            value = LinkedList<TrainingSpotWithAll>();
+        }
+
+        fun GetParksByUser(userId: String){
+
+            val sp: SharedPreferences = ParkScoutApplication.context.getSharedPreferences("TAG", Context.MODE_PRIVATE);
+
+            executor.execute {
+                val parksByUser = modelSQL.getParkByUser(userId)
+
+                postValue(parksByUser)
+            }
+
+            modelFirebase.getTrainingSpotByUser(userId,{ parks: List<TrainingSpotWithAll> ->
+                value = parks;
+
+            });
+
+        }
+    }
     inner class ParkLiveDataByName: MutableLiveData<List<TrainingSpotWithAll>>() {
 
         // Constructors

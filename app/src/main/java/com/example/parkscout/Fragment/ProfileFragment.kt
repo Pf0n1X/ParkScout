@@ -10,21 +10,23 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import com.bumptech.glide.Glide
 import com.example.parkscout.R
 import com.example.parkscout.Repository.Chat
-import com.example.parkscout.ViewModel.ProfileViewModel
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.auth.FirebaseAuth
+import com.example.parkscout.Repository.TrainingSpotWithAll
 import com.example.parkscout.Repository.User
+import com.example.parkscout.ViewModel.ProfileViewModel
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.fragment_profile.*
+
 
 class ProfileFragment : Fragment() , OnMapReadyCallback {
 
@@ -87,7 +89,8 @@ class ProfileFragment : Fragment() , OnMapReadyCallback {
 
             if (loggedInUserID != null) {
                 viewModel.createChatBetweenTwoUsers(mUserID, loggedInUserID, { chat: Chat ->
-                    Toast.makeText(context, "A chat was created successfuly.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "A chat was created successfuly.", Toast.LENGTH_SHORT)
+                        .show();
                     mBtnChat.isEnabled = false;
                     mBtnChat.isVisible = false;
                 });
@@ -103,6 +106,40 @@ class ProfileFragment : Fragment() , OnMapReadyCallback {
         val sydney = LatLng(27.2046, 77.4977)
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(sydney, 16f)
         mMap.animateCamera(cameraUpdate, 2000, null)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        val builder = LatLngBounds.Builder()
+
+        if (mUserID != null) {
+            viewModel.getParksByUser(mUserID);
+            viewModel.user_parkList.observe(
+                viewLifecycleOwner,
+                Observer { parks: List<TrainingSpotWithAll> ->
+                    if(parks.size != 0) {
+                        for (park in parks) {
+                            mMap.addMarker(
+                                MarkerOptions().position(
+                                    LatLng(
+                                        park.trainingSpot.parkLocation.xscale,
+                                        park.trainingSpot.parkLocation.yscale
+                                    )
+                                )
+                                    .title(park.trainingSpot.parkName)
+                            )
+                            builder.include(
+                                LatLng(
+                                    park.trainingSpot.parkLocation.xscale,
+                                    park.trainingSpot.parkLocation.yscale
+                                )
+                            )
+                        }
+                        val bounds = builder.build()
+                        val padding = 0 // offset from edges of the map in pixels
+
+                        val cu: CameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+                        googleMap.moveCamera(cu);
+                        googleMap.animateCamera(cu);
+                    }
+                });
+        }
+
     }
 }

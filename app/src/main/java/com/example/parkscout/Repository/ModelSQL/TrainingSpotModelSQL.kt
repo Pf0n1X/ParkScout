@@ -66,6 +66,35 @@ class TrainingSpotModelSQL {
         }
         return parkWithAllList;
     }
+    fun getParkByUser(uId:String): MutableList<TrainingSpotWithAll>? {
+        var parkWithAll : TrainingSpotWithAll;
+        var parkWithAllList : MutableList<TrainingSpotWithAll> =  arrayListOf();
+        var trainingSpotList : List<TrainingSpot>;
+        var comments : List<Comment>
+        var rating : List<Rating>
+        var types : List<SportTypes>
+        var images : List<Images>
+        trainingSpotList = AppLocalDb.getInstance().trainingSpotDao().getParksByUser(uId);
+        for (park in trainingSpotList) {
+            comments = AppLocalDb.getInstance().commentDao()
+                .getAllCommentsOfPark(park.getParkId());
+            rating = AppLocalDb.getInstance().ratingDao().getParkRating(park.getParkId());
+            types = AppLocalDb.getInstance().sportTypesDAO()
+                .getSportTypesByPark(park.getParkId());
+            images =
+                AppLocalDb.getInstance().imagesDao().getAllImgsOfPark(park.getParkId());
+            parkWithAll = TrainingSpotWithAll(
+                park,
+                TrainingSpotsWithComments(park, comments),
+                TrainingSpotWithRating(park, rating),
+                TrainingSpotWithSportTypes(park, types),
+                TrainingSpotWithImages(park, images)
+            )
+
+            parkWithAllList.add(parkWithAll);
+        }
+        return parkWithAllList;
+    }
 
     fun getParkById(parkId:String): TrainingSpotWithAll? {
         var parkWithAll : TrainingSpotWithAll;

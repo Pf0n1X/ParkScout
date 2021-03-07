@@ -140,7 +140,10 @@ class ChatFragment : Fragment() {
                     Glide.with(requireContext()).load(otherUser.profilePic).into(mIBUserImage);
                 }
             } else {
-                if (!mChat!!.chatAndTrainingSpot.trainingSpotWithAll?.trainingSpotWithImages?.images?.isEmpty()!!) {
+                var isEmpty = mChat != null &&
+                        (mChat?.chatAndTrainingSpot?.trainingSpotWithAll?.trainingSpotWithImages?.images?.isEmpty() == false ||
+                                mChat?.chatAndTrainingSpot?.trainingSpotWithAll?.trainingSpotWithImages?.images?.isEmpty() == null);
+                if (isEmpty) {
                     var spotImage =
                         mChat?.chatAndTrainingSpot?.trainingSpotWithAll?.trainingSpotWithImages?.images?.get(
                             0

@@ -153,6 +153,7 @@ class ChatModelFireBase {
                             message.fromMap(chatm as Map<String?, Any?>);
                             chatmessages.add(message);
                             modelChatSQL.addChatMessage(message, {});
+                            listener(ChatWithAlllist)
                         }
                     }
 

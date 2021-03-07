@@ -123,10 +123,13 @@ class ChatFragment : Fragment() {
 
     fun readMessages(myId: String, userId: String, imageURL: String) {
         viewModel.chatList.observe(viewLifecycleOwner) { chats: List<ChatWithAll> ->
-            mChatMessages = chats[chatIndex].chatWithChatMessages.chatMessages;
-            mChat = chats[chatIndex];
 
-            if (mChat!!.chat.training_spot_id == "") {
+            if (!chats.isNullOrEmpty() && chatIndex < chats.size) {
+                mChat = chats[chatIndex];
+                mChatMessages = chats[chatIndex].chatWithChatMessages.chatMessages;
+            }
+
+            if (mChat != null && mChat!!.chat.training_spot_id == "") {
                 // TODO: Show the other user's image and name.
                 var otherUser: User? =
                     mChat!!.chatWithUsers.Users.find { user: User -> user.uId != FirebaseAuth.getInstance().currentUser?.uid };
@@ -159,7 +162,10 @@ class ChatFragment : Fragment() {
             mAdapter.mChat = mChat;
             mAdapter.mChatMessages = mChatMessages;
             mAdapter.notifyDataSetChanged();
-            mMsgRecyclerView.scrollToPosition(mChatMessages.size - 1);
+
+            if (mChatMessages.isNotEmpty()) {
+                mMsgRecyclerView.scrollToPosition(mChatMessages.size - 1);
+            }
         }
 
         var onMessageDelete: (ChatMessage) -> Unit = { chat_msg: ChatMessage ->

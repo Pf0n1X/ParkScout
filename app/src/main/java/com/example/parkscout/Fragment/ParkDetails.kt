@@ -43,6 +43,8 @@ class ParkDetails : Fragment()   {
     private lateinit var mImggRecyclerView: RecyclerView;
     private lateinit var mAdapter: ImagesAdapter;
     private lateinit var mBtnChat: MaterialButton;
+    private lateinit var mTVEquippedWith: TextView;
+    private lateinit var mTVFits: TextView;
 
     // Methods
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +64,8 @@ class ParkDetails : Fragment()   {
         mBtnSendComment = rootView.findViewById(R.id.park_details_btnSendComment);
         mImggRecyclerView = rootView.findViewById(R.id.parkImages);
         mBtnChat = rootView.findViewById(R.id.park_details_chat_button);
+        mTVEquippedWith = rootView.findViewById(R.id.park_details_equipped_with);
+        mTVFits = rootView.findViewById(R.id.park_details_fits);
 
         setupCommentsRecyclerView();
         setIsVisible(false);
@@ -183,13 +187,26 @@ class ParkDetails : Fragment()   {
                 calcAvgRating(rating);
             };
 
+            var facilities = spot?.trainingSpot?.facilities;
+
+            if (facilities != null) {
+                mTVEquippedWith.text = facilities;
+            }
+
+            var sportTypes = spot?.trainingSpotWithSportTypes?.sport_types;
+
+            if (sportTypes != null) {
+                mTVFits.text = sportTypes.map{ type ->
+                    type.type_name
+                }.joinToString(", ");
+            }
         }
 
         if (viewModel.trainingSpot.value != null) {
             listener(viewModel.trainingSpot.value);
         }
 
-        viewModel.getTrainingSpotByID(parkId).observe(viewLifecycleOwner, listener);
+        viewModel.getTrainingSpotByID(parkId).observe(viewLifecycleOwner, androidx.lifecycle.Observer {  } );
     }
         fun calcAvgRating(rating : List<Rating>){
           val filteredRate =   rating.sortedWith(compareByDescending<Rating> { it.user_Id }

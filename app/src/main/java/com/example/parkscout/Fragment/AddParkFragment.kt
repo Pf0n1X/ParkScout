@@ -302,7 +302,7 @@ class AddParkFragment : Fragment() , OnMapReadyCallback, GoogleMap.OnMarkerClick
     private fun selectPhoto() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
-        startActivityForResult(intent, 0)
+        startActivityForResult(intent, 3)
     }
     fun searchLocation(view: View) {
         lateinit var location: String

@@ -9,18 +9,13 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Preferences">
-        <SwitchPreferenceCompat
-            app:key="notifications"
-            app:summaryOff="Not Allowed"
-            app:summaryOn="Allowed"
-            app:title="Push Notifications" />
 
-    <SeekBarPreference
-        app:defaultValue="50"
-        app:showSeekBarValue="true"
-        app:title="Search Range"
-        app:key="search_range" />
-        
+        <SeekBarPreference
+            app:defaultValue="50"
+            app:showSeekBarValue="true"
+            app:title="Search Range"
+            app:key="search_range" />
+            
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Personal Info">

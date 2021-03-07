@@ -1,5 +1,7 @@
 package com.example.parkscout.Fragment
 
+import android.location.Address
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,7 +12,6 @@ import android.widget.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parkscout.Adapter.CommentAdapter
@@ -20,11 +21,13 @@ import com.example.parkscout.Repository.Comment
 import com.example.parkscout.Repository.Rating
 import com.example.parkscout.Repository.TrainingSpotWithAll
 import com.example.parkscout.ViewModel.ParkDetailsViewModel
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_park_details.*
 import java.util.*
+
 
 private const val PARK_NAME = "park name"
 private const val  STAR_RATE = 1
@@ -43,6 +46,8 @@ class ParkDetails : Fragment()   {
     private lateinit var mImggRecyclerView: RecyclerView;
     private lateinit var mAdapter: ImagesAdapter;
     private lateinit var mBtnChat: MaterialButton;
+    private lateinit var mTVEquippedWith: TextView;
+    private lateinit var mTVFits: TextView;
 
     // Methods
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,14 +67,18 @@ class ParkDetails : Fragment()   {
         mBtnSendComment = rootView.findViewById(R.id.park_details_btnSendComment);
         mImggRecyclerView = rootView.findViewById(R.id.parkImages);
         mBtnChat = rootView.findViewById(R.id.park_details_chat_button);
+        mTVEquippedWith = rootView.findViewById(R.id.park_details_equipped_with);
+        mTVFits = rootView.findViewById(R.id.park_details_fits);
 
         setupCommentsRecyclerView();
         setIsVisible(false);
-        var bottomSheetBehavior: BottomSheetBehavior<LinearLayout> = BottomSheetBehavior.from(mContainer);
+        var bottomSheetBehavior: BottomSheetBehavior<LinearLayout> = BottomSheetBehavior.from(
+            mContainer
+        );
         viewModel = ViewModelProvider(this).get(ParkDetailsViewModel::class.java);
 
         // Setup the comment send button
-        mBtnSendComment.setOnClickListener{event  ->
+        mBtnSendComment.setOnClickListener{ event  ->
             var uid: String ? = FirebaseAuth.getInstance().currentUser?.uid;
 
             if (uid != null) {
@@ -123,7 +132,8 @@ class ParkDetails : Fragment()   {
         // Setup the comments data listener.
         if(park_details_rating != null) {
 
-            park_details_rating.setOnRatingBarChangeListener(object : RatingBar.OnRatingBarChangeListener {
+            park_details_rating.setOnRatingBarChangeListener(object :
+                RatingBar.OnRatingBarChangeListener {
                 override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {
                     if (p2) {
                         var uid: String? = FirebaseAuth.getInstance().currentUser?.uid;
@@ -153,6 +163,10 @@ class ParkDetails : Fragment()   {
             if (commentArr != null) {
                 mCommentAdapter.mComments = commentArr;
                 mCommentAdapter.notifyDataSetChanged();
+
+                if (commentArr.isNotEmpty()) {
+                    mCommentsRecyclerView.scrollToPosition(commentArr.size - 1);
+                }
             }
 
             var images = spot?.trainingSpotWithImages?.getImages();
@@ -178,18 +192,56 @@ class ParkDetails : Fragment()   {
             if (rating != null) {
                 calcAvgRating(rating);
             };
+            var geocoder: Geocoder
+            geocoder = Geocoder(context, Locale.getDefault())
+            var latLng = spot?.trainingSpot?.parkLocation?.xscale?.let {
+                LatLng(
+                    it,
+                    spot?.trainingSpot?.parkLocation?.yscale
+                )
+            }
+            if(latLng != null){
+                var addresses: List<Address?>
 
+                addresses = geocoder.getFromLocation(
+                    latLng.latitude,
+                    latLng.longitude,
+                    1
+                );
+                if(addresses.size != 0) {
+                    val address = addresses[0]!!.getAddressLine(0)
+                    park_details_address.text = address;
+                }
+            }else  {
+                park_details_address.text = "";
+            }
+
+            var facilities = spot?.trainingSpot?.facilities;
+
+            if (facilities != null) {
+                mTVEquippedWith.text = facilities;
+            }
+
+            var sportTypes = spot?.trainingSpotWithSportTypes?.sport_types;
+
+            if (sportTypes != null) {
+                mTVFits.text = sportTypes.map{ type ->
+                    type.type_name
+                }.joinToString(", ");
+            }
         }
 
         if (viewModel.trainingSpot.value != null) {
             listener(viewModel.trainingSpot.value);
         }
 
-        viewModel.getTrainingSpotByID(parkId).observe(viewLifecycleOwner, listener);
+        viewModel.getTrainingSpotByID(parkId).observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { });
     }
-        fun calcAvgRating(rating : List<Rating>){
+        fun calcAvgRating(rating: List<Rating>){
           val filteredRate =   rating.sortedWith(compareByDescending<Rating> { it.user_Id }
-                .thenByDescending { it.rate_dateTime })
+              .thenByDescending { it.rate_dateTime })
 
             var avgRating : Float;
             var sumRating : Float = 0.0F;

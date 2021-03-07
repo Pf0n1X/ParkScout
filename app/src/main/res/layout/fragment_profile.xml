@@ -74,7 +74,7 @@
                         android:id="@+id/profile.map_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Last Place Visited"
+                        android:text="Places you commented on"
                         android:textSize="24sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"

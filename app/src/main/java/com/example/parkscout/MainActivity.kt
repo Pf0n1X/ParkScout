@@ -61,7 +61,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
         private var CHAT_ACTIVITY_CODE: Int = 1;
         private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
         private val TAG = AddParkFragment::class.java.simpleName
-        private const val DEFAULT_ZOOM = 7
+        private const val DEFAULT_ZOOM = 10
         private const val KEY_CAMERA_POSITION = "camera_position"
         private const val KEY_LOCATION = "location"
     }
@@ -278,7 +278,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
                         park.trainingSpot.parkLocation.yscale
                     )
                 )
-                if (distance <= mDistanceFromSetting) {
+                if (distance <= mDistanceFromSetting && park.trainingSpot.parkId != "" && park.trainingSpot.parkId != "0") {
                     mMap.addMarker(
                         MarkerOptions().position(
                             LatLng(

@@ -66,25 +66,68 @@ class TrainingSpotModelSQL {
         }
         return parkWithAllList;
     }
-
-    fun getParkById(parkId:String): TrainingSpotWithAll? {
+    fun getParkByUser(uId:String): MutableList<TrainingSpotWithAll>? {
         var parkWithAll : TrainingSpotWithAll;
-        var trainingSpot : TrainingSpot;
+        var parkWithAllList : MutableList<TrainingSpotWithAll> =  arrayListOf();
+        var trainingSpotList : List<TrainingSpot>;
         var comments : List<Comment>
         var rating : List<Rating>
         var types : List<SportTypes>
         var images : List<Images>
+        trainingSpotList = AppLocalDb.getInstance().trainingSpotDao().getParksByUser(uId);
+        for (park in trainingSpotList) {
+            comments = AppLocalDb.getInstance().commentDao()
+                .getAllCommentsOfPark(park.getParkId());
+            rating = AppLocalDb.getInstance().ratingDao().getParkRating(park.getParkId());
+            types = AppLocalDb.getInstance().sportTypesDAO()
+                .getSportTypesByPark(park.getParkId());
+            images =
+                AppLocalDb.getInstance().imagesDao().getAllImgsOfPark(park.getParkId());
+            parkWithAll = TrainingSpotWithAll(
+                park,
+                TrainingSpotsWithComments(park, comments),
+                TrainingSpotWithRating(park, rating),
+                TrainingSpotWithSportTypes(park, types),
+                TrainingSpotWithImages(park, images)
+            )
+
+            parkWithAllList.add(parkWithAll);
+        }
+        return parkWithAllList;
+    }
+
+    fun getParkById(parkId:String): TrainingSpotWithAll? {
+        var parkWithAll : TrainingSpotWithAll;
+        var trainingSpot : TrainingSpot;
+        var comments : MutableList<Comment> = mutableListOf();
+        var rating : MutableList<Rating> = mutableListOf();
+        var types : MutableList<SportTypes> = mutableListOf();
+        var images : MutableList<Images> = mutableListOf();
         trainingSpot = AppLocalDb.getInstance().trainingSpotDao().getParkById(parkId);
-            comments = AppLocalDb.getInstance().commentDao().getAllCommentsOfPark(trainingSpot.getParkId());
-            rating = AppLocalDb.getInstance().ratingDao().getParkRating(trainingSpot.getParkId());
-            types = AppLocalDb.getInstance().sportTypesDAO().getSportTypesByPark(trainingSpot.getParkId());
-            images = AppLocalDb.getInstance().imagesDao().getAllImgsOfPark(trainingSpot.getParkId());
-            parkWithAll = TrainingSpotWithAll(trainingSpot,
-                TrainingSpotsWithComments(trainingSpot,comments), TrainingSpotWithRating(trainingSpot,rating),
-                TrainingSpotWithSportTypes(trainingSpot,types),TrainingSpotWithImages(trainingSpot,images))
+        if(trainingSpot != null) {
+            comments = AppLocalDb.getInstance().commentDao()
+                .getAllCommentsOfPark(trainingSpot.getParkId()) as MutableList<Comment>;
+            rating =
+                AppLocalDb.getInstance().ratingDao()
+                    .getParkRating(trainingSpot.getParkId()) as MutableList<Rating>;
+            types = AppLocalDb.getInstance().sportTypesDAO()
+                .getSportTypesByPark(trainingSpot.getParkId()) as MutableList<SportTypes>;
+            images =
+                AppLocalDb.getInstance().imagesDao()
+                    .getAllImgsOfPark(trainingSpot.getParkId()) as MutableList<Images>;
+
+            parkWithAll = TrainingSpotWithAll(
+                trainingSpot,
+                TrainingSpotsWithComments(trainingSpot, comments),
+                TrainingSpotWithRating(trainingSpot, rating),
+                TrainingSpotWithSportTypes(trainingSpot, types),
+                TrainingSpotWithImages(trainingSpot, images)
+            )
 
 
-        return parkWithAll;
+            return parkWithAll;
+        }
+        return null;
     }
 
         public fun addPark(trainingSpotWithAll: TrainingSpotWithAll, listener: (() -> Unit)?) {

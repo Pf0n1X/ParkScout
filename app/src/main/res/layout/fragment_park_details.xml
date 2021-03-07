@@ -52,6 +52,7 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -127,6 +128,7 @@
                     android:id="@+id/parkImages"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:animateLayoutChanges="false"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
 

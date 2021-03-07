@@ -53,6 +53,12 @@ class Existing_chats : Fragment() {
         mMsgRecyclerView.adapter = mAdapter;
         mAdapter.notifyDataSetChanged();
 
+        mMsgRecyclerView.setOnTouchListener{ view, motionEvent ->  
+            view.parent.requestDisallowInterceptTouchEvent(true);
+
+            false;
+        }
+
         mMsgRecyclerView.scrollToPosition(mChats.value!!.size - 1);
 
         val chatListener: Observer<List<ChatWithAll>> = Observer { chats ->

@@ -115,7 +115,39 @@ class TrainingSpotModelFirebase {
             }
         }
     }
+    public fun getTrainingSpotByUser(uId:String, listener: (LinkedList<TrainingSpotWithAll>) -> Unit) {
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+        var trainingSpotWithAlllist: LinkedList<TrainingSpotWithAll> = LinkedList<TrainingSpotWithAll>();
+        var parkWithAll : TrainingSpotWithAll;
+        var trainingSpot =  TrainingSpot("","", com.example.parkscout.data.Types.Location(0.0,0.0),"","");
+        var query: Query = db.collection(TrainingSpotModelFirebase.COLLECTION_NAME).
+        whereArrayContains("comment",uId);
+        query.get()
+            .addOnCompleteListener(OnCompleteListener {
 
+                if (it.isSuccessful) {
+                    val document = it.result
+                    for (doc in it.result!!) {
+                        var park : TrainingSpotFirebase  = TrainingSpotFirebase("","",com.example.parkscout.data.Types.Location(0.0,0.0),"","",null,null,null,null);
+
+                        park.fromMap(doc.data)
+
+                        trainingSpot = TrainingSpot(park.parkId,park.parkName,park.parkLocation,park.chatId,park.facilities)
+
+                        parkWithAll = TrainingSpotWithAll(trainingSpot,TrainingSpotsWithComments(trainingSpot,park.comment)
+                            ,TrainingSpotWithRating(trainingSpot,park.ratings),TrainingSpotWithSportTypes(trainingSpot,park.types)
+                            ,TrainingSpotWithImages(trainingSpot,park.images))
+
+                        trainingSpotWithAlllist.add(parkWithAll);
+
+                    }
+                    listener(trainingSpotWithAlllist);
+
+                }
+
+            });
+
+    }
     public fun getTrainingSpotByName(park_name:String, listener: (LinkedList<TrainingSpotWithAll>) -> Unit) {
         var db: FirebaseFirestore = FirebaseFirestore.getInstance();
         var trainingSpotWithAlllist: LinkedList<TrainingSpotWithAll> = LinkedList<TrainingSpotWithAll>();

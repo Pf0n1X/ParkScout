@@ -6,10 +6,12 @@ import com.example.parkscout.Repository.Model.TrainingSpotModel
 import com.example.parkscout.Repository.ModelSQL.ChatModelSQL
 import com.example.parkscout.data.Types.Location
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.collections.HashMap
 
 class ChatModelFireBase {
     private var modelChatSQL: ChatModelSQL = ChatModelSQL();
@@ -48,11 +50,13 @@ class ChatModelFireBase {
                         chatmessages = LinkedList<ChatMessage>();
                         chatmessages.clear();
 
-                        for (chatm in doc.data["chat_messages"] as ArrayList<*>) {
-                            message = ChatMessage("", "", "", "", 0);
-                            message.fromMap(chatm as Map<String?, Any?>);
-                            chatmessages.add(message);
-                            modelChatSQL.addChatMessage(message, {});
+                        if (doc.data["chat_messages"] != null) {
+                            for (chatm in doc.data["chat_messages"] as ArrayList<*>) {
+                                message = ChatMessage("", "", "", "", 0);
+                                message.fromMap(chatm as Map<String?, Any?>);
+                                chatmessages.add(message);
+                                modelChatSQL.addChatMessage(message, {});
+                            }
                         }
 
                         var chatwithchatmessages: ChatWithChatMessages = ChatWithChatMessages(
@@ -140,12 +144,15 @@ class ChatModelFireBase {
                     chats.add(chat);
                     modelChatSQL.addChat(chat, {});
                     chatmessages = LinkedList<ChatMessage>();
+                    var dataMap = (dc.data as Map<String?, Any?>);
 
-                    for (chatm in (dc.data as Map<String?, Any?>)["chat_messages"] as ArrayList<*>) {
-                        message = ChatMessage("", "", "", "", 0);
-                        message.fromMap(chatm as Map<String?, Any?>);
-                        chatmessages.add(message);
-                        modelChatSQL.addChatMessage(message, {});
+                    if (dataMap["chat_messages"] != null) {
+                        for (chatm in dataMap["chat_messages"] as ArrayList<*>) {
+                            message = ChatMessage("", "", "", "", 0);
+                            message.fromMap(chatm as Map<String?, Any?>);
+                            chatmessages.add(message);
+                            modelChatSQL.addChatMessage(message, {});
+                        }
                     }
 
                     var chatwithchatmessages: ChatWithChatMessages = ChatWithChatMessages(
@@ -154,8 +161,9 @@ class ChatModelFireBase {
                     );
 
                     var userRef: DocumentReference;
-                    var user: User = User("", "", "", 0, "");
+
                     for (chatUsers in (dc.data as Map<String?, Any?>)["users"] as ArrayList<*>) {
+                        var user: User = User("", "", "", 0, "");
                         userRef = chatUsers as DocumentReference;
                         userRef.get().addOnSuccessListener {
                             it.data?.let { it1 -> user.fromMap(it1) };
@@ -164,7 +172,7 @@ class ChatModelFireBase {
                                 UserChatCrossRef(user.uId, chat.chatId);
                             modelChatSQL.addUser(user, {});
                             modelChatSQL.addUserChatRelation(userChatCrossRef, {});
-//                            listener(ChatWithAlllist)
+                            listener(ChatWithAlllist)
                         }
                     }
                     var chatWithUsers: ChatWithUsers = ChatWithUsers(
@@ -268,6 +276,39 @@ class ChatModelFireBase {
             .addOnFailureListener {
                 Log.d("TAG", "Error");
             };
+    }
+
+    fun createChatBetweenTwoUsers(firstUserUID: String, secondUserUID: String, listener: (chat: Chat) -> Unit) {
+
+        // Get the database.
+        var db = FirebaseFirestore.getInstance();
+
+        // Get the users' references.
+        var firstUserRef = db.collection("users").document(firstUserUID);
+        var secondUserRef = db.collection("users").document(secondUserUID);
+
+        // Create a new chat reference.
+        var chatDoc = db.collection(COLLECTION_NAME)
+            .document();
+
+        // Create a chat and use the reference's id.
+        var chatID = chatDoc.id;
+
+        // Insert both user references to the chat.
+        var chat: HashMap<String?, Any?> = HashMap<String?, Any?>();
+        var userList: LinkedList<DocumentReference> = LinkedList<DocumentReference>();
+        userList.add(firstUserRef);
+        userList.add(secondUserRef);
+        chat["id"] = chatID;
+        chat["users"] = userList;
+        chat["training_spot_id"] = "";
+        chat["chat_messages"] = arrayListOf<ChatMessage>();
+        chatDoc.set(chat)
+            .addOnCompleteListener {
+                    listener(Chat(chatID, ""))
+                };
+
+        // Set the chat data.
     }
 }
 

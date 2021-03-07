@@ -132,6 +132,10 @@ class ChatModel {
         });
     }
 
+    fun createChatBetweenTwoUsers(firstUserUID: String, secondUserUID: String, listener: (chat: Chat) -> Unit) {
+        modelChatFirebase.createChatBetweenTwoUsers(firstUserUID, secondUserUID, listener);
+    }
+
     inner class ChatLiveData: MutableLiveData<List<ChatWithAll>>() {
 
         // Constructors

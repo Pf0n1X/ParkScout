@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parkscout.R
 import com.example.parkscout.Repository.Comment
+import com.example.parkscout.Repository.Model.UserModel
 import com.google.firebase.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -34,6 +35,7 @@ class CommentAdapter(val context: Context): RecyclerView.Adapter<CommentAdapter.
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var comment = mComments.get(position)
         holder.mTVCommentText.text = comment.c_text;
+        var user = UserModel.instance.getUserByID(comment.userId);
 //        var curDate: Date = Timestamp(comment.time, 0).toDate();
 //        var dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm")
 //        holder.mTVTime.text = dateFormat.format(curDate);

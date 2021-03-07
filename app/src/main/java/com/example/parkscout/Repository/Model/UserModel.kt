@@ -50,6 +50,12 @@ class UserModel {
     }
 
     fun getUserByID(uid: String): LiveData<User> {
+        executor.execute {
+            val userByid = modelSQL.getUserByID(uid);
+            if(userByid != null) {
+                user.postValue(userByid)
+            }
+        }
         modelFirebase.getUserByID(uid, { fbUser: User ->
             modelSQL.setUser(fbUser, {
                 user.postValue(fbUser);
@@ -84,6 +90,4 @@ class UserModel {
             super.onInactive();
         }
     }
-
-
 }

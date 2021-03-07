@@ -29,4 +29,9 @@ class UserModelSQL {
             }
         }
     }
+
+    fun getUserByID(uid: String): User {
+        return AppLocalDb.getInstance().userDao().getUserById(uid);
+
+    }
 }

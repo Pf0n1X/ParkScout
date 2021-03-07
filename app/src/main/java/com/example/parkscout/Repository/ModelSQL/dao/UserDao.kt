@@ -15,4 +15,8 @@ interface UserDao {
 
     @Delete
     fun delete(user: User);
+
+    @Transaction
+    @Query("SELECT * FROM users where uid = :uid")
+    fun getUserById(uid: String): User;
 }

@@ -153,6 +153,10 @@ class ParkDetails : Fragment()   {
             if (commentArr != null) {
                 mCommentAdapter.mComments = commentArr;
                 mCommentAdapter.notifyDataSetChanged();
+
+                if (commentArr.isNotEmpty()) {
+                    mCommentsRecyclerView.scrollToPosition(commentArr.size - 1);
+                }
             }
 
             var images = spot?.trainingSpotWithImages?.getImages();

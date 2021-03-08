@@ -12,6 +12,7 @@ import android.widget.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parkscout.Adapter.CommentAdapter
@@ -237,7 +238,7 @@ class ParkDetails : Fragment()   {
 
         viewModel.getTrainingSpotByID(parkId).observe(
             viewLifecycleOwner,
-            androidx.lifecycle.Observer { });
+            listener);
     }
         fun calcAvgRating(rating: List<Rating>){
           val filteredRate =   rating.sortedWith(compareByDescending<Rating> { it.user_Id }

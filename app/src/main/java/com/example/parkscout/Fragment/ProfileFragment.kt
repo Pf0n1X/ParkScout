@@ -1,6 +1,7 @@
 package com.example.parkscout.Fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import com.bumptech.glide.Glide
+import com.example.parkscout.LoginRegisterActivity
+import com.example.parkscout.MainActivity
 import com.example.parkscout.R
 import com.example.parkscout.Repository.Chat
 import com.example.parkscout.Repository.TrainingSpotWithAll
@@ -38,6 +41,7 @@ class ProfileFragment : Fragment() , OnMapReadyCallback {
     private lateinit var mUserDesc: TextView;
     private lateinit var mUserID: String;
     private lateinit var mBtnChat: MaterialButton;
+    private lateinit var mBtnSignout: MaterialButton;
 
     // Methods
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +68,7 @@ class ProfileFragment : Fragment() , OnMapReadyCallback {
         mUserDesc = rootview.findViewById<TextView>(R.id.profile_user_desc);
         mUserName = rootview.findViewById<TextView>(R.id.profile_user_name);
         mBtnChat = rootview.findViewById(R.id.profile_chat_button);
+        mBtnSignout = rootview.findViewById(R.id.profile_signout_btn);
 
         if (mUserID != null) {
             viewModel.getUserByID(mUserID);
@@ -83,6 +88,15 @@ class ProfileFragment : Fragment() , OnMapReadyCallback {
             mBtnChat.isVisible = true;
         }
 
+        // Show or hide the button according to whether the shown user is the logged in one.
+        if (mUserID == FirebaseAuth.getInstance().currentUser?.uid) {
+            mBtnSignout.isEnabled = true;
+            mBtnSignout.isVisible = true;
+        } else {
+            mBtnSignout.isEnabled = false;
+            mBtnSignout.isVisible = false;
+        }
+
         // Handle the join chat button event.
         mBtnChat.setOnClickListener{
             var loggedInUserID = FirebaseAuth.getInstance().currentUser?.uid;
@@ -95,6 +109,14 @@ class ProfileFragment : Fragment() , OnMapReadyCallback {
                     mBtnChat.isVisible = false;
                 });
             }
+        };
+
+        // Handle signout btn.
+        mBtnSignout.setOnClickListener{
+            FirebaseAuth.getInstance().signOut();
+            val intent = Intent(activity, LoginRegisterActivity::class.java)
+            activity?.startActivity(intent)
+            activity?.finish();
         };
 
         return rootview

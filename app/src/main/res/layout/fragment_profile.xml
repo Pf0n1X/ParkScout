@@ -40,7 +40,19 @@
                     android:layout_marginTop="10dp"
                     android:textSize="12sp"/>
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/profile.signout_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/orange"
+                    android:text="Sign out"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingLeft="25dp"

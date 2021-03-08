@@ -122,7 +122,7 @@ class MainActivity :  AppCompatActivity() ,OnMapReadyCallback{
 
             viewModelTrainingSpot.user.observe(this,Observer { user: User ->
                 mDistanceFromSetting = user.distance
-                if (mMap != null){
+                if (this::mMap.isInitialized){
                     mMap.clear();
                     showParksByRadius();
                 }

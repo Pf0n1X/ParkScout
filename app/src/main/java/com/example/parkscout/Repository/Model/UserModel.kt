@@ -21,6 +21,7 @@ class UserModel {
     private var modelSQL: UserModelSQL;
     private var executor: Executor;
     private var user: UserLiveData;
+    private var userList: UserListLiveData;
 
     // Initialization
     init {
@@ -28,11 +29,16 @@ class UserModel {
         this.modelSQL = UserModelSQL();
         this.modelFirebase = UserModelFirebase();
         this.user = UserLiveData();
+        this.userList = UserListLiveData();
     }
 
     // Methods
     public fun getUser(): UserLiveData {
         return this.user;
+    }
+
+    public fun getAllUsers(): UserListLiveData {
+        return this.userList;
     }
 
     fun setUser(user: User, listener: () -> Unit) {
@@ -84,6 +90,32 @@ class UserModel {
             };
 
             modelFirebase.getUser(listener);
+        }
+
+        override fun onInactive() {
+            super.onInactive();
+        }
+    }
+
+    inner class UserListLiveData: MutableLiveData<List<User>>() {
+
+        override fun onActive() {
+            super.onActive();
+
+            executor.execute{
+                var sqlUsers= modelSQL.getAllUsers();
+
+                if (sqlUsers != null) {
+                    postValue(sqlUsers);
+                }
+            }
+
+            var listener = { userList: List<User> ->
+                modelSQL.setAllUsers(userList, null);
+                postValue(userList);
+            }
+
+            modelFirebase.getAllUsers(listener);
         }
 
         override fun onInactive() {

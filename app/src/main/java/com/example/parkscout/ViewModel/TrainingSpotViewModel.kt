@@ -50,5 +50,4 @@ class TrainingSpotViewModel: ViewModel() {
     fun addChat(chat: Chat,user: User, listener: () -> Unit){
         ChatModel.instance.addChat(chat,user,listener)
     }
-
 }

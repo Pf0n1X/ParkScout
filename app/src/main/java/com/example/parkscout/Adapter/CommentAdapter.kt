@@ -11,21 +11,24 @@ import com.bumptech.glide.Glide
 import com.example.parkscout.R
 import com.example.parkscout.Repository.Comment
 import com.example.parkscout.Repository.Model.UserModel
+import com.example.parkscout.Repository.User
 import com.google.firebase.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CommentAdapter(val context: Context): RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
+class CommentAdapter(val context: Context, userList: List<User>?): RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
 
     // Data Members
     public var mComments: List<Comment>;
     private var mContext: Context;
+    private var mUserList: List<User>?;
 
     // Constructors
     init {
         this.mComments = LinkedList<Comment>();
         this.mContext = context;
+        this.mUserList = userList;
     }
 
     // Methods
@@ -36,16 +39,19 @@ class CommentAdapter(val context: Context): RecyclerView.Adapter<CommentAdapter.
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var comment = mComments.get(position)
         holder.mTVCommentText.text = comment.c_text;
-        var user = UserModel.instance.getUserByID(comment.userId);
+//        var user = UserModel.instance.getUserByID(comment.userId);
 //        var curDate: Date = Timestamp(comment.time, 0).toDate();
 //        var dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm")
 //        holder.mTVTime.text = dateFormat.format(curDate);
+        var user: User? = mUserList?.find { o: User -> o.uId == comment.userId };
 
         // TODO: Add the user to the comment object and get the data.
         // TODO: Show the user name and image.
     //        holder.mTVUserName.text = comment.
-        holder.mTVUserName.text = user.value?.name;
-        Glide.with(context).load(user.value?.profilePic).into(holder.mIVProfileImage);
+        if (user != null) {
+            holder.mTVUserName.text = user.name;
+            Glide.with(context).load(user.profilePic).into(holder.mIVProfileImage);
+        }
     }
 
     override fun getItemCount(): Int {

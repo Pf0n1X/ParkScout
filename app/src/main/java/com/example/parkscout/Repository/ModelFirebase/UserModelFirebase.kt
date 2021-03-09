@@ -69,4 +69,24 @@ class UserModelFirebase {
                 }
             };
     }
+
+    fun getAllUsers(listener: (List<User>) -> Unit) {
+        var db: FirebaseFirestore = FirebaseFirestore.getInstance();
+
+        db.collection(COLLECTION_NAME)
+            .get()
+            .addOnSuccessListener { querySnapshot: QuerySnapshot ->
+                var list: LinkedList<User> = LinkedList<User>();
+
+                for (doc in querySnapshot.documents) {
+                    var user: User? = doc.toObject(User::class.java);
+
+                    if (user != null) {
+                        list.add(user);
+                    }
+                }
+
+                listener(list);
+            };
+    }
 }

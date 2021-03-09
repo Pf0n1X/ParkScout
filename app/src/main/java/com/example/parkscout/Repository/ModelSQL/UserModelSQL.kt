@@ -34,4 +34,20 @@ class UserModelSQL {
         return AppLocalDb.getInstance().userDao().getUserById(uid);
 
     }
+
+    fun setAllUsers(userList: List<User>, listener: (() -> Unit)?) {
+        executor.execute{
+            for (user in userList) {
+                AppLocalDb.getInstance().userDao().insert(user);
+            }
+
+            if (listener != null) {
+                listener();
+            }
+        }
+    }
+
+    fun getAllUsers(): List<User>? {
+        return AppLocalDb.getInstance().userDao().getAll();
+    }
 }

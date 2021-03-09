@@ -21,6 +21,7 @@ import com.example.parkscout.R
 import com.example.parkscout.Repository.Comment
 import com.example.parkscout.Repository.Rating
 import com.example.parkscout.Repository.TrainingSpotWithAll
+import com.example.parkscout.Repository.User
 import com.example.parkscout.ViewModel.ParkDetailsViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -49,6 +50,11 @@ class ParkDetails : Fragment()   {
     private lateinit var mBtnChat: MaterialButton;
     private lateinit var mTVEquippedWith: TextView;
     private lateinit var mTVFits: TextView;
+    private lateinit var mUserList: List<User>;
+
+    init {
+        this.mUserList = LinkedList<User>();
+    }
 
     // Methods
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,13 +76,19 @@ class ParkDetails : Fragment()   {
         mBtnChat = rootView.findViewById(R.id.park_details_chat_button);
         mTVEquippedWith = rootView.findViewById(R.id.park_details_equipped_with);
         mTVFits = rootView.findViewById(R.id.park_details_fits);
+        viewModel = ViewModelProvider(this).get(ParkDetailsViewModel::class.java);
+
 
         setupCommentsRecyclerView();
         setIsVisible(false);
         var bottomSheetBehavior: BottomSheetBehavior<LinearLayout> = BottomSheetBehavior.from(
             mContainer
         );
-        viewModel = ViewModelProvider(this).get(ParkDetailsViewModel::class.java);
+
+        viewModel.getAllUsers().observe(viewLifecycleOwner, { userList: List<User> ->
+            (mUserList as LinkedList<User>).addAll(userList);
+            mAdapter.notifyDataSetChanged();
+        })
 
         // Setup the comment send button
         mBtnSendComment.setOnClickListener{ event  ->
@@ -268,7 +280,7 @@ class ParkDetails : Fragment()   {
         mCommentsRecyclerView.setHasFixedSize(true)
         var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(activity?.applicationContext)
         mCommentsRecyclerView.layoutManager = linearLayoutManager
-        this.mCommentAdapter = CommentAdapter(requireContext());
+        this.mCommentAdapter = CommentAdapter(requireContext(), mUserList);
         mCommentsRecyclerView.adapter = mCommentAdapter;
     }
 

@@ -69,25 +69,4 @@
         android:text="TextView"
         android:textSize="8dp" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/time_last_message"
-        android:layout_centerVertical="false"
-        android:layout_marginStart="172dp"
-        android:layout_marginLeft="172dp"
-        android:layout_marginTop="5dp"
-        android:layout_toEndOf="@+id/Chat_Name"
-        android:layout_toRightOf="@+id/Chat_Name"
-        tools:layout_centerHorizontal="true">
-
-        <TextView
-            android:id="@+id/number_of_updates"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:background="@drawable/round_button"
-            android:text="5"
-            android:textSize="9sp" />
-    </androidx.cardview.widget.CardView>
-
 </RelativeLayout>

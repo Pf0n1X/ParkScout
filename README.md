@@ -1,4 +1,4 @@
-# ParkScout
+<h1 align="center">ParkScout</h1>
 <p align="center">ParkScout lets your search training spots in your area, meet people, chat with them, share information about training spots.
   experiences a whole new way to work out and socialize.
 </p>
